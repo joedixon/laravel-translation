@@ -1,0 +1,13 @@
+{
+    "name": "joedixon/laravel-translation",
+    "description": "A tool for managing all of your Laravel translations",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joe Dixon",
+            "email": "hello@joedixon.co.uk"
+        }
+    ],
+    "require": {}
+}
