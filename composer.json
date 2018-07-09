@@ -9,5 +9,17 @@
             "email": "hello@joedixon.co.uk"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "JoeDixon\\Translation\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "JoeDixon\\Translation\\TranslationServiceProvider"
+            ]
+        }
+    }
 }
