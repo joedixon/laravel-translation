@@ -3,6 +3,7 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Filesystem\Filesystem;
+use JoeDixon\Translation\Drivers\File;
 use Illuminate\Support\ServiceProvider;
 
 class TranslationServiceProvider extends ServiceProvider
@@ -27,6 +28,8 @@ class TranslationServiceProvider extends ServiceProvider
         $this->loadTranslations();
 
         $this->registerCommands();
+
+        $this->registerHelpers();
     }
 
     /**
@@ -144,9 +147,23 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function registerContainerBindings()
     {
+        $this->app->singleton('translation', function () {
+            return new File(new Filesystem, $this->app['path.lang']);
+        });
+
         $this->app->singleton(Scanner::class, function () {
             $config = $this->app['config']['translation'];
             return new Scanner(new Filesystem, $config['scan_paths'], $config['translation_methods']);
         });
+    }
+
+    /**
+     * Register package helper functions.
+     *
+     * @return void
+     */
+    private function registerHelpers()
+    {
+        require __DIR__ . '/../resources/helpers.php';
     }
 }

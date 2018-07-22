@@ -7,5 +7,6 @@ return [
         'middleware' => 'web',
         'namespace' => 'JoeDixon\\Translation\\Http\\Controllers'
     ],
+    'translation_methods' => ['trans', '__'],
     'scan_paths' => [app_path(), resource_path()]
 ];
