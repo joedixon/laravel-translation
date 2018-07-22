@@ -1,0 +1,4 @@
+
+trans('trans.first_match');
+trans('trans');
+trans('trans.third_match');

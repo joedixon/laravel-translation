@@ -2,12 +2,13 @@
 
 namespace JoeDixon\Translation;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class TranslationServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap the application services.
+     * Bootstrap the package services.
      *
      * @return void
      */
@@ -29,15 +30,22 @@ class TranslationServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register bindings in the container.
+     * Register package bindings in the container.
      *
      * @return void
      */
     public function register()
     {
         $this->mergeConfiguration();
+
+        $this->registerContainerBindings();
     }
 
+    /**
+     * Load and publish package views.
+     *
+     * @return void
+     */
     private function loadViews()
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'translation');
@@ -47,11 +55,21 @@ class TranslationServiceProvider extends ServiceProvider
         ]);
     }
 
+    /**
+     * Register package routes.
+     *
+     * @return void
+     */
     private function registerRoutes()
     {
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
     }
 
+    /**
+     * Publish package configuration.
+     *
+     * @return void
+     */
     private function publishConfiguration()
     {
         $this->publishes([
@@ -59,11 +77,21 @@ class TranslationServiceProvider extends ServiceProvider
         ], 'config');
     }
 
+    /**
+     * Merge package configuration.
+     *
+     * @return void
+     */
     private function mergeConfiguration()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/translation.php', 'translation');
     }
 
+    /**
+     * Publish package assets.
+     *
+     * @return void
+     */
     private function publishAssets()
     {
         $this->publishes([
@@ -71,11 +99,21 @@ class TranslationServiceProvider extends ServiceProvider
         ], 'assets');
     }
 
+    /**
+     * Load package migrations.
+     *
+     * @return void
+     */
     private function loadMigrations()
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 
+    /**
+     * Load package translations.
+     *
+     * @return void
+     */
     private function loadTranslations()
     {
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'translation');
@@ -85,6 +123,11 @@ class TranslationServiceProvider extends ServiceProvider
         ]);
     }
 
+    /**
+     * Register package commands.
+     *
+     * @return void
+     */
     private function registerCommands()
     {
         if ($this->app->runningInConsole()) {
@@ -92,5 +135,18 @@ class TranslationServiceProvider extends ServiceProvider
                 // Commands will go here
             ]);
         }
+    }
+
+    /**
+     * Register package bindings in the container.
+     *
+     * @return void
+     */
+    private function registerContainerBindings()
+    {
+        $this->app->singleton(Scanner::class, function () {
+            $config = $this->app['config']['translation'];
+            return new Scanner(new Filesystem, $config['scan_paths'], $config['translation_methods']);
+        });
     }
 }

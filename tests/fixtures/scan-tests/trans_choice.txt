@@ -1,0 +1,2 @@
+
+trans_choice('trans_choice.with_params', ['parameters' => 'Go here'])
