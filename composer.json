@@ -9,11 +9,24 @@
             "email": "hello@joedixon.co.uk"
         }
     ],
-    "require": {},
+    "require": {
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.0"
+    },
     "autoload": {
         "psr-4": {
             "JoeDixon\\Translation\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JoeDixon\\Translation\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
     "extra": {
         "laravel": {
