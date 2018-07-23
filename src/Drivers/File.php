@@ -94,6 +94,10 @@ class File implements DriverInterface
      */
     public function addArrayTranslation($language, $key, $value = '')
     {
+        if (!$this->languageExists($language)) {
+            $this->addLanguage($language);
+        }
+
         list($file, $key) = explode('.', $key);
         $translations = $this->allTranslationsFor($language)['array'];
 
@@ -104,7 +108,7 @@ class File implements DriverInterface
 
         // does the key exist? If so, throw an exception
         if (array_key_exists($key, $translations[$file])) {
-            throw new LanguageKeyExistsException;
+            throw new LanguageKeyExistsException('The language key {' . $file . '.' . $key . '} already exists.');
         }
 
         $translations[$file][$key] = $value;
@@ -122,11 +126,15 @@ class File implements DriverInterface
      */
     public function addJsonTranslation($language, $key, $value = '')
     {
+        if (!$this->languageExists($language)) {
+            $this->addLanguage($language);
+        }
+
         $translations = $this->allTranslationsFor($language)['json'];
 
         // does the key exist? If so, throw an exception
         if (array_key_exists($key, $translations)) {
-            throw new LanguageKeyExistsException;
+            throw new LanguageKeyExistsException('The language key {' . $key . '} already exists.');
         }
 
         $translations[$key] = $value;
