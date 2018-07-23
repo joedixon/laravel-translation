@@ -5,6 +5,10 @@ namespace JoeDixon\Translation;
 use Illuminate\Filesystem\Filesystem;
 use JoeDixon\Translation\Drivers\File;
 use Illuminate\Support\ServiceProvider;
+use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
+use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
+use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
+use JoeDixon\Translation\Console\Commands\ListMissingTranslations;
 
 class TranslationServiceProvider extends ServiceProvider
 {
@@ -135,7 +139,10 @@ class TranslationServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                // Commands will go here
+                AddLanguageCommand::class,
+                AddTranslationKeyCommand::class,
+                ListLanguagesCommand::class,
+                ListMissingTranslations::class,
             ]);
         }
     }
