@@ -19,6 +19,6 @@ if (!function_exists('array_diff_assoc_recursive')) {
                 $difference[$key] = $value;
             }
         }
-        return !isset($difference) ? 0 : $difference;
+        return !isset($difference) ? [] : $difference;
     }
 }
