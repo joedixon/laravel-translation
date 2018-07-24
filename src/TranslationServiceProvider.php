@@ -8,7 +8,8 @@ use Illuminate\Support\ServiceProvider;
 use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
 use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
 use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
-use JoeDixon\Translation\Console\Commands\ListMissingTranslations;
+use JoeDixon\Translation\Console\Commands\ListMissingTranslationKeys;
+use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
 
 class TranslationServiceProvider extends ServiceProvider
 {
@@ -142,7 +143,8 @@ class TranslationServiceProvider extends ServiceProvider
                 AddLanguageCommand::class,
                 AddTranslationKeyCommand::class,
                 ListLanguagesCommand::class,
-                ListMissingTranslations::class,
+                ListMissingTranslationKeys::class,
+                SynchroniseMissingTranslationKeys::class
             ]);
         }
     }
