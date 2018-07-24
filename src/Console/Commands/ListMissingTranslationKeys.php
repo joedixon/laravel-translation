@@ -4,14 +4,14 @@ namespace JoeDixon\Translation\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class ListMissingTranslations extends Command
+class ListMissingTranslationKeys extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'translation:list-missing-translations';
+    protected $signature = 'translation:list-missing-translation-keys';
 
     /**
      * The console command description.
@@ -35,21 +35,45 @@ class ListMissingTranslations extends Command
             $missingTranslations[$language] = $translation->findMissingTranslations($language);
         }
 
+        // check whether or not there are any missing translations
+        $empty = true;
+        foreach ($missingTranslations as $language => $values) {
+            if (!empty($values)) {
+                $empty = false;
+            }
+        }
+
+        // if no missing translations, inform the user and move on with your day
+        if ($empty) {
+            return $this->info(__('translation::translation.no_missing_keys'));
+        }
+
+        // set some headers for the table of results
         $headers = [__('translation::translation.language'), __('translation::translation.type'), __('translation::translation.file'), __('translation::translation.key')];
+
+        // iterate over each of the missing languages
         foreach ($missingTranslations as $language => $types) {
+            // iterate over each of the file types (json or array)
             foreach ($types as $type => $keys) {
+                // iterate over each of the keys
                 foreach ($keys as $key => $value) {
+                    // at this point, if we have an array, we are confident of
+                    // an array file type as they will have an additional layer
+                    // due to the need to store the filename, so handle accordingly
                     if (is_array($value)) {
                         foreach ($value as $k => $v) {
                             $rows[] = [$language, $type, "{$key}.php", $k];
                         }
-                    } else {
+                    }
+                    // handle json file type
+                    else {
                         $rows[] = [$language, $type, "{$language}.json", $key];
                     }
                 }
             }
         }
 
+        // render the table of results
         $this->table($headers, $rows);
     }
 }
