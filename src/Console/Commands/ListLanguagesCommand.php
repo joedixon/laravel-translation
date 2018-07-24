@@ -35,6 +35,7 @@ class ListLanguagesCommand extends Command
         // map language into array to render one on each line
         $languages = array_map(function ($language) { return [$language]; }, $languages);
 
+        // return a table of results
         $this->table($headers, $languages);
     }
 }

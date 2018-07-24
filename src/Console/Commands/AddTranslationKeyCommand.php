@@ -30,13 +30,20 @@ class AddTranslationKeyCommand extends Command
         $translation = app()->make('translation');
 
         $language = $this->ask(__('translation::translation.prompt_language_for_key'));
+
+        // we know this should be json or array so we can use the `anticipate`
+        // method to give our users a helping hand
         $type = $this->anticipate(__('translation::translation.prompt_type'), ['json', 'array']);
+
+        // if the array type is selected, prompt for the filename
         if ($type === 'array') {
             $file = $this->ask(__('translation::translation.prompt_file'));
         }
         $key = $this->ask(__('translation::translation.prompt_key'));
         $value = $this->ask(__('translation::translation.prompt_value'));
 
+        // attempt to add the key for json or array and fail gracefully if
+        // exception is thrown
         if ($type === 'json') {
             try {
                 $translation->addJsonTranslation($language, $key, $value);
