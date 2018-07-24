@@ -75,7 +75,7 @@ class File implements DriverInterface
     public function addLanguage($language)
     {
         if ($this->languageExists($language)) {
-            throw new LanguageExistsException('The language {' . $language . '} already exists.');
+            throw new LanguageExistsException(__('translation::errors.language_exists', ['language' => $language]));
         }
 
         $this->disk->makeDirectory("{$this->languageFilesPath}/$language");
@@ -108,7 +108,7 @@ class File implements DriverInterface
 
         // does the key exist? If so, throw an exception
         if (array_key_exists($key, $translations[$file])) {
-            throw new LanguageKeyExistsException('The language key {' . $file . '.' . $key . '} already exists.');
+            throw new LanguageKeyExistsException(__('translation::errors.key_exists', ['key' => "{$file}.{$key}"]));
         }
 
         $translations[$file][$key] = $value;
@@ -134,7 +134,7 @@ class File implements DriverInterface
 
         // does the key exist? If so, throw an exception
         if (array_key_exists($key, $translations)) {
-            throw new LanguageKeyExistsException('The language key {' . $key . '} already exists.');
+            throw new LanguageKeyExistsException(__('translation::errors.key_exists', ['key' => $key]));
         }
 
         $translations[$key] = $value;
