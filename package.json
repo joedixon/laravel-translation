@@ -10,5 +10,8 @@
     "laravel-mix": "^2.1.11",
     "postcss": "^7.0.1",
     "tailwindcss": "^0.6.4"
+  },
+  "dependencies": {
+    "vue": "^2.5.16"
   }
 }

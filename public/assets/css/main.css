@@ -6393,6 +6393,10 @@ table {
  * @import "utilities/skew-transforms";
  */
 
+ul {
+  list-style-type: none;
+}
+
 @media (min-width: 576px) {
   .sm\:list-reset {
     list-style: none;

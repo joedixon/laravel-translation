@@ -60,3 +60,93 @@
  * @import "utilities/background-patterns";
  * @import "utilities/skew-transforms";
  */
+
+ body {
+     @apply bg-grey-lighter text-grey-darkest
+ }
+
+ ul {
+    list-style-type: none;
+    @apply flex;
+ }
+
+ li {
+     @apply px-4;
+ }
+
+ nav.header {
+    background: linear-gradient(90deg,#125b93, #2891c4);
+     @apply .border-b .flex .items-center .h-16 text-white
+ }
+
+ nav a {
+     @apply .opacity-75 text-white no-underline flex items-center
+ }
+
+ nav a.active {
+     @apply opacity-100
+ }
+
+ nav a:hover {
+     @apply opacity-100 underline
+ }
+
+ .panel {
+     @apply bg-white rounded m-6 shadow text-grey-dark
+ }
+
+ .panel-header {
+    @apply p-4 text-lg border-b flex items-center font-thin
+ }
+
+ .panel-footer {
+    @apply p-6 border-t bg-grey-lighter
+ }
+
+ .panel-body table {
+     @apply w-full
+ }
+
+ .panel-body th, .panel-body td {
+     @apply text-left p-4
+ }
+
+ .panel-body th {
+     @apply text-grey-darker
+ }
+
+ .panel-body td {
+     @apply font-thin
+ }
+
+ .panel-body tr {
+    @apply border-b
+}
+
+.panel-body thead tr {
+    @apply bg-grey-lighter
+}
+
+.panel-body tbody tr:nth-child(even) {
+    @apply bg-grey-lighter
+}
+    
+.panel-body tbody tr:last-child {
+    @apply border-none
+}
+
+.panel-body td textarea {
+    @apply border-none resize-none bg-transparent text-grey-darker w-full font-thin h-auto p-0
+}
+
+.panel-body td textarea.active {
+    @apply w-full rounded h-32 p-2 border
+}
+
+ .button {
+     @apply bg-transparent text-grey-darker py-2 px-4 border border-grey rounded text-sm font-bold no-underline
+ }
+
+ .button:hover {
+     @apply text-blue
+ }

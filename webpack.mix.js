@@ -12,9 +12,12 @@ var tailwindcss = require('tailwindcss');
  |
  */
 
-mix.postCss('resources/assets/css/main.css', 'public/css', [
+mix.setPublicPath('public/vendor');
+// mix.setPublicPath('../../../public/vendor/translation');
+
+mix.postCss('resources/assets/css/main.css', 'css', [
     tailwindcss('./tailwind.js'),
-]);
+]).js('resources/assets/js/app.js', 'js')
 
 // Full API
 // mix.js(src, output);

@@ -103,7 +103,7 @@ class TranslationServiceProvider extends ServiceProvider
     private function publishAssets()
     {
         $this->publishes([
-            __DIR__ . '/../resources/assets' => public_path('vendor/translation'),
+            __DIR__ . '/../public/assets' => public_path('vendor/translation'),
         ], 'assets');
     }
 
