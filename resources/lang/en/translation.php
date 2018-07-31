@@ -17,4 +17,5 @@ return [
     'language_key_added' => 'New language key added successfully 👏',
     'no_missing_keys' => 'There are no missing translation keys in the app 🎉',
     'keys_synced' => 'Missing keys synchronised successfully 🎊',
+    'translations' => 'Translation'
 ];
