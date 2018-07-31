@@ -51,5 +51,16 @@ return [
     |
     */
 
-    'scan_paths' => [app_path(), resource_path()]
+    'scan_paths' => [app_path(), resource_path()],
+
+    /*
+    |--------------------------------------------------------------------------
+    | UI URL
+    |--------------------------------------------------------------------------
+    |
+    | Define the URL used to access the language management too.
+    |
+     */
+
+    'ui_url' => 'translation'
 ];
