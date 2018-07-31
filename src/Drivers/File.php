@@ -31,9 +31,32 @@ class File implements DriverInterface
     {
         // As per the docs, there should be a subdirectory within the
         // languages path so we can return these directory names as an array
-        return array_map(function ($language) {
+        $languages = array_map(function ($language) {
             return array_last(explode('/', $language));
         }, $this->disk->directories($this->languageFilesPath));
+
+        return array_filter($languages, function ($language) {
+            return $language != 'vendor';
+        });
+    }
+
+    /**
+     * Get all translation groups from the application
+     *
+     * @return array
+     */
+    public function allGroups($language)
+    {
+        $arrayPath = "{$this->languageFilesPath}/{$language}";
+        $groups = [];
+
+        if ($this->disk->exists($arrayPath)) {
+            foreach ($this->disk->allFiles($arrayPath) as $file) {
+                $groups[] = $file->getBasename('.php');
+            }
+        }
+
+        return $groups;
     }
 
     /**
@@ -182,6 +205,26 @@ class File implements DriverInterface
     }
 
     /**
+     * Get all the translations for a given file
+     *
+     * @param string $language
+     * @param string $file
+     * @return array
+     */
+    public function getTranslationsForFile($language, $file)
+    {
+        $file = str_finish($file, '.php');
+        $filePath = "{$this->languageFilesPath}/{$language}/{$file}";
+        $translations = [];
+
+        if ($this->disk->exists($filePath)) {
+            return $this->disk->getRequire($filePath);
+        }
+
+        return [];
+    }
+
+    /**
      * Determine whether or not a language exists
      *
      * @param string $language
@@ -272,5 +315,26 @@ class File implements DriverInterface
                 }
             }
         }
+    }
+
+    public function merge($translations, $language)
+    {
+        foreach ($translations as $key => $value) {
+            $translations[$key] = [$value, $this->findKey($this->allTranslationsFor($language), $key)];
+        }
+
+        return $translations;
+    }
+
+    public function findKey($array, $keySearch)
+    {
+        foreach ($array as $key => $item) {
+            if ($key == $keySearch) {
+                return $item;
+            } elseif (is_array($item)) {
+                return $this->findKey($item, $keySearch);
+            }
+        }
+        return '';
     }
 }
