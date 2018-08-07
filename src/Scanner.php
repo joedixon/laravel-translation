@@ -26,7 +26,7 @@ class Scanner
      */
     public function findTranslations()
     {
-        $results = ['json' => [], 'array' => []];
+        $results = ['single' => [], 'group' => []];
 
         // This has been derived from a combination of the following:
         // * Laravel Language Manager GUI from Mohamed Said (https://github.com/themsaid/laravel-langman-gui)
@@ -48,10 +48,10 @@ class Scanner
                 foreach ($matches[2] as $key) {
                     if (preg_match("/(^[a-zA-Z0-9_-]+([.][^\1)\ ]+)+$)/siU", $key, $arrayMatches)) {
                         list($file, $k) = explode('.', $arrayMatches[0], 2);
-                        $results['array'][$file][$k] = '';
+                        $results['group'][$file][$k] = '';
                         continue;
                     } else {
-                        $results['json'][$key] = '';
+                        $results['single'][$key] = '';
                     }
                 }
             }
