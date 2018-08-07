@@ -2,7 +2,7 @@
 
 @section('body')
 
-    @if(count($translations))
+    @if(count($languages))
 
         <div class="panel">
 
@@ -12,7 +12,9 @@
 
                 <div class="flex flex-grow justify-end">
 
-                    <a href="#" class="button">+ Add</a>
+                    <a href="{{ route('languages.create') }}" class="button">
+                        {{ __('translation::translation.add') }}
+                    </a>
 
                 </div>
 
@@ -24,20 +26,16 @@
 
                     <thead>
                         <tr>
-                            <th>Key</th>
-                            <th>Base Value ({{ config('app.locale') }})</th>
-                            <th>Value</th>
+                            <th>{{ __('translation::translation.language_name') }}</th>
+                            <th>{{ __('translation::translation.locale') }}</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        @foreach($translations as $key => $values)
+                        @foreach($languages as $language)
                             <tr>
-                                <td>{{ $key }}</td>
-                                <td>{{ $values[0] }}</td>
-                                <td>
-                                    <translation-input translation="{{ $values[1] }}"></translation-input>
-                                </td>
+                                <td></td>
+                                <td>{{ $language }}</td>
                             </tr>
                         @endforeach
                     </tbody>
