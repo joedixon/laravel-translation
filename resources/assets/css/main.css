@@ -100,7 +100,7 @@
  }
 
  .panel-footer {
-    @apply p-6 border-t bg-grey-lighter
+    @apply border-t bg-grey-lighter p-4
  }
 
  .panel-body table {
@@ -149,4 +149,36 @@
 
  .button:hover {
      @apply text-blue
+ }
+
+ .button-blue {
+     @apply bg-blue text-white border-blue
+ }
+
+ .button-blue:hover {
+     @apply text-white bg-blue-dark
+ }
+
+ .input-group {
+     @apply w-full mb-6
+ }
+
+ .input-group label {
+     @apply block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2
+ }
+
+ .input-group input {
+     @apply appearance-none block w-full bg-grey-lighter text-grey-darker border rounded py-3 px-4 mb-3 leading-tight
+ }
+
+ .input-group:last-child {
+     @apply mb-0
+ }
+
+ .input-group input.error {
+     @apply border-red
+ }
+
+ .input-group .error-text {
+     @apply text-red text-xs italic
  }
