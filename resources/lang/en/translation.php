@@ -17,5 +17,12 @@ return [
     'language_key_added' => 'New language key added successfully 👏',
     'no_missing_keys' => 'There are no missing translation keys in the app 🎉',
     'keys_synced' => 'Missing keys synchronised successfully 🎊',
-    'translations' => 'Translation'
+    'translations' => 'Translation',
+    'language_name' => 'Name',
+    'locale' => 'Locale',
+    'add' => '+ Add',
+    'add_language' => 'Add a new language',
+    'save' => 'Save',
+    'language_exists' => 'The :attribute already exists.',
+    'uh_oh' => 'Something\'s not quite right',
 ];
