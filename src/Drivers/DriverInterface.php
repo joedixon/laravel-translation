@@ -12,7 +12,7 @@ interface DriverInterface
 
     public function addLanguage($language);
 
-    public function addJsonTranslation($language, $key, $value = '');
+    public function addSingleTranslation($language, $key, $value = '');
 
-    public function addArrayTranslation($language, $key, $value = '');
+    public function addGroupTranslation($language, $key, $value = '');
 }

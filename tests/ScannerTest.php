@@ -29,7 +29,7 @@ class ScannerTest extends TestCase
         $this->scanner = app()->make(Scanner::class);
         $matches = $this->scanner->findTranslations();
 
-        $this->assertEquals($matches, ['json' => ['This will go in the JSON array', 'trans'], 'array' => ['lang' => ['first_match'], 'lang_get' => ['first', 'second'], 'trans' => ['first_match', 'third_match'], 'trans_choice' => ['with_params']]]);
+        $this->assertEquals($matches, ['single' => ['This will go in the JSON array' => '', 'trans' => ''], 'group' => ['lang' => ['first_match' => ''], 'lang_get' => ['first' => '', 'second' => ''], 'trans' => ['first_match' => '', 'third_match' => ''], 'trans_choice' => ['with_params' => '']]]);
         $this->assertCount(2, $matches);
     }
 }
