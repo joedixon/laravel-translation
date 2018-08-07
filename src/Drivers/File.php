@@ -3,6 +3,7 @@
 namespace JoeDixon\Translation\Drivers;
 
 use JoeDixon\Translation\Scanner;
+use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\Exceptions\LanguageKeyExistsException;
@@ -25,38 +26,40 @@ class File implements DriverInterface
     /**
      * Get all languages from the application
      *
-     * @return array
+     * @return Collection
      */
     public function allLanguages()
     {
         // As per the docs, there should be a subdirectory within the
-        // languages path so we can return these directory names as an array
-        $languages = array_map(function ($language) {
-            return array_last(explode('/', $language));
-        }, $this->disk->directories($this->languageFilesPath));
+        // languages path so we can return these directory names as a collection
+        $directories = Collection::make($this->disk->directories($this->languageFilesPath));
 
-        return array_filter($languages, function ($language) {
+        return $directories->map(function ($directory) {
+            return array_last(explode('/', $directory));
+        })->filter(function ($language) {
+            // at the moemnt, we're not supporting vendor specific translations
             return $language != 'vendor';
         });
     }
 
     /**
-     * Get all translation groups from the application
+     * Get all group translations from the application
      *
      * @return array
      */
-    public function allGroups($language)
+    public function allGroup($language)
     {
         $arrayPath = "{$this->languageFilesPath}/{$language}";
-        $groups = [];
 
-        if ($this->disk->exists($arrayPath)) {
-            foreach ($this->disk->allFiles($arrayPath) as $file) {
-                $groups[] = $file->getBasename('.php');
-            }
+        if (!$this->disk->exists($arrayPath)) {
+            return [];
         }
 
-        return $groups;
+        $files = Collection::make($this->disk->allFiles($arrayPath));
+
+        return $files->map(function ($file) {
+            return $file->getBasename('.php');
+        });
     }
 
     /**
@@ -66,11 +69,11 @@ class File implements DriverInterface
      */
     public function allTranslations()
     {
-        $translations = [];
+        $translations = new Collection;
 
-        foreach ($this->allLanguages() as $language) {
-            $translations[$language] = $this->allTranslationsFor($language);
-        }
+        $this->allLanguages()->each(function ($language) use ($translations) {
+            $translations->put($language, $this->allTranslationsFor($language));
+        });
 
         return $translations;
     }
@@ -79,14 +82,14 @@ class File implements DriverInterface
      * Get all translations for a particular language
      *
      * @param string $language
-     * @return array
+     * @return Collection
      */
     public function allTranslationsFor($language)
     {
-        return [
-            'json' => $this->getJsonTranslationsForLanguage($language),
-            'array' => $this->getArrayTranslationsForLanguage($language)
-        ];
+        return Collection::make([
+            'group' => $this->getGroupTranslationsForLanguage($language),
+            'single' => $this->getSingleTranslationsForLanguage($language)
+        ]);
     }
 
     /**
@@ -103,105 +106,111 @@ class File implements DriverInterface
 
         $this->disk->makeDirectory("{$this->languageFilesPath}/$language");
         if (!$this->disk->exists("{$this->languageFilesPath}/{$language}.json")) {
-            $this->saveJsonTranslationFile($language, []);
+            $this->saveSingleTranslationFile($language, []);
         }
     }
 
     /**
-     * Add a new array type translation
+     * Add a new group type translation
      *
      * @param string $language
      * @param string $key
      * @param string $value
      * @return void
      */
-    public function addArrayTranslation($language, $key, $value = '')
+    public function addGroupTranslation($language, $key, $value = '')
     {
         if (!$this->languageExists($language)) {
             $this->addLanguage($language);
         }
 
         list($file, $key) = explode('.', $key);
-        $translations = $this->allTranslationsFor($language)['array'];
+        $translations = $this->getGroupTranslationsForLanguage($language);
 
         // does the file exist? If not, create it.
-        if (!array_key_exists($file, $translations)) {
-            $translations[$file] = [];
+        if (!$translations->keys()->contains($file)) {
+            $translations->put($file, []);
         }
 
         // does the key exist? If so, throw an exception
-        if (array_key_exists($key, $translations[$file])) {
+        if (array_key_exists($key, $translations->get($file))) {
             throw new LanguageKeyExistsException(__('translation::errors.key_exists', ['key' => "{$file}.{$key}"]));
         }
 
-        $translations[$file][$key] = $value;
+        $values = $translations->get($file);
+        $values[$key] = $value;
+        $translations->put($file, $values);
 
-        $this->saveArrayTranslationFile($language, $file, $translations[$file]);
+        // var_dump($translations);
+
+        $this->saveGroupTranslationFile($language, $file, $translations->get($file));
     }
 
     /**
-     * Add a new JSON type translations
+     * Add a new single type translation
      *
      * @param string $language
      * @param string $key
      * @param string $value
      * @return void
      */
-    public function addJsonTranslation($language, $key, $value = '')
+    public function addSingleTranslation($language, $key, $value = '')
     {
         if (!$this->languageExists($language)) {
             $this->addLanguage($language);
         }
 
-        $translations = $this->allTranslationsFor($language)['json'];
+        $translations = $this->getSingleTranslationsForLanguage($language);
 
         // does the key exist? If so, throw an exception
         if (array_key_exists($key, $translations)) {
             throw new LanguageKeyExistsException(__('translation::errors.key_exists', ['key' => $key]));
         }
 
-        $translations[$key] = $value;
+        $translations->put($key, $value);
 
-        $this->saveJsonTranslationFile($language, $translations);
+        $this->saveSingleTranslationFile($language, $translations);
     }
 
     /**
-     * Get all of the JSON translations for a given language
+     * Get all of the single translations for a given language
      *
      * @param string $language
-     * @return array
+     * @return Collection
      */
-    public function getJsonTranslationsForLanguage($language)
+    public function getSingleTranslationsForLanguage($language)
     {
         $jsonPath = $this->languageFilesPath . "/$language.json";
 
         if ($this->disk->exists($jsonPath)) {
-            return json_decode($this->disk->get($jsonPath), true);
+            return new Collection(json_decode($this->disk->get($jsonPath), true));
         }
 
-        return [];
+        return new Collection;
     }
 
     /**
-     * Get all of the array translations for a given language
+     * Get all of the group translations for a given language
      *
      * @param string $language
-     * @return varrayoid
+     * @return Collection
      */
-    public function getArrayTranslationsForLanguage($language)
+    public function getGroupTranslationsForLanguage($language)
     {
         $arrayPath = "{$this->languageFilesPath}/{$language}";
-        $translations = [];
+        $translations = new Collection;
 
-        if ($this->disk->exists($arrayPath)) {
-            foreach ($this->disk->allFiles($arrayPath) as $file) {
-                $translations[$file->getBasename('.php')] = $this->disk->getRequire($file->getPathname());
-            }
-
-            return $translations;
+        if (!$this->disk->exists($arrayPath)) {
+            return new $translations;
         }
 
-        return [];
+        $files = new Collection($this->disk->allFiles($arrayPath));
+
+        $files->each(function ($file) use ($translations) {
+            $translations->put($file->getBasename('.php'), $this->disk->getRequire($file->getPathname()));
+        });
+
+        return $translations;
     }
 
     /**
@@ -232,42 +241,42 @@ class File implements DriverInterface
      */
     public function languageExists($language)
     {
-        return in_array($language, $this->allLanguages());
+        return $this->allLanguages()->contains($language);
     }
 
     /**
-     * Add a new array type language file
+     * Add a new group type language file
      *
      * @param string $language
      * @param string $filename
      * @return void
      */
-    public function addArrayTranslationFile($language, $filename)
+    public function addGroupTranslationFile($language, $filename)
     {
-        $this->saveArrayTranslationFile($language, $filename, []);
+        $this->saveGroupTranslationFile($language, $filename, []);
     }
 
     /**
-     * Save array type language file
+     * Save group type language file
      *
      * @param string $language
      * @param string $filename
      * @param array $translations
      * @return void
      */
-    private function saveArrayTranslationFile($language, $filename, $translations)
+    private function saveGroupTranslationFile($language, $filename, $translations)
     {
         $this->disk->put("{$this->languageFilesPath}/{$language}/{$filename}.php", "<?php\n\nreturn " . var_export($translations, true) . ';' . \PHP_EOL);
     }
 
     /**
-     * Save JSON type language file
+     * Save single type language file
      *
      * @param string $language
      * @param array $translations
      * @return void
      */
-    private function saveJsonTranslationFile($language, $translations)
+    private function saveSingleTranslationFile($language, $translations)
     {
         $this->disk->put(
             "{$this->languageFilesPath}/$language.json",
@@ -301,16 +310,16 @@ class File implements DriverInterface
 
         foreach ($languages as $language) {
             $missingTranslations = $this->findMissingTranslations($language);
-            if (isset($missingTranslations['json'])) {
-                foreach ($missingTranslations['json'] as $key => $value) {
-                    $this->addJsonTranslation($language, $key);
+            if (isset($missingTranslations['single'])) {
+                foreach ($missingTranslations['single'] as $key => $value) {
+                    $this->addSingleTranslation($language, $key);
                 }
             }
 
-            if (isset($missingTranslations['array'])) {
-                foreach ($missingTranslations['array'] as $file => $keys) {
+            if (isset($missingTranslations['group'])) {
+                foreach ($missingTranslations['group'] as $file => $keys) {
                     foreach ($keys as $key => $value) {
-                        $this->addArrayTranslation($language, "{$file}.{$key}");
+                        $this->addGroupTranslation($language, "{$file}.{$key}");
                     }
                 }
             }
