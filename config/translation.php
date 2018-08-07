@@ -62,5 +62,5 @@ return [
     |
      */
 
-    'ui_url' => 'translation'
+    'ui_url' => 'translations'
 ];
