@@ -35,7 +35,11 @@
                         @foreach($languages as $language)
                             <tr>
                                 <td></td>
-                                <td>{{ $language }}</td>
+                                <td>
+                                    <a href="{{ route('languages.translations.index', $language) }}">
+                                        {{ $language }}
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
