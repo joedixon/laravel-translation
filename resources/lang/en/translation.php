@@ -25,4 +25,7 @@ return [
     'save' => 'Save',
     'language_exists' => 'The :attribute already exists.',
     'uh_oh' => 'Something\'s not quite right',
+    'group_single' => 'Group / Single',
+    'single' => 'Single',
+    'key' => 'Key',
 ];
