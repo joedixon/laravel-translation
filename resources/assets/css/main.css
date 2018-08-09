@@ -116,7 +116,7 @@
  }
 
  .panel-body td {
-     @apply font-thin
+     @apply font-thin align-top
  }
 
  .panel-body tr {
@@ -181,4 +181,28 @@
 
  .input-group .error-text {
      @apply text-red text-xs italic
+ }
+
+ .select-group {
+     @apply relative mr-2
+ }
+
+ .select-group:last-child {
+     @apply m-0
+ }
+
+ .select-group select {
+     @apply text-sm block appearance-none bg-white border text-grey-darker uppercase py-2 px-4 pr-8 rounded leading-tight
+ }
+
+ .select-group select:focus {
+     @apply outline-none border-grey
+ }
+
+ .select-group .caret {
+     @apply pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darker
+ }
+
+ .select-group .caret svg {
+     @apply fill-current h-4 w-4
  }
