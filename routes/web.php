@@ -9,4 +9,7 @@ Route::group(config('translation.route_group_config'), function ($router) {
 
     $router->post(config('translation.ui_url'), 'LanguageController@store')
         ->name('languages.store');
+
+    $router->get(config('translation.ui_url') . '/{language}/translations', 'LanguageTranslationController@index')
+        ->name('languages.translations.index');
 });
