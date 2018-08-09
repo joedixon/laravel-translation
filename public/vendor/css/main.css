@@ -6468,9 +6468,9 @@ nav a:hover {
 }
 
 .panel-footer {
-  padding: 1.5rem;
   border-top-width: 1px;
   background-color: #f1f5f8;
+  padding: 1rem;
 }
 
 .panel-body table {
@@ -6489,6 +6489,7 @@ nav a:hover {
 
 .panel-body td {
   font-weight: 200;
+  vertical-align: top;
 }
 
 .panel-body tr {
@@ -6545,10 +6546,19 @@ nav a:hover {
   color: #2891c4;
 }
 
+.button-blue {
+  background-color: #2891c4;
+  color: #fff;
+  border-color: #2891c4;
+}
+
+.button-blue:hover {
+  color: #fff;
+  background-color: #125b93;
+}
+
 .input-group {
   width: 100%;
-  padding-left: .75rem;
-  padding-right: .75rem;
   margin-bottom: 1.5rem;
 }
 
@@ -6580,6 +6590,10 @@ nav a:hover {
   line-height: 1.25;
 }
 
+.input-group:last-child {
+  margin-bottom: 0;
+}
+
 .input-group input.error {
   border-color: #e3342f;
 }
@@ -6588,6 +6602,62 @@ nav a:hover {
   color: #e3342f;
   font-size: .75rem;
   font-style: italic;
+}
+
+.select-group {
+  position: relative;
+  margin-right: .5rem;
+}
+
+.select-group:last-child {
+  margin: 0;
+}
+
+.select-group select {
+  font-size: .875rem;
+  display: block;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-color: #fff;
+  border-width: 1px;
+  color: #606f7b;
+  text-transform: uppercase;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-right: 2rem;
+  border-radius: .25rem;
+  line-height: 1.25;
+}
+
+.select-group select:focus {
+  outline: 0;
+  border-color: #b8c2cc;
+}
+
+.select-group .caret {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-left: .5rem;
+  padding-right: .5rem;
+  color: #606f7b;
+}
+
+.select-group .caret svg {
+  fill: currentColor;
+  height: 1rem;
+  width: 1rem;
 }
 
 @media (min-width: 576px) {

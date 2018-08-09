@@ -11719,18 +11719,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['translation'],
     data: function data() {
         return {
-            // translation: '',
             isActive: false
         };
     },
     methods: {
         setActive: function setActive() {
             this.isActive = true;
+            this.$refs.trans.focus();
         },
         setInactive: function setInactive() {
             this.isActive = false;
@@ -11758,8 +11759,9 @@ var render = function() {
             expression: "!isActive"
           }
         ],
-        staticClass: "fill-current w-4 h-4 mr-2",
-        attrs: { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20" }
+        staticClass: "cursor-pointer fill-current w-4 h-4 mr-2",
+        attrs: { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20" },
+        on: { click: _vm.setActive }
       },
       [
         _c("path", {
@@ -11779,6 +11781,7 @@ var render = function() {
           expression: "translation"
         }
       ],
+      ref: "trans",
       class: { active: _vm.isActive },
       attrs: { rows: "1" },
       domProps: { value: _vm.translation },
