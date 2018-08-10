@@ -125,4 +125,40 @@ class FileDriverTest extends TestCase
             json_encode((object)['Hello' => 'Hello', 'What\'s up' => 'What\'s up!'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
         );
     }
+
+    /** @test */
+    public function it_can_get_a_collection_of_filenames_for_a_given_language_and_group()
+    {
+        $filenames = $this->translation->getGroupsFor('en');
+
+        $this->assertEquals($filenames->toArray(), ['test']);
+    }
+
+    /** @test */
+    public function it_can_merge_a_language_with_the_base_language()
+    {
+        $this->translation->addGroupTranslation('es', 'test.hello', 'Hola!');
+        $translations = $this->translation->getBaseTranslationsWith('es');
+
+        $this->assertEquals($translations->toArray(), [
+            'group' => [
+                'test' => [
+                    'hello' => ['en' => 'Hello', 'es' => 'Hola!'],
+                    'whats_up' => ['en' => "What's up!", 'es' => '']
+                ]
+            ],
+            'single' => [
+                'Hello' => [
+                    'en' => 'Hello',
+                    'es' => ''
+                ],
+                "What's up" => [
+                    'en' => "What's up!",
+                    'es' => ''
+                ]
+            ]
+        ]);
+
+        unlink(__DIR__ . '/fixtures/lang/es/test.php');
+    }
 }
