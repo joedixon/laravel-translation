@@ -69,7 +69,7 @@ class File implements DriverInterface
      */
     public function allTranslations()
     {
-        $this->allLanguages()->mapWithKeys(function ($language) {
+        return $this->allLanguages()->mapWithKeys(function ($language) {
             return [$language => $this->allTranslationsFor($language)];
         });
     }
@@ -83,8 +83,8 @@ class File implements DriverInterface
     public function allTranslationsFor($language)
     {
         return Collection::make([
-            'group' => $this->getGroupTranslationsForLanguage($language),
-            'single' => $this->getSingleTranslationsForLanguage($language)
+            'group' => $this->getGroupTranslationsFor($language),
+            'single' => $this->getSingleTranslationsFor($language)
         ]);
     }
 
@@ -121,7 +121,7 @@ class File implements DriverInterface
         }
 
         list($file, $key) = explode('.', $key);
-        $translations = $this->getGroupTranslationsForLanguage($language);
+        $translations = $this->getGroupTranslationsFor($language);
 
         // does the file exist? If not, create it.
         if (!$translations->keys()->contains($file)) {
@@ -154,7 +154,7 @@ class File implements DriverInterface
             $this->addLanguage($language);
         }
 
-        $translations = $this->getSingleTranslationsForLanguage($language);
+        $translations = $this->getSingleTranslationsFor($language);
 
         // does the key exist? If so, throw an exception
         if (array_key_exists($key, $translations)) {
@@ -172,7 +172,7 @@ class File implements DriverInterface
      * @param string $language
      * @return Collection
      */
-    public function getSingleTranslationsForLanguage($language)
+    public function getSingleTranslationsFor($language)
     {
         $singlePath = $this->languageFilesPath . "/$language.json";
 
@@ -189,7 +189,7 @@ class File implements DriverInterface
      * @param string $language
      * @return Collection
      */
-    public function getGroupTranslationsForLanguage($language)
+    public function getGroupTranslationsFor($language)
     {
         return $this->getGroupFilesFor($language)->mapWithKeys(function ($file) {
             return [$file->getBasename('.php') => $this->disk->getRequire($file->getPathname())];
@@ -309,11 +309,23 @@ class File implements DriverInterface
         }
     }
 
+    /**
+     * Get all the group files for a given language
+     *
+     * @param string $language
+     * @return Collection
+     */
     public function getGroupFilesFor($language)
     {
         return new Collection($this->disk->allFiles("{$this->languageFilesPath}/{$language}"));
     }
 
+    /**
+     * Get a collection of group names for a given language
+     *
+     * @param string $language
+     * @return Collection
+     */
     public function getGroupsFor($language)
     {
         return $this->getGroupFilesFor($language)->map(function ($file) {
@@ -321,14 +333,20 @@ class File implements DriverInterface
         });
     }
 
+    /**
+     * Get all translations for a given language merged with the base language
+     *
+     * @param string $language
+     * @return Collection
+     */
     public function getBaseTranslationsWith($language)
     {
         $mergedTranslations = new Collection;
         $baseLanguage = config('app.locale');
 
         // Group translations
-        $baseGroupTranslations = $this->getGroupTranslationsForLanguage($baseLanguage);
-        $languageGroupTranslations = $this->getGroupTranslationsForLanguage($language);
+        $baseGroupTranslations = $this->getGroupTranslationsFor($baseLanguage);
+        $languageGroupTranslations = $this->getGroupTranslationsFor($language);
 
         $groupTranslations = $baseGroupTranslations->map(function ($translations, $group) use ($baseLanguage, $language, $languageGroupTranslations) {
             array_walk($translations, function (&$value, &$key) use ($group, $baseLanguage, $language, $languageGroupTranslations) {
@@ -339,8 +357,8 @@ class File implements DriverInterface
         });
 
         // Single translations
-        $baseSingleTranslations = $this->getSingleTranslationsForLanguage($baseLanguage);
-        $languageSingleTranslations = $this->getSingleTranslationsForLanguage($language);
+        $baseSingleTranslations = $this->getSingleTranslationsFor($baseLanguage);
+        $languageSingleTranslations = $this->getSingleTranslationsFor($language);
 
         $singleTranslations = $baseSingleTranslations->map(function ($value, $key) use ($baseLanguage, $language, $languageSingleTranslations) {
             return [$baseLanguage => $value, $language => data_get($languageSingleTranslations, $key, '')];
