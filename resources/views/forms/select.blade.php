@@ -1,9 +1,10 @@
 <div class="select-group">
 
-    <select name="{{ $name }}">
+    <select name="{{ $name }}" @if(isset($submit) && $submit) v-on:change="submit" @endif>
+        @if(isset($optional) && $optional)<option value> ----- </option>@endif
         @foreach($items as $key => $value)
             @if(is_numeric($key))
-                <option value="{{ $value }}">{{ $value }}</option>
+                <option value="{{ $value }}" @if(isset($selected) && $selected === $value) selected="selected" @endif>{{ $value }}</option>
             @else
                 <option value="{{ $key }}">{{ $value }}</option>
             @endif

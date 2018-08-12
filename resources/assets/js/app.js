@@ -18,5 +18,11 @@ window.Vue = require('vue');
 Vue.component('translation-input', require('./components/TranslationInput.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+
+    methods: {
+        submit: function(event) {
+            event.target.form.submit();
+        }
+    }
 });
