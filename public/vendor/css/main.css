@@ -6410,6 +6410,10 @@ li {
   padding-right: 1rem;
 }
 
+a {
+  color: #2891c4;
+}
+
 nav.header {
   background: -webkit-gradient(linear, left top, right top, from(#125b93), to(#2891c4));
   background: linear-gradient(90deg, #125b93, #2891c4);
@@ -6475,12 +6479,14 @@ nav a:hover {
 
 .panel-body table {
   width: 100%;
+  table-layout: fixed;
 }
 
 .panel-body th,
 .panel-body td {
   text-align: left;
   padding: 1rem;
+  overflow-x: scroll;
 }
 
 .panel-body th {
@@ -6502,6 +6508,11 @@ nav a:hover {
 
 .panel-body tbody tr:nth-child(even) {
   background-color: #f1f5f8;
+}
+
+.panel-body tbody tr:hover,
+.panel-body tbody tr:nth-child(even):hover {
+  background-color: #eff8ff;
 }
 
 .panel-body tbody tr:last-child {
@@ -6658,6 +6669,10 @@ nav a:hover {
   fill: currentColor;
   height: 1rem;
   width: 1rem;
+}
+
+.w-1\/10 {
+  width: 10%;
 }
 
 @media (min-width: 576px) {
