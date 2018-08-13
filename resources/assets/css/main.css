@@ -74,6 +74,10 @@
      @apply px-4;
  }
 
+ a {
+     @apply text-blue;
+ }
+
  nav.header {
     background: linear-gradient(90deg,#125b93, #2891c4);
      @apply .border-b .flex .items-center .h-16 text-white
@@ -104,11 +108,11 @@
  }
 
  .panel-body table {
-     @apply w-full
+     @apply w-full table-fixed;
  }
 
  .panel-body th, .panel-body td {
-     @apply text-left p-4
+     @apply text-left p-4 overflow-x-scroll
  }
 
  .panel-body th {
@@ -129,6 +133,10 @@
 
 .panel-body tbody tr:nth-child(even) {
     @apply bg-grey-lighter
+}
+
+.panel-body tbody tr:hover, .panel-body tbody tr:nth-child(even):hover {
+    @apply bg-blue-lightest
 }
     
 .panel-body tbody tr:last-child {
@@ -205,4 +213,8 @@
 
  .select-group .caret svg {
      @apply fill-current h-4 w-4
+ }
+
+ .w-1\/10 {
+     width: 10%;
  }

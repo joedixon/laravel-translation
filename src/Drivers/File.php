@@ -128,11 +128,6 @@ class File implements DriverInterface
             $translations->put($file, []);
         }
 
-        // does the key exist? If so, throw an exception
-        if (array_key_exists($key, $translations->get($file))) {
-            throw new LanguageKeyExistsException(__('translation::errors.key_exists', ['key' => "{$file}.{$key}"]));
-        }
-
         $values = $translations->get($file);
         $values[$key] = $value;
         $translations->put($file, $values);
@@ -155,11 +150,6 @@ class File implements DriverInterface
         }
 
         $translations = $this->getSingleTranslationsFor($language);
-
-        // does the key exist? If so, throw an exception
-        if (array_key_exists($key, $translations)) {
-            throw new LanguageKeyExistsException(__('translation::errors.key_exists', ['key' => $key]));
-        }
 
         $translations->put($key, $value);
 

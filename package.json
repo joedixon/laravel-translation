@@ -12,6 +12,7 @@
     "tailwindcss": "^0.6.4"
   },
   "dependencies": {
+    "axios": "^0.18",
     "vue": "^2.5.16"
   }
 }

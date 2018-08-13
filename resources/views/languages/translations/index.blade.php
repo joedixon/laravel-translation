@@ -28,10 +28,10 @@
 
                         <thead>
                             <tr>
-                                <th class="uppercase font-thin">{{ __('translation::translation.group_single') }}</th>
-                                <th class="uppercase font-thin">{{ __('translation::translation.key') }}</th>
-                                <th class="w-1/3 uppercase font-thin">{{ config('app.locale') }}</th>
-                                <th class="w-1/3 uppercase font-thin">{{ $language }}</th>
+                                <th class="w-1/10 uppercase font-thin">{{ __('translation::translation.group_single') }}</th>
+                                <th class="w-1/10 uppercase font-thin">{{ __('translation::translation.key') }}</th>
+                                <th class="w-2/5 uppercase font-thin">{{ config('app.locale') }}</th>
+                                <th class="w-2/5 uppercase font-thin">{{ $language }}</th>
                             </tr>
                         </thead>
 
@@ -47,7 +47,13 @@
                                                     <td>{{ $key }}</td>
                                                     <td>{{ $value[config('app.locale')] }}</td>
                                                     <td>
-                                                        <translation-input translation="{{ $value[$language] }}"></translation-input>
+                                                        <translation-input 
+                                                            initial-translation="{{ $value[$language] }}" 
+                                                            language="{{ $language }}" 
+                                                            group="{{ $group }}" 
+                                                            translation-key="{{ $key }}" 
+                                                            route="{{ config('translation.ui_url') }}">
+                                                        </translation-input>
                                                     </td>
                                                 </tr>
                                             @endif
@@ -60,7 +66,12 @@
                                             <td>{{ $key }}</td>
                                             <td>{{ $value[config('app.locale')] }}</td>
                                             <td>
-                                                <translation-input translation="{{ $value[$language] }}"></translation-input>
+                                                <translation-input 
+                                                    initial-translation="{{ $value[$language] }}" 
+                                                    language="{{ $language }}" 
+                                                    translation-key="{{ $key }}"
+                                                    route="{{ config('translation.ui_url') }}">
+                                                </translation-input>
                                             </td>
                                         </tr>
                                     @endforeach
