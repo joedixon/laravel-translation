@@ -12,6 +12,8 @@
 
                 <div class="flex flex-grow justify-end">
 
+                    <search></search>
+
                     @include('translation::forms.select', ['name' => 'language', 'items' => $languages, 'submit' => true, 'selected' => $language])
 
                     @include('translation::forms.select', ['name' => 'group', 'items' => $groups, 'submit' => true, 'selected' => Request::get('group'), 'optional' => true])

@@ -9,8 +9,8 @@
  *
  * @import "tailwindcss/preflight";
  */
-@tailwind preflight;
 
+@tailwind preflight;
 /**
  * This injects any component classes registered by plugins.
  *
@@ -18,8 +18,8 @@
  *
  * @import "tailwindcss/components";
  */
-@tailwind components;
 
+@tailwind components;
 /**
  * Here you would add any of your custom component classes; stuff that you'd
  * want loaded *before* the utilities so that the utilities could still
@@ -44,8 +44,8 @@
  *
  * @import "tailwindcss/utilities";
  */
-@tailwind utilities;
 
+@tailwind utilities;
 /**
  * Here you would add any custom utilities you need that don't come out of the
  * box with Tailwind.
@@ -61,69 +61,70 @@
  * @import "utilities/skew-transforms";
  */
 
- body {
-     @apply bg-grey-lighter text-grey-darkest
- }
+body {
+    @apply bg-grey-lighter text-grey-darkest
+}
 
- ul {
+ul {
     list-style-type: none;
     @apply flex;
- }
+}
 
- li {
-     @apply px-4;
- }
+li {
+    @apply px-4;
+}
 
- a {
-     @apply text-blue;
- }
+a {
+    @apply text-blue;
+}
 
- nav.header {
-    background: linear-gradient(90deg,#125b93, #2891c4);
-     @apply .border-b .flex .items-center .h-16 text-white
- }
+nav.header {
+    background: linear-gradient(90deg, #125b93, #2891c4);
+    @apply border-b flex items-center h-16 text-white w-full
+}
 
- nav a {
-     @apply .opacity-75 text-white no-underline flex items-center
- }
+nav a {
+    @apply .opacity-75 text-white no-underline flex items-center
+}
 
- nav a.active {
-     @apply opacity-100
- }
+nav a.active {
+    @apply opacity-100
+}
 
- nav a:hover {
-     @apply opacity-100 underline
- }
+nav a:hover {
+    @apply opacity-100 underline
+}
 
- .panel {
-     @apply bg-white rounded m-6 shadow text-grey-dark
- }
+.panel {
+    @apply bg-white rounded m-6 shadow text-grey-dark
+}
 
- .panel-header {
+.panel-header {
     @apply p-4 text-lg border-b flex items-center font-thin
- }
+}
 
- .panel-footer {
+.panel-footer {
     @apply border-t bg-grey-lighter p-4
- }
+}
 
- .panel-body table {
-     @apply w-full table-fixed;
- }
+.panel-body table {
+    @apply w-full table-fixed;
+}
 
- .panel-body th, .panel-body td {
-     @apply text-left p-4 overflow-x-scroll
- }
+.panel-body th,
+.panel-body td {
+    @apply text-left p-4 overflow-x-scroll
+}
 
- .panel-body th {
-     @apply text-grey-darker
- }
+.panel-body th {
+    @apply text-grey-darker
+}
 
- .panel-body td {
-     @apply font-thin align-top
- }
+.panel-body td {
+    @apply font-thin align-top
+}
 
- .panel-body tr {
+.panel-body tr {
     @apply border-b
 }
 
@@ -135,10 +136,11 @@
     @apply bg-grey-lighter
 }
 
-.panel-body tbody tr:hover, .panel-body tbody tr:nth-child(even):hover {
+.panel-body tbody tr:hover,
+.panel-body tbody tr:nth-child(even):hover {
     @apply bg-blue-lightest
 }
-    
+
 .panel-body tbody tr:last-child {
     @apply border-none
 }
@@ -151,70 +153,105 @@
     @apply w-full rounded h-32 p-2 border
 }
 
- .button {
-     @apply bg-transparent text-grey-darker py-2 px-4 border border-grey rounded text-sm font-bold no-underline
- }
+.button {
+    @apply bg-transparent text-grey-darker py-2 px-4 border border-grey rounded text-sm font-bold no-underline
+}
 
- .button:hover {
-     @apply text-blue
- }
+.button:hover {
+    @apply text-blue
+}
 
- .button-blue {
-     @apply bg-blue text-white border-blue
- }
+.button-blue {
+    @apply bg-blue text-white border-blue
+}
 
- .button-blue:hover {
-     @apply text-white bg-blue-dark
- }
+.button-blue:hover {
+    @apply text-white bg-blue-dark
+}
 
- .input-group {
-     @apply w-full mb-6
- }
+.input-group {
+    @apply w-full mb-6
+}
 
- .input-group label {
-     @apply block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2
- }
+.input-group label {
+    @apply block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2
+}
 
- .input-group input {
-     @apply appearance-none block w-full bg-grey-lighter text-grey-darker border rounded py-3 px-4 mb-3 leading-tight
- }
+.input-group input {
+    @apply appearance-none block w-full bg-grey-lighter text-grey-darker border rounded py-3 px-4 mb-3 leading-tight
+}
 
- .input-group:last-child {
-     @apply mb-0
- }
+.input-group:last-child {
+    @apply mb-0
+}
 
- .input-group input.error {
-     @apply border-red
- }
+.input-group input.error {
+    @apply border-red
+}
 
- .input-group .error-text {
-     @apply text-red text-xs italic
- }
+.input-group .error-text {
+    @apply text-red text-xs italic
+}
 
- .select-group {
-     @apply relative mr-2
- }
+.select-group {
+    @apply relative mr-2
+}
 
- .select-group:last-child {
-     @apply m-0
- }
+.select-group:last-child {
+    @apply m-0
+}
 
- .select-group select {
-     @apply text-sm block appearance-none bg-white border text-grey-darker uppercase py-2 px-4 pr-8 rounded leading-tight
- }
+.select-group select {
+    @apply text-base block appearance-none bg-white border text-grey-darker uppercase py-2 px-4 pr-8 rounded leading-tight max-w-xs font-thin
+}
 
- .select-group select:focus {
-     @apply outline-none border-grey
- }
+.select-group select:focus {
+    @apply outline-none border-grey
+}
 
- .select-group .caret {
-     @apply pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darker
- }
+.select-group .caret {
+    @apply pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darker
+}
 
- .select-group .caret svg {
-     @apply fill-current h-4 w-4
- }
+.select-group .caret svg {
+    @apply fill-current h-4 w-4
+}
 
- .w-1\/10 {
-     width: 10%;
- }
+.w-1\/10 {
+    width: 10%;
+}
+
+.search-input {
+    background: url('data:image/svg+xml;charset=utf8,<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com"><path d="M 11.732 12.439 C 9.047 14.525 5.109 12.921 4.645 9.553 C 4.181 6.183 7.538 3.575 10.689 4.858 C 13.399 5.962 14.306 9.349 12.512 11.66 L 15.466 14.603 L 14.682 15.388 L 11.738 12.439 Z M 9.027 12.263 C 11.577 12.263 13.172 9.5 11.897 7.291 C 11.304 6.267 10.21 5.634 9.027 5.634 C 6.476 5.634 4.88 8.397 6.157 10.606 C 6.749 11.63 7.842 12.263 9.027 12.263 Z" style="fill: rgb(96, 111, 123);"/></svg>');
+    @apply bg-grey-lighter rounded pl-10 py-2 pr-4 bg-no-repeat bg-contain transition border text-grey-darker font-thin w-full
+}
+
+.search-input:focus {
+    @apply outline-none bg-white border border-grey-light
+}
+
+.transition {
+    transition: all .1s ease-in;
+}
+
+.search {
+    min-width: 500px;
+    @apply max-w-full mr-2 relative
+}
+
+ul.search-results {
+    max-height: 300px;
+    @apply font-thin pl-0 block absolute w-full bg-grey-lighter border border-t-0 rounded rounded-t-none overflow-x-hidden overflow-y-scroll
+}
+
+ul.search-results li {
+    @apply px-4 py-2 border-b pl-10;
+}
+
+ul.search-results li:last-child {
+    @apply border-b-0;
+}
+
+.search.has-results .search-input {
+    @apply border-b-0 rounded-b-none bg-white
+}

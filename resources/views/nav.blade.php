@@ -1,8 +1,8 @@
 <nav class="header">
 
-    <h1 class="text-lg px-4">{{ config('app.name') }}</h1>
+    <h1 class="text-lg px-6">{{ config('app.name') }}</h1>
 
-    <ul class="flex flex-grow justify-end">
+    <ul class="flex-grow justify-end pr-2">
         <li>
             <a href="{{ route('languages.index') }}" class="{{ set_active('') }}">
                 @include('translation::icons.globe')
@@ -16,6 +16,7 @@
             </a>
         </li>
     </ul>
+    
 
     {{--<li>
         <select>
