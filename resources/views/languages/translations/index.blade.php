@@ -12,7 +12,7 @@
 
                 <div class="flex flex-grow justify-end">
 
-                    <search></search>
+                    @include('translation::forms.search', ['name' => 'filter', 'value' => Request::get('filter')])
 
                     @include('translation::forms.select', ['name' => 'language', 'items' => $languages, 'submit' => true, 'selected' => $language])
 
