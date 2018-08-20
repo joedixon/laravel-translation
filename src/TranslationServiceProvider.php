@@ -157,7 +157,7 @@ class TranslationServiceProvider extends ServiceProvider
     private function registerContainerBindings()
     {
         $this->app->singleton('translation', function () {
-            return new File(new Filesystem, $this->app['path.lang']);
+            return new File(new Filesystem, $this->app['path.lang'], $this->app['config']['app']['locale']);
         });
 
         $this->app->singleton(Scanner::class, function () {
