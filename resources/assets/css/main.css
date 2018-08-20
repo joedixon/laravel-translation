@@ -113,7 +113,7 @@ nav a:hover {
 
 .panel-body th,
 .panel-body td {
-    @apply text-left p-4 overflow-x-scroll
+    @apply text-left p-4 overflow-x-auto
 }
 
 .panel-body th {
