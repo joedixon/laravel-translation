@@ -85,7 +85,7 @@ class FileDriverTest extends TestCase
     }
 
     /** @test */
-    public function it_can_add_a_new_translation_to_an_existing_array_translation_file()
+    public function it_can_add_a_new_translation_to_an_existing_group_translation_file()
     {
         $this->translation->addGroupTranslation('en', 'test.test', 'Testing');
 
@@ -138,7 +138,7 @@ class FileDriverTest extends TestCase
     public function it_can_merge_a_language_with_the_base_language()
     {
         $this->translation->addGroupTranslation('es', 'test.hello', 'Hola!');
-        $translations = $this->translation->getBaseTranslationsWith('es');
+        $translations = $this->translation->getSourceLanguageTranslationsWith('es');
 
         $this->assertEquals($translations->toArray(), [
             'group' => [

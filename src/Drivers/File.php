@@ -14,12 +14,15 @@ class File implements DriverInterface
 
     private $languageFilesPath;
 
+    private $sourceLanguage;
+
     private $scanner;
 
-    public function __construct(Filesystem $disk, $languageFilesPath)
+    public function __construct(Filesystem $disk, $languageFilesPath, $sourceLanguage)
     {
         $this->disk = $disk;
         $this->languageFilesPath = $languageFilesPath;
+        $this->sourceLanguage = $sourceLanguage;
         $this->scanner = app()->make(Scanner::class);
     }
 
@@ -55,10 +58,10 @@ class File implements DriverInterface
             return [];
         }
 
-        $files = Collection::make($this->disk->allFiles($groupPath));
+        $groups = Collection::make($this->disk->allFiles($groupPath));
 
-        return $files->map(function ($file) {
-            return $file->getBasename('.php');
+        return $groups->map(function ($group) {
+            return $group->getBasename('.php');
         });
     }
 
@@ -102,7 +105,7 @@ class File implements DriverInterface
 
         $this->disk->makeDirectory("{$this->languageFilesPath}/$language");
         if (!$this->disk->exists("{$this->languageFilesPath}/{$language}.json")) {
-            $this->saveSingleTranslationFile($language, []);
+            $this->saveSingleTranslations($language, []);
         }
     }
 
@@ -120,19 +123,19 @@ class File implements DriverInterface
             $this->addLanguage($language);
         }
 
-        list($file, $key) = explode('.', $key);
+        list($group, $key) = explode('.', $key);
         $translations = $this->getGroupTranslationsFor($language);
 
-        // does the file exist? If not, create it.
-        if (!$translations->keys()->contains($file)) {
-            $translations->put($file, []);
+        // does the group exist? If not, create it.
+        if (!$translations->keys()->contains($group)) {
+            $translations->put($group, []);
         }
 
-        $values = $translations->get($file);
+        $values = $translations->get($group);
         $values[$key] = $value;
-        $translations->put($file, $values);
+        $translations->put($group, $values);
 
-        $this->saveGroupTranslationFile($language, $file, $translations->get($file));
+        $this->saveGroupTranslations($language, $group, $translations->get($group));
     }
 
     /**
@@ -153,7 +156,7 @@ class File implements DriverInterface
 
         $translations->put($key, $value);
 
-        $this->saveSingleTranslationFile($language, $translations);
+        $this->saveSingleTranslations($language, $translations);
     }
 
     /**
@@ -181,8 +184,8 @@ class File implements DriverInterface
      */
     public function getGroupTranslationsFor($language)
     {
-        return $this->getGroupFilesFor($language)->mapWithKeys(function ($file) {
-            return [$file->getBasename('.php') => $this->disk->getRequire($file->getPathname())];
+        return $this->getGroupFilesFor($language)->mapWithKeys(function ($group) {
+            return [$group->getBasename('.php') => $this->disk->getRequire($group->getPathname())];
         });
     }
 
@@ -218,38 +221,38 @@ class File implements DriverInterface
     }
 
     /**
-     * Add a new group type language file
+     * Add a new group of translations
      *
      * @param string $language
-     * @param string $filename
+     * @param string $group
      * @return void
      */
-    public function addGroupTranslationFile($language, $filename)
+    public function addGroup($language, $group)
     {
-        $this->saveGroupTranslationFile($language, $filename, []);
+        $this->saveGroupTranslations($language, $group, []);
     }
 
     /**
-     * Save group type language file
+     * Save group type language translations
      *
      * @param string $language
-     * @param string $filename
+     * @param string $group
      * @param array $translations
      * @return void
      */
-    private function saveGroupTranslationFile($language, $filename, $translations)
+    private function saveGroupTranslations($language, $group, $translations)
     {
-        $this->disk->put("{$this->languageFilesPath}/{$language}/{$filename}.php", "<?php\n\nreturn " . var_export($translations, true) . ';' . \PHP_EOL);
+        $this->disk->put("{$this->languageFilesPath}/{$language}/{$group}.php", "<?php\n\nreturn " . var_export($translations, true) . ';' . \PHP_EOL);
     }
 
     /**
-     * Save single type language file
+     * Save single type language translations
      *
      * @param string $language
      * @param array $translations
      * @return void
      */
-    private function saveSingleTranslationFile($language, $translations)
+    private function saveSingleTranslations($language, $translations)
     {
         $this->disk->put(
             "{$this->languageFilesPath}/$language.json",
@@ -258,7 +261,7 @@ class File implements DriverInterface
     }
 
     /**
-     * Find all of the translations in the app without entry in language file
+     * Find all of the translations in the app without translation for a given language
      *
      * @param string $language
      * @return array
@@ -272,7 +275,7 @@ class File implements DriverInterface
     }
 
     /**
-     * Save all of the translations in the app without entry in language file
+     * Save all of the translations in the app without translation for a given language
      *
      * @param string $language
      * @return void
@@ -290,9 +293,9 @@ class File implements DriverInterface
             }
 
             if (isset($missingTranslations['group'])) {
-                foreach ($missingTranslations['group'] as $file => $keys) {
+                foreach ($missingTranslations['group'] as $group => $keys) {
                     foreach ($keys as $key => $value) {
-                        $this->addGroupTranslation($language, "{$file}.{$key}");
+                        $this->addGroupTranslation($language, "{$group}.{$key}");
                     }
                 }
             }
@@ -324,39 +327,78 @@ class File implements DriverInterface
     }
 
     /**
-     * Get all translations for a given language merged with the base language
+     * Get all translations for a given language merged with the source language
      *
      * @param string $language
      * @return Collection
      */
-    public function getBaseTranslationsWith($language)
+    public function getSourceLanguageTranslationsWith($language)
     {
         $mergedTranslations = new Collection;
-        $baseLanguage = config('app.locale');
 
         // Group translations
-        $baseGroupTranslations = $this->getGroupTranslationsFor($baseLanguage);
+        $sourceGroupTranslations = $this->getGroupTranslationsFor($this->sourceLanguage);
         $languageGroupTranslations = $this->getGroupTranslationsFor($language);
 
-        $groupTranslations = $baseGroupTranslations->map(function ($translations, $group) use ($baseLanguage, $language, $languageGroupTranslations) {
-            array_walk($translations, function (&$value, &$key) use ($group, $baseLanguage, $language, $languageGroupTranslations) {
-                $value = [$baseLanguage => $value, $language => data_get($languageGroupTranslations, "{$group}.{$key}", '')];
+        $groupTranslations = $sourceGroupTranslations->map(function ($translations, $group) use ($language, $languageGroupTranslations) {
+            array_walk($translations, function (&$value, &$key) use ($group, $language, $languageGroupTranslations) {
+                $value = [$this->sourceLanguage => $value, $language => data_get($languageGroupTranslations, "{$group}.{$key}", '')];
             });
 
             return $translations;
         });
 
         // Single translations
-        $baseSingleTranslations = $this->getSingleTranslationsFor($baseLanguage);
+        $sourceSingleTranslations = $this->getSingleTranslationsFor($this->sourceLanguage);
         $languageSingleTranslations = $this->getSingleTranslationsFor($language);
 
-        $singleTranslations = $baseSingleTranslations->map(function ($value, $key) use ($baseLanguage, $language, $languageSingleTranslations) {
-            return [$baseLanguage => $value, $language => data_get($languageSingleTranslations, $key, '')];
+        $singleTranslations = $sourceSingleTranslations->map(function ($value, $key) use ($language, $languageSingleTranslations) {
+            return [$this->sourceLanguage => $value, $language => data_get($languageSingleTranslations, $key, '')];
         });
 
         return Collection::make([
             'group' => $groupTranslations,
             'single' => $singleTranslations
         ]);
+    }
+
+    /**
+     * Filter all keys and translations for a given language and string
+     *
+     * @param string $language
+     * @param string $filter
+     * @return Collection
+     */
+    public function filterTranslationsFor($language, $filter)
+    {
+        $filteredTranslations = new Collection;
+        $allTranslations = $this->getSourceLanguageTranslationsWith(($language));
+        if (!$filter) {
+            return $allTranslations;
+        }
+
+        // group translations
+        $filteredGroupTranslations = new Collection;
+        $allTranslations->get('group')->each(function ($groups, $groupKey) use ($language, $filter, $filteredGroupTranslations) {
+            foreach ($groups as $key => $translations) {
+                if (is_array($translations[$this->sourceLanguage])) {
+                    continue;
+                }
+                if (strs_contain([$key, $translations[$language], $translations[$this->sourceLanguage]], $filter)) {
+                    $current = (array) $filteredGroupTranslations->get($groupKey);
+                    $current[$key] = $translations;
+                    $filteredGroupTranslations->put($groupKey, $current);
+                }
+            }
+        });
+
+        // single translations
+        $filteredSingleTranslations = $allTranslations->get('single')->filter(function ($translations, $key) use ($language, $filter) {
+            return strs_contain([$key, $translations[$language], $translations[$this->sourceLanguage]], $filter);
+        });
+
+        $filteredTranslations->put('group', $filteredGroupTranslations)->put('single', $filteredSingleTranslations);
+
+        return $filteredTranslations;
     }
 }

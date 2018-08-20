@@ -17,18 +17,17 @@ class LanguageTranslationController extends Controller
 
     public function index(Request $request, $language)
     {
-        if ($request->has('language')) {
+        if ($request->has('language') && $request->get('language') !== $language) {
             return redirect()
-                ->route('languages.translations.index', ['language' => $request->get('language'), 'group' => $request->get('group')]);
+                ->route('languages.translations.index', ['language' => $request->get('language'), 'group' => $request->get('group'), 'filter' => $request->get('filter')]);
         }
 
         $languages = $this->translation->allLanguages();
         $groups = $this->translation->getGroupsFor(config('app.locale'))->prepend('single');
+        $translations = $this->translation->filterTranslationsFor($language, $request->get('filter'));
 
-        $translations = $this->translation->getBaseTranslationsWith($language);
-
-        if ($request->has('group')) {
-            if($request->get('group') === 'single') {
+        if ($request->filled('group')) {
+            if ($request->get('group') === 'single') {
                 $translations = $translations->get('single');
                 $translations = new Collection(['single' => $translations]);
             } else {
