@@ -4,7 +4,7 @@
 
     @if(count($languages))
 
-        <div class="panel">
+        <div class="panel w-1/2">
 
             <div class="panel-header">
 
@@ -34,7 +34,9 @@
                     <tbody>
                         @foreach($languages as $language)
                             <tr>
-                                <td></td>
+                                <td>
+                                    {{ data_get($language, 'name', $language) }}
+                                </td>
                                 <td>
                                     <a href="{{ route('languages.translations.index', $language) }}">
                                         {{ $language }}
