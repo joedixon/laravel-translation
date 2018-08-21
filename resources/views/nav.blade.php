@@ -4,7 +4,7 @@
 
     <ul class="flex-grow justify-end pr-2">
         <li>
-            <a href="{{ route('languages.index') }}" class="{{ set_active('') }}">
+            <a href="{{ route('languages.index') }}" class="{{ set_active('') }}{{ set_active('/create') }}">
                 @include('translation::icons.globe')
                 {{ __('translation::translation.languages') }}
             </a>
@@ -16,23 +16,5 @@
             </a>
         </li>
     </ul>
-    
-
-    {{--<li>
-        <select>
-            @foreach($languages as $language)
-                <option>{{ $language }}</option>
-            @endforeach
-        </select>
-    </li>
-    <li>
-        <select>
-            @foreach($groups as $group)
-                <option>{{ $group }}</option>
-            @endforeach
-        </select>
-    </li>
-    <li>{{ $language }}</li>
-    <li>{{ $file }}</li>--}}
 
 </nav>
