@@ -30,10 +30,10 @@
 
                         <thead>
                             <tr>
-                                <th class="w-1/10 uppercase font-thin">{{ __('translation::translation.group_single') }}</th>
-                                <th class="w-1/10 uppercase font-thin">{{ __('translation::translation.key') }}</th>
-                                <th class="w-2/5 uppercase font-thin">{{ config('app.locale') }}</th>
-                                <th class="w-2/5 uppercase font-thin">{{ $language }}</th>
+                                <th class="w-1/5 uppercase font-thin">{{ __('translation::translation.group_single') }}</th>
+                                <th class="w-1/5 uppercase font-thin">{{ __('translation::translation.key') }}</th>
+                                <th class="uppercase font-thin">{{ config('app.locale') }}</th>
+                                <th class="uppercase font-thin">{{ $language }}</th>
                             </tr>
                         </thead>
 
