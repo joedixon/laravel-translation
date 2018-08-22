@@ -24,7 +24,8 @@
                 isActive: false,
                 hasSaved: false,
                 hasErrored: false,
-                isLoading: false, 
+                isLoading: false,
+                hasChanged: false,
                 translation: this.initialTranslation
             }
         },
@@ -35,8 +36,11 @@
                 this.$refs.trans.focus();
             },
             storeTranslation: function() {
-                this.isLoading = true;
                 this.isActive = false;
+                if(!this.hasChanged) {
+                    return;
+                }
+                this.isLoading = true;
                 window.axios.post(`/${this.route}/${this.language}`, {
                     language: this.language,
                     group: this.group,
@@ -45,6 +49,7 @@
                 }).then((response) => {
                     this.hasSaved = true;
                     this.isLoading = false;
+                    this.hasChanged = false;
                 })
                 .catch((error) => {
                     this.hasErrored = true;
@@ -63,6 +68,10 @@
                 if(hasErrored) {
                     setTimeout(() => { this.hasErrored = false }, 3000)
                 }
+            },
+            translation: function(translation)
+            {
+                this.hasChanged = true;
             }
         }
     }
