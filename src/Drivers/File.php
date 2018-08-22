@@ -8,7 +8,7 @@ use Illuminate\Filesystem\Filesystem;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\Exceptions\LanguageKeyExistsException;
 
-class File implements DriverInterface
+class File extends Translation implements DriverInterface
 {
     private $disk;
 

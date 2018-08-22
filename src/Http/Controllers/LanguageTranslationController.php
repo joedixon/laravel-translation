@@ -5,14 +5,15 @@ namespace JoeDixon\Translation\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Routing\Controller;
+use JoeDixon\Translation\Drivers\Translation;
 
 class LanguageTranslationController extends Controller
 {
     private $translation;
 
-    public function __construct()
+    public function __construct(Translation $translation)
     {
-        $this->translation = app()->make('translation');
+        $this->translation = $translation;
     }
 
     public function index(Request $request, $language)

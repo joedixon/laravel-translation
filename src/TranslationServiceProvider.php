@@ -5,6 +5,7 @@ namespace JoeDixon\Translation;
 use Illuminate\Filesystem\Filesystem;
 use JoeDixon\Translation\Drivers\File;
 use Illuminate\Support\ServiceProvider;
+use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
 use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
 use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
@@ -156,8 +157,8 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function registerContainerBindings()
     {
-        $this->app->singleton('translation', function () {
-            return new File(new Filesystem, $this->app['path.lang'], $this->app['config']['app']['locale']);
+        $this->app->singleton(Translation::class, function ($app) {
+            return (new TranslationManager($app, $app['config']['translation']))->resolve();
         });
 
         $this->app->singleton(Scanner::class, function () {
