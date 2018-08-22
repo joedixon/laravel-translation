@@ -40,7 +40,6 @@ window.Vue = require('vue');
  */
 
 Vue.component('translation-input', require('./components/TranslationInput.vue'));
-Vue.component('search', require('./components/Search.vue'));
 
 const app = new Vue({
     el: '#app',
