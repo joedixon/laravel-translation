@@ -4,7 +4,7 @@
 
 Install the package via Composer
 
-`composer require joedixon/translation`
+`composer require joedixon/laravel-translation`
 
 Publish configuration and assets
 
