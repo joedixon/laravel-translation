@@ -12,8 +12,8 @@ var tailwindcss = require('tailwindcss');
  |
  */
 
-// mix.setPublicPath('public/vendor');
-mix.setPublicPath('../../../public/vendor/translation');
+mix.setPublicPath('public/vendor');
+// mix.setPublicPath('../../../public/vendor/translation');
 
 mix.postCss('resources/assets/css/main.css', 'css', [
     tailwindcss('./tailwind.js'),
