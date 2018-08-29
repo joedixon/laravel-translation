@@ -7,12 +7,12 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "laravel-mix": "^2.1.11",
-    "postcss": "^7.0.1",
-    "tailwindcss": "^0.6.4"
+    "laravel-mix": "^2.1.14",
+    "postcss": "^7.0.2",
+    "tailwindcss": "^0.6.5"
   },
   "dependencies": {
     "axios": "^0.18",
-    "vue": "^2.5.16"
+    "vue": "^2.5.17"
   }
 }
