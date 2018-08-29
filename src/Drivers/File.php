@@ -97,7 +97,7 @@ class File extends Translation implements DriverInterface
      * @param string $language
      * @return void
      */
-    public function addLanguage($language)
+    public function addLanguage($language, $name = null)
     {
         if ($this->languageExists($language)) {
             throw new LanguageExistsException(__('translation::errors.language_exists', ['language' => $language]));

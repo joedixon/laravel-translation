@@ -35,11 +35,11 @@
                         @foreach($languages as $language)
                             <tr>
                                 <td>
-                                    {{ data_get($language, 'name', $language) }}
+                                    {{ $language['name'] }}
                                 </td>
                                 <td>
-                                    <a href="{{ route('languages.translations.index', $language) }}">
-                                        {{ $language }}
+                                    <a href="{{ route('languages.translations.index', $language['language']) }}">
+                                        {{ $language['language'] }}
                                     </a>
                                 </td>
                             </tr>

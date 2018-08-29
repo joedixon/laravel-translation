@@ -4,6 +4,7 @@ namespace JoeDixon\Translation;
 
 use Illuminate\Filesystem\Filesystem;
 use JoeDixon\Translation\Drivers\File;
+use JoeDixon\Translation\Drivers\Database;
 
 class TranslationManager
 {
@@ -33,5 +34,10 @@ class TranslationManager
     protected function resolveFileDriver()
     {
         return new File(new Filesystem, $this->app['path.lang'], $this->app->config['app']['locale']);
+    }
+
+    protected function resolveDatabaseDriver()
+    {
+        return new Database($this->app->config['app']['locale']);
     }
 }

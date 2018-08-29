@@ -1,6 +1,7 @@
 <?php
 
 use JoeDixon\Translation\Http\Controllers\LanguageTranslationController;
+use JoeDixon\Translation\Drivers\Translation;
 
 Route::group(config('translation.route_group_config'), function ($router) {
     $router->get(config('translation.ui_url'), 'LanguageController@index')
@@ -17,4 +18,8 @@ Route::group(config('translation.route_group_config'), function ($router) {
 
     $router->post(config('translation.ui_url') . '/{language}', 'LanguageTranslationController@update')
         ->name('languages.translations.update');
+
+    $router->get('test', function () {
+        dd(app()->make(Translation::class)->getGroupTranslationsFor('en'));
+    });
 });
