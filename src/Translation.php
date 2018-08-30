@@ -21,8 +21,8 @@ class Translation extends Model
 
     public static function getGroupsForLanguage($language)
     {
-        return static::whereHas('language', function ($q) {
+        return static::whereHas('language', function ($q) use ($language) {
             $q->where('language', $language);
-        })->select('group')->distinct()->get();
+        })->whereNotNull('group')->select('group')->distinct()->get();
     }
 }
