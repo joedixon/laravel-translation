@@ -30,7 +30,7 @@ class FileDriverTest extends TestCase
         $languages = $this->translation->allLanguages();
 
         $this->assertEquals($languages->count(), 2);
-        $this->assertEquals($languages->toArray(), ['en', 'es']);
+        $this->assertEquals($languages->toArray(), ['en' => 'en', 'es' => 'es']);
     }
 
     /** @test */
