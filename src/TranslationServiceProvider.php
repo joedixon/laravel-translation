@@ -157,13 +157,13 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function registerContainerBindings()
     {
-        $this->app->singleton(Translation::class, function ($app) {
-            return (new TranslationManager($app, $app['config']['translation']))->resolve();
-        });
-
         $this->app->singleton(Scanner::class, function () {
             $config = $this->app['config']['translation'];
             return new Scanner(new Filesystem, $config['scan_paths'], $config['translation_methods']);
+        });
+
+        $this->app->singleton(Translation::class, function ($app) {
+            return (new TranslationManager($app, $app['config']['translation'], $app->make(Scanner::class)))->resolve();
         });
     }
 

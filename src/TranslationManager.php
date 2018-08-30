@@ -12,10 +12,13 @@ class TranslationManager
 
     private $config;
 
-    public function __construct($app, $config)
+    private $scanner;
+
+    public function __construct($app, $config, $scanner)
     {
         $this->app = $app;
         $this->config = $config;
+        $this->scanner = $scanner;
     }
 
     public function resolve()
@@ -33,11 +36,11 @@ class TranslationManager
 
     protected function resolveFileDriver()
     {
-        return new File(new Filesystem, $this->app['path.lang'], $this->app->config['app']['locale']);
+        return new File(new Filesystem, $this->app['path.lang'], $this->app->config['app']['locale'], $this->scanner);
     }
 
     protected function resolveDatabaseDriver()
     {
-        return new Database($this->app->config['app']['locale']);
+        return new Database($this->app->config['app']['locale'], $this->scanner);
     }
 }
