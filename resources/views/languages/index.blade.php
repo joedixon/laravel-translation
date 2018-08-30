@@ -32,14 +32,14 @@
                     </thead>
 
                     <tbody>
-                        @foreach($languages as $language)
+                        @foreach($languages as $language => $name)
                             <tr>
                                 <td>
-                                    {{ $language['name'] }}
+                                    {{ $name }}
                                 </td>
                                 <td>
-                                    <a href="{{ route('languages.translations.index', $language['language']) }}">
-                                        {{ $language['language'] }}
+                                    <a href="{{ route('languages.translations.index', $language) }}">
+                                        {{ $language }}
                                     </a>
                                 </td>
                             </tr>
