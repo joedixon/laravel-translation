@@ -2,9 +2,7 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-use Illuminate\Console\Command;
-
-class AddTranslationKeyCommand extends Command
+class AddTranslationKeyCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -27,34 +25,32 @@ class AddTranslationKeyCommand extends Command
      */
     public function handle()
     {
-        $translation = app()->make('translation');
-
         $language = $this->ask(__('translation::translation.prompt_language_for_key'));
 
-        // we know this should be json or array so we can use the `anticipate`
+        // we know this should be single or group so we can use the `anticipate`
         // method to give our users a helping hand
-        $type = $this->anticipate(__('translation::translation.prompt_type'), ['json', 'array']);
+        $type = $this->anticipate(__('translation::translation.prompt_type'), ['single', 'group']);
 
-        // if the array type is selected, prompt for the filename
-        if ($type === 'array') {
-            $file = $this->ask(__('translation::translation.prompt_file'));
+        // if the group type is selected, prompt for the group key
+        if ($type === 'group') {
+            $file = $this->ask(__('translation::translation.prompt_group'));
         }
         $key = $this->ask(__('translation::translation.prompt_key'));
         $value = $this->ask(__('translation::translation.prompt_value'));
 
-        // attempt to add the key for json or array and fail gracefully if
+        // attempt to add the key for single or group and fail gracefully if
         // exception is thrown
-        if ($type === 'json') {
+        if ($type === 'single') {
             try {
-                $translation->addJsonTranslation($language, $key, $value);
+                $this->translation->addSingleTranslation($language, $key, $value);
                 return $this->info(__('translation::translation.language_key_added'));
             } catch (\Exception $e) {
                 return $this->error($e->getMessage());
             }
-        } elseif ($type === 'array') {
+        } elseif ($type === 'group') {
             try {
                 $file = str_replace('.php', '', $file);
-                $translation->addArrayTranslation($language, "{$file}.{$key}", $value);
+                $this->translation->addGroupTranslation($language, "{$file}.{$key}", $value);
                 return $this->info(__('translation::translation.language_key_added'));
             } catch (\Exception $e) {
                 return $this->error($e->getMessage());

@@ -2,9 +2,7 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-use Illuminate\Console\Command;
-
-class AddLanguageCommand extends Command
+class AddLanguageCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -27,14 +25,13 @@ class AddLanguageCommand extends Command
      */
     public function handle()
     {
-        $translation = app()->make('translation');
-
         // ask the user for the language they wish to add
         $language = $this->ask(__('translation::translation.prompt_language'));
+        $name = $this->ask(__('translation::translation.prompt_name'));
 
         // attempt to add the key and fail gracefully if exception thrown
         try {
-            $translation->addLanguage($language);
+            $this->translation->addLanguage($language, $name);
             $this->info(__('translation::translation.language_added'));
         } catch (\Exception $e) {
             $this->error($e->getMessage());

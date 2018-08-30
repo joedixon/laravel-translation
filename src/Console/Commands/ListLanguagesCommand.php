@@ -2,9 +2,7 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-use Illuminate\Console\Command;
-
-class ListLanguagesCommand extends Command
+class ListLanguagesCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -27,15 +25,15 @@ class ListLanguagesCommand extends Command
      */
     public function handle()
     {
-        $translation = app()->make('translation');
+        $headers = [__('translation::translation.name'), __('translation::translation.language')];
+        $languages = $this->translation->allLanguages()->toArray();
+        $mappedLanguages = [];
 
-        $headers = [__('translation::translation.languages')];
-        $languages = $translation->allLanguages();
-
-        // map language into array to render one on each line
-        $languages = array_map(function ($language) { return [$language]; }, $languages);
+        foreach ($languages as $language => $name) {
+            $mappedLanguages[] = [$name, $language];
+        }
 
         // return a table of results
-        $this->table($headers, $languages);
+        $this->table($headers, $mappedLanguages);
     }
 }
