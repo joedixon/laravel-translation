@@ -86,15 +86,6 @@ interface DriverInterface
     public function languageExists($language);
 
     /**
-     * Add a new group of translations
-     *
-     * @param string $language
-     * @param string $group
-     * @return void
-     */
-    public function addGroup($language, $group);
-
-    /**
      * Find all of the translations in the app without translation for a given language
      *
      * @param string $language
