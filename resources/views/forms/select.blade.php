@@ -6,7 +6,7 @@
             @if(is_numeric($key))
                 <option value="{{ $value }}" @if(isset($selected) && $selected === $value) selected="selected" @endif>{{ $value }}</option>
             @else
-                <option value="{{ $key }}">{{ $value }}</option>
+                <option value="{{ $key }}" @if(isset($selected) && $selected === $key) selected="selected" @endif>{{ $value }}</option>
             @endif
         @endforeach
     </select>
