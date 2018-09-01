@@ -51,7 +51,7 @@ class Database extends Translation implements DriverInterface
      */
     public function allTranslations()
     {
-        return $this->allLanguages()->mapWithKeys(function ($language) {
+        return $this->allLanguages()->mapWithKeys(function ($name, $language) {
             return [$language => $this->allTranslationsFor($language)];
         });
     }
