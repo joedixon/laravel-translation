@@ -79,7 +79,7 @@ class FileDriverTest extends TestCase
     }
 
     /** @test */
-    public function it_can_add_a_new_translation_to_a_group_translation_file()
+    public function it_can_add_a_new_translation_to_a_new_group()
     {
         $this->translation->addGroupTranslation('es', 'test.hello', 'Hola!');
 
@@ -91,7 +91,7 @@ class FileDriverTest extends TestCase
     }
 
     /** @test */
-    public function it_can_add_a_new_translation_to_an_existing_group_translation_file()
+    public function it_can_add_a_new_translation_to_an_existing_translation_group()
     {
         $this->translation->addGroupTranslation('en', 'test.test', 'Testing');
 
@@ -106,7 +106,7 @@ class FileDriverTest extends TestCase
     }
 
     /** @test */
-    public function it_can_add_a_new_translation_to_a_json_translation_file()
+    public function it_can_add_a_new_single_translation()
     {
         $this->translation->addSingleTranslation('es', 'Hello', 'Hola!');
 
@@ -118,7 +118,7 @@ class FileDriverTest extends TestCase
     }
 
     /** @test */
-    public function it_can_add_a_new_translation_to_an_existing_json_translation_file()
+    public function it_can_add_a_new_single_translation_to_an_existing_language()
     {
         $this->translation->addSingleTranslation('en', 'Test', 'Testing');
 
@@ -133,11 +133,11 @@ class FileDriverTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_a_collection_of_filenames_for_a_given_language_and_group()
+    public function it_can_get_a_collection_of_group_names_for_a_given_language()
     {
-        $filenames = $this->translation->getGroupsFor('en');
+        $groups = $this->translation->getGroupsFor('en');
 
-        $this->assertEquals($filenames->toArray(), ['test']);
+        $this->assertEquals($groups->toArray(), ['test']);
     }
 
     /** @test */
