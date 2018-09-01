@@ -14,3 +14,25 @@ $factory->define(Translation::class, function (Generator $faker) {
         'value' => $faker->sentence
     ];
 });
+
+$factory->state(Translation::class, 'group', function (Generator $faker) {
+    return [
+        'language_id' => function () {
+            return factory(Language::class)->create()->id;
+        },
+        'group' => $faker->word,
+        'key' => $faker->word,
+        'value' => $faker->sentence
+    ];
+});
+
+$factory->state(Translation::class, 'single', function (Generator $faker) {
+    return [
+        'language_id' => function () {
+            return factory(Language::class)->create()->id;
+        },
+        'group' => null,
+        'key' => $faker->word,
+        'value' => $faker->sentence
+    ];
+});
