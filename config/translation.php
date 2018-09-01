@@ -8,9 +8,9 @@ return [
     |
     | The package supports different drivers for translation management.
     |
-    | Supported: "file"
+    | Supported: "file", "database"
     |
-    */
+ */
 
     'driver' => 'file',
 
@@ -22,7 +22,7 @@ return [
     | The package ships with routes to handle language management. Update the
     | configuration here to configure the routes with your preferred goup options.
     |
-    */
+     */
 
     'route_group_config' => [
         'middleware' => 'web',
@@ -37,7 +37,7 @@ return [
     | Update this array to tell the package which methods it should look for
     | when finding missing translations.
     |
-    */
+     */
 
     'translation_methods' => ['trans', '__'],
 
@@ -49,7 +49,7 @@ return [
     | Update this array to tell the package which directories to scan when
     | looking for missing translations.
     |
-    */
+     */
 
     'scan_paths' => [app_path(), resource_path()],
 
@@ -62,5 +62,20 @@ return [
     |
      */
 
-    'ui_url' => 'translations'
+    'ui_url' => 'translations',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Database settings
+    |--------------------------------------------------------------------------
+    |
+    | Define the settings for the database driver here.
+    |
+     */
+
+    'database' => [
+        'languages_table' => 'languages',
+
+        'translations_table' => 'translations',
+    ]
 ];
