@@ -24,6 +24,11 @@ class FileDriverTest extends TestCase
         return ['JoeDixon\Translation\TranslationServiceProvider'];
     }
 
+    protected function getEnvironmentSetUp($app)
+    {
+        $app['config']->set('translation.driver', 'file');
+    }
+
     /** @test */
     public function it_returns_all_languages()
     {
