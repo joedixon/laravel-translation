@@ -150,7 +150,11 @@ nav a:hover {
 }
 
 .panel-body td textarea.active {
-    @apply w-full rounded h-32 p-2 border
+    @apply w-full rounded h-32 p-2 border border-solid border-grey
+}
+
+.panel-body td textarea:focus {
+    @apply outline-none;
 }
 
 .button {
