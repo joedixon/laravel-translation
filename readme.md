@@ -1,5 +1,7 @@
 # Laravel Translation Manager
 
+![Laravel Translation Manager](translation.png)
+
 ## Installation
 
 Install the package via Composer
