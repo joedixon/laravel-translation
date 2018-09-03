@@ -104,16 +104,17 @@ class Database extends Translation implements DriverInterface
 
         list($group, $key) = explode('.', $key);
 
-        $translation = new TranslationModel([
-            'group' => $group,
-            'key' => $key,
-            'value' => $value
-        ]);
-
         Language::where('language', $language)
             ->first()
             ->translations()
-            ->save($translation);
+            ->updateOrCreate([
+                'group' => $group,
+                'key' => $key
+            ], [
+                'group' => $group,
+                'key' => $key,
+                'value' => $value
+            ]);
     }
 
     /**
@@ -130,15 +131,16 @@ class Database extends Translation implements DriverInterface
             $this->addLanguage($language);
         }
 
-        $translation = new TranslationModel([
-            'key' => $key,
-            'value' => $value
-        ]);
-
         Language::where('language', $language)
             ->first()
             ->translations()
-            ->save($translation);
+            ->updateOrCreate([
+                'group' => null,
+                'key' => $key
+            ], [
+                'key' => $key,
+                'value' => $value
+        ]);
     }
 
     /**
