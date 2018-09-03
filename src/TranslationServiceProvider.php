@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
 use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
+use JoeDixon\Translation\Console\Commands\MergeTranslationsCommand;
 use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
 use JoeDixon\Translation\Console\Commands\ListMissingTranslationKeys;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
@@ -145,7 +146,8 @@ class TranslationServiceProvider extends ServiceProvider
                 AddTranslationKeyCommand::class,
                 ListLanguagesCommand::class,
                 ListMissingTranslationKeys::class,
-                SynchroniseMissingTranslationKeys::class
+                SynchroniseMissingTranslationKeys::class,
+                MergeTranslationsCommand::class
             ]);
         }
     }
