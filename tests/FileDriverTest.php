@@ -167,4 +167,53 @@ class FileDriverTest extends TestCase
 
         unlink(__DIR__ . '/fixtures/lang/es/test.php');
     }
+
+    /** @test */
+    public function it_can_add_a_vendor_namespaced_translations()
+    {
+        $this->translation->addGroupTranslation('es', 'translation_test::test.hello', 'Hola!');
+
+        $this->assertEquals($this->translation->allTranslationsFor('es')->toArray(), [
+            'group' => [
+                'translation_test::test' => [
+                    'hello' => 'Hola!'
+                ]
+            ],
+            'single' => []
+        ]);
+
+        \File::deleteDirectory(__DIR__ . '/fixtures/lang/vendor');
+    }
+
+    /** @test */
+    public function it_can_merge_a_namespaced_language_with_the_base_language()
+    {
+        $this->translation->addGroupTranslation('en', 'translation_test::test.hello', 'Hello');
+        $this->translation->addGroupTranslation('es', 'translation_test::test.hello', 'Hola!');
+        $translations = $this->translation->getSourceLanguageTranslationsWith('es');
+
+        $this->assertEquals($translations->toArray(), [
+            'group' => [
+                'test' => [
+                    'hello' => ['en' => 'Hello', 'es' => ''],
+                    'whats_up' => ['en' => "What's up!", 'es' => '']
+                ],
+                'translation_test::test' => [
+                    'hello' => ['en' => 'Hello', 'es' => 'Hola!']
+                ]
+            ],
+            'single' => [
+                'Hello' => [
+                    'en' => 'Hello',
+                    'es' => ''
+                ],
+                "What's up" => [
+                    'en' => "What's up!",
+                    'es' => ''
+                ]
+            ]
+        ]);
+
+        \File::deleteDirectory(__DIR__ . '/fixtures/lang/vendor');
+    }
 }
