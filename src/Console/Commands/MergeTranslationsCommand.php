@@ -47,13 +47,6 @@ class MergeTranslationsCommand extends Command
     private $drivers = ['file', 'database'];
 
     /**
-     * Languages
-     *
-     * @var array
-     */
-    private $languages;
-
-    /**
      * Create a new command instance.
      *
      * @return void
@@ -63,7 +56,6 @@ class MergeTranslationsCommand extends Command
         parent::__construct();
         $this->scanner = $scanner;
         $this->translation = $translation;
-        $this->languages = array_keys($this->translation->allLanguages()->toArray());
     }
 
     /**
@@ -73,6 +65,8 @@ class MergeTranslationsCommand extends Command
      */
     public function handle()
     {
+        $languages = array_keys($this->translation->allLanguages()->toArray());
+
         $fromDriver = $this->anticipate(__('translation::translation.prompt_from_driver'), $this->drivers);
         if (!in_array($fromDriver, $this->drivers)) {
             return $this->error(__('translation::translation.invalid_driver'));
@@ -83,8 +77,8 @@ class MergeTranslationsCommand extends Command
             return $this->error(__('translation::translation.invalid_driver'));
         }
 
-        $language = $this->anticipate(__('translation::translation.prompt_language_if_any'), $this->languages);
-        if ($language && !in_array($language, $this->languages)) {
+        $language = $this->anticipate(__('translation::translation.prompt_language_if_any'), $languages);
+        if ($language && !in_array($language, $languages)) {
             return $this->error(__('translation::translation.invalid_language'));
         }
 
