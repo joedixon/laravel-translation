@@ -18,7 +18,7 @@ class DatabaseDriverTest extends TestCase
     /**
      * Setup the test environment.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->withFactories(__DIR__ . '/../database/factories');
@@ -26,14 +26,14 @@ class DatabaseDriverTest extends TestCase
 
     protected function getEnvironmentSetUp($app)
     {
+        $app['config']->set('translation.driver', 'database');
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
             'driver' => 'sqlite',
             'database' => ':memory:'
         ]);
-        $app['config']->set('translation.driver', 'database');
 
-        $this->translation = app()->make(Translation::class);
+        $this->translation = $app[Translation::class];
     }
 
     protected function getPackageProviders($app)
@@ -199,6 +199,38 @@ class DatabaseDriverTest extends TestCase
                     'es' => ''
                 ]
             ]
+        ]);
+    }
+
+    /** @test */
+    public function it_can_add_a_vendor_namespaced_translations()
+    {
+        $this->translation->addGroupTranslation('es', 'translation_test::test.hello', 'Hola!');
+
+        $this->assertEquals($this->translation->allTranslationsFor('es')->toArray(), [
+            'group' => [
+                'translation_test::test' => [
+                    'hello' => 'Hola!'
+                ]
+            ],
+            'single' => []
+        ]);
+    }
+
+    /** @test */
+    public function it_can_merge_a_namespaced_language_with_the_base_language()
+    {
+        $this->translation->addGroupTranslation('en', 'translation_test::test.hello', 'Hello');
+        $this->translation->addGroupTranslation('es', 'translation_test::test.hello', 'Hola!');
+        $translations = $this->translation->getSourceLanguageTranslationsWith('es');
+
+        $this->assertEquals($translations->toArray(), [
+            'group' => [
+                'translation_test::test' => [
+                    'hello' => ['en' => 'Hello', 'es' => 'Hola!']
+                ]
+            ],
+            'single' => []
         ]);
     }
 }

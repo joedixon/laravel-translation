@@ -186,6 +186,12 @@ class File extends Translation implements DriverInterface
     public function getGroupTranslationsFor($language)
     {
         return $this->getGroupFilesFor($language)->mapWithKeys(function ($group) {
+            // here we check if the path contains 'vendor' as these will be the
+            // files which need namespacing
+            if (str_contains($group->getPathname(), 'vendor')) {
+                $vendor = str_before(str_after($group->getPathname(), 'vendor/'), '/');
+                return ["{$vendor}::{$group->getBasename('.php')}" => $this->disk->getRequire($group->getPathname())];
+            }
             return [$group->getBasename('.php') => $this->disk->getRequire($group->getPathname())];
         });
     }
@@ -243,7 +249,32 @@ class File extends Translation implements DriverInterface
      */
     private function saveGroupTranslations($language, $group, $translations)
     {
+        // here we check if it's a namespaced translation which need saving to a
+        // different path
+        if (str_contains($group, '::')) {
+            return $this->saveNamespacedGroupTranslations($language, $group, $translations);
+        }
         $this->disk->put("{$this->languageFilesPath}/{$language}/{$group}.php", "<?php\n\nreturn " . var_export($translations, true) . ';' . \PHP_EOL);
+    }
+
+    /**
+     * Save namespaced group type language translations
+     *
+     * @param string $language
+     * @param string $group
+     * @param array $translations
+     * @return void
+     */
+    private function saveNamespacedGroupTranslations($language, $group, $translations)
+    {
+        list($namespace, $group) = explode('::', $group);
+        $directory = "{$this->languageFilesPath}/vendor/{$namespace}/{$language}";
+
+        if (!$this->disk->exists($directory)) {
+            $this->disk->makeDirectory($directory, 0755, true);
+        }
+
+        $this->disk->put("$directory/{$group}.php", "<?php\n\nreturn " . var_export($translations, true) . ';' . \PHP_EOL);
     }
 
     /**
@@ -269,7 +300,12 @@ class File extends Translation implements DriverInterface
      */
     public function getGroupFilesFor($language)
     {
-        return new Collection($this->disk->allFiles("{$this->languageFilesPath}/{$language}"));
+        $groups = new Collection($this->disk->allFiles("{$this->languageFilesPath}/{$language}"));
+        // namespaced files reside in the vendor directory so we'll grab these
+        // the `getVendorGroupFileFor` method
+        $groups = $groups->merge($this->getVendorGroupFilesFor($language));
+
+        return $groups;
     }
 
     /**
@@ -281,7 +317,36 @@ class File extends Translation implements DriverInterface
     public function getGroupsFor($language)
     {
         return $this->getGroupFilesFor($language)->map(function ($file) {
+            if (str_contains($file->getPathname(), 'vendor')) {
+                $vendor = str_before(str_after($file->getPathname(), 'vendor/'), '/');
+                return "{$vendor}::{$file->getBasename('.php')}";
+            }
             return $file->getBasename('.php');
         });
+    }
+
+    /**
+     * Get all the vendor group files for a given language
+     *
+     * @param string $language
+     * @return Collection
+     */
+    public function getVendorGroupFilesFor($language)
+    {
+        if (!$this->disk->exists("{$this->languageFilesPath}/vendor")) {
+            return;
+        }
+
+        $vendorGroups = [];
+        foreach ($this->disk->directories("{$this->languageFilesPath}/vendor") as $vendor) {
+            $vendor = array_last(explode('/', $vendor));
+            if (!$this->disk->exists("{$this->languageFilesPath}/vendor/{$vendor}/{$language}")) {
+                array_push($vendorGroups, []);
+            } else {
+                array_push($vendorGroups, $this->disk->allFiles("{$this->languageFilesPath}/vendor/{$vendor}/{$language}"));
+            }
+        }
+
+        return new Collection(array_flatten($vendorGroups));
     }
 }
