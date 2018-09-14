@@ -18,7 +18,7 @@ class DatabaseDriverTest extends TestCase
     /**
      * Setup the test environment.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->withFactories(__DIR__ . '/../database/factories');
@@ -26,14 +26,14 @@ class DatabaseDriverTest extends TestCase
 
     protected function getEnvironmentSetUp($app)
     {
+        $app['config']->set('translation.driver', 'database');
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
             'driver' => 'sqlite',
             'database' => ':memory:'
         ]);
-        $app['config']->set('translation.driver', 'database');
 
-        $this->translation = app()->make(Translation::class);
+        $this->translation = $app[Translation::class];
     }
 
     protected function getPackageProviders($app)
@@ -226,26 +226,11 @@ class DatabaseDriverTest extends TestCase
 
         $this->assertEquals($translations->toArray(), [
             'group' => [
-                'test' => [
-                    'hello' => ['en' => 'Hello', 'es' => ''],
-                    'whats_up' => ['en' => "What's up!", 'es' => '']
-                ],
                 'translation_test::test' => [
                     'hello' => ['en' => 'Hello', 'es' => 'Hola!']
                 ]
             ],
-            'single' => [
-                'Hello' => [
-                    'en' => 'Hello',
-                    'es' => ''
-                ],
-                "What's up" => [
-                    'en' => "What's up!",
-                    'es' => ''
-                ]
-            ]
+            'single' => []
         ]);
-
-        \File::deleteDirectory(__DIR__ . '/fixtures/lang/vendor');
     }
 }
