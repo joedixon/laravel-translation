@@ -46,6 +46,7 @@ class DatabaseLoader implements Loader
      */
     public function addNamespace($namespace, $hint)
     {
+        //
     }
 
     /**
@@ -56,6 +57,7 @@ class DatabaseLoader implements Loader
      */
     public function addJsonPath($path)
     {
+        //
     }
 
     /**
@@ -65,5 +67,6 @@ class DatabaseLoader implements Loader
      */
     public function namespaces()
     {
+        return [];
     }
 }
