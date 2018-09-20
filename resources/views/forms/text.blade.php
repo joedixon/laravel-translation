@@ -7,7 +7,7 @@
         name="{{ $field }}" 
         id="{{ $field }}" 
         type="text" 
-        placeholder="{{ isset($placholder) ? $placeholder : '' }}"
+        placeholder="{{ isset($placeholder) ? $placeholder : '' }}"
         value="{{ old($field) }}"
         {{ isset($required) ? 'required' : '' }}>
     @if($errors->has($field))

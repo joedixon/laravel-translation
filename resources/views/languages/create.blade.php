@@ -18,7 +18,7 @@
 
                 <div class="panel-body p-4">
 
-                    @include('translation::forms.text', ['field' => 'name', 'label' => __('translation::translation.name'), ])
+                    @include('translation::forms.text', ['field' => 'name', 'label' => __('translation::translation.language_name'), ])
 
                     @include('translation::forms.text', ['field' => 'locale', 'label' => __('translation::translation.locale'), ])
 

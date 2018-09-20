@@ -10,13 +10,21 @@
 
                 {{ __('translation::translation.translations') }}
 
-                <div class="flex flex-grow justify-end">
+                <div class="flex flex-grow justify-end items-center">
 
                     @include('translation::forms.search', ['name' => 'filter', 'value' => Request::get('filter')])
 
                     @include('translation::forms.select', ['name' => 'language', 'items' => $languages, 'submit' => true, 'selected' => $language])
 
+                    <div class="sm:hidden lg:flex items-center">
+
                     @include('translation::forms.select', ['name' => 'group', 'items' => $groups, 'submit' => true, 'selected' => Request::get('group'), 'optional' => true])
+                    
+                    <a href="{{ route('languages.translations.create', $language) }}" class="button">
+                        {{ __('translation::translation.add') }}
+                    </a>
+                
+                </div>
 
                 </div>
 

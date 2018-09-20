@@ -239,8 +239,8 @@ nav a:hover {
 }
 
 .search {
-    min-width: 500px;
-    @apply max-w-full mr-2 relative
+    max-width: 500px;
+    @apply mx-2 relative flex-1
 }
 
 ul.search-results {
