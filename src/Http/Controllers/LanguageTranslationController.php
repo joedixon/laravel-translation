@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Routing\Controller;
 use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Http\Requests\TranslationRequest;
 
 class LanguageTranslationController extends Controller
 {
@@ -41,6 +42,25 @@ class LanguageTranslationController extends Controller
         }
 
         return view('translation::languages.translations.index', compact('language', 'languages', 'groups', 'translations'));
+    }
+
+    public function create(Request $request, $language)
+    {
+        return view('translation::languages.translations.create', compact('language'));
+    }
+
+    public function store(TranslationRequest $request, $language)
+    {
+        if ($request->filled('group')) {
+            $namespace = $request->filled('namespace') ? "{$request->get('namespace')}::" : '';
+            $this->translation->addGroupTranslation($language, "{$namespace}{$request->get('group')}.{$request->get('key')}", $request->get('value') ?: '');
+        } else {
+            $this->translation->addSingleTranslation($language, $request->get('key'), $request->get('value') ?: '');
+        }
+
+        return redirect()
+            ->route('languages.translations.index', $language)
+            ->with('success', __('translation::translation.translation_added'));
     }
 
     public function update(Request $request, $language)
