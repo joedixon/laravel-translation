@@ -216,4 +216,77 @@ class FileDriverTest extends TestCase
 
         \File::deleteDirectory(__DIR__ . '/fixtures/lang/vendor');
     }
+
+    /** @test */
+    public function a_list_of_languages_can_be_viewed()
+    {
+        $this->get(config('translation.ui_url'))
+            ->assertSee('en');
+    }
+
+    /** @test */
+    public function the_language_creation_page_can_be_viewed()
+    {
+        $this->get(config('translation.ui_url') . '/create')
+            ->assertSee('Add a new language');
+    }
+
+    /** @test */
+    public function a_language_can_be_added()
+    {
+        $this->post(config('translation.ui_url'), ['locale' => 'de'])
+            ->assertRedirect();
+
+        $this->assertTrue(file_exists(__DIR__ . '/fixtures/lang/de.json'));
+        $this->assertTrue(file_exists(__DIR__ . '/fixtures/lang/de'));
+
+        rmdir(__DIR__ . '/fixtures/lang/de');
+        unlink(__DIR__ . '/fixtures/lang/de.json');
+    }
+
+    /** @test */
+    public function a_list_of_translations_can_be_viewed()
+    {
+        $this->get(config('translation.ui_url') . '/en/translations')
+            ->assertSee('hello')
+            ->assertSee('whats_up');
+    }
+
+    /** @test */
+    public function the_translation_creation_page_can_be_viewed()
+    {
+        $this->get(config('translation.ui_url') . '/' . config('app.locale') . '/translations/create')
+            ->assertSee('Add a translation');
+    }
+
+    /** @test */
+    public function a_new_translation_can_be_added()
+    {
+        $this->post(config('translation.ui_url') . '/en/translations', ['key' => 'joe', 'value' => 'is cool'])
+            ->assertRedirect();
+        $translations = $this->translation->getSingleTranslationsFor('en');
+
+        $this->assertArraySubset(['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'joe' => 'is cool'], $translations->toArray());
+
+        file_put_contents(
+            app()['path.lang'] . '/en.json',
+            json_encode((object)['Hello' => 'Hello', 'What\'s up' => 'What\'s up!'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+        );
+    }
+
+    /** @test */
+    public function a_translation_can_be_updated()
+    {
+        $this->post(config('translation.ui_url') . '/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
+            ->assertOk()
+            ->assertSee(json_encode(['success' => true]));
+        $translations = $this->translation->getGroupTranslationsFor('en');
+
+        $this->assertArraySubset(['test' => ['hello' => 'Hello there!', 'whats_up' => 'What\'s up!']], $translations->toArray());
+
+        file_put_contents(
+            app()['path.lang'] . '/en/test.php',
+            "<?php\n\nreturn " . var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true) . ';' . \PHP_EOL
+        );
+    }
 }
