@@ -233,4 +233,85 @@ class DatabaseDriverTest extends TestCase
             'single' => []
         ]);
     }
+
+    /** @test */
+    public function a_list_of_languages_can_be_viewed()
+    {
+        $english = factory(Language::class)->create(['language' => config('app.locale'), 'name' => 'English']);
+        $newLanguages = factory(Language::class, 2)->create();
+        $response = $this->get(config('translation.ui_url'));
+
+        $response->assertSee('en');
+        foreach ($newLanguages as $language) {
+            $response->assertSee($language->language);
+        }
+    }
+
+    /** @test */
+    public function the_language_creation_page_can_be_viewed()
+    {
+        factory(Language::class)->create(['language' => config('app.locale'), 'name' => 'English']);
+        $this->translation->addGroupTranslation('en', 'translation::translation.add_language', 'Add a new language');
+        $this->get(config('translation.ui_url') . '/create')
+            ->assertSee('Add a new language');
+    }
+
+    /** @test */
+    public function a_language_can_be_added()
+    {
+        factory(Language::class)->create(['language' => config('app.locale'), 'name' => 'English']);
+        $this->post(config('translation.ui_url'), ['locale' => 'de'])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('languages', ['language' => 'de']);
+    }
+
+    /** @test */
+    public function a_list_of_translations_can_be_viewed()
+    {
+        $english = factory(Language::class)->create(['language' => config('app.locale'), 'name' => 'English']);
+        factory(TranslationModel::class)->states('group')->create(['language_id' => $english->id, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
+        factory(TranslationModel::class)->states('group')->create(['language_id' => $english->id, 'group' => 'test', 'key' => 'whats_up', 'value' => "What's up!"]);
+        factory(TranslationModel::class)->states('single')->create(['language_id' => $english->id, 'key' => 'Hello', 'value' => 'Hello!']);
+        factory(TranslationModel::class)->states('single')->create(['language_id' => $english->id, 'key' => "What's up", 'value' => 'Sup!']);
+
+        $this->get(config('translation.ui_url') . '/en/translations')
+            ->assertSee('hello')
+            ->assertSee('whats_up')
+            ->assertSee('Hello')
+            ->assertSee('Sup!');
+    }
+
+    /** @test */
+    public function the_translation_creation_page_can_be_viewed()
+    {
+        factory(Language::class)->create(['language' => config('app.locale'), 'name' => 'English']);
+        $this->translation->addGroupTranslation('en', 'translation::translation.add_translation', 'Add a translation');
+        $this->get(config('translation.ui_url') . '/' . config('app.locale') . '/translations/create')
+            ->assertSee('Add a translation');
+    }
+
+    /** @test */
+    public function a_new_translation_can_be_added()
+    {
+        $english = factory(Language::class)->create(['language' => config('app.locale'), 'name' => 'English']);
+        $this->post(config('translation.ui_url') . '/en/translations', ['key' => 'joe', 'value' => 'is cool'])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('translations', ['language_id' => 1, 'key' => 'joe', 'value' => 'is cool']);
+    }
+
+    /** @test */
+    public function a_translation_can_be_updated()
+    {
+        $english = factory(Language::class)->create(['language' => config('app.locale'), 'name' => 'English']);
+        factory(TranslationModel::class)->states('group')->create(['language_id' => $english->id, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
+        $this->assertDatabaseHas('translations', ['language_id' => 1, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
+
+        $this->post(config('translation.ui_url') . '/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
+            ->assertOk()
+            ->assertSee(json_encode(['success' => true]));
+
+        $this->assertDatabaseHas('translations', ['language_id' => 1, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello there!']);
+    }
 }

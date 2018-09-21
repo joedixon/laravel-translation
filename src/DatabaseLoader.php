@@ -34,7 +34,9 @@ class DatabaseLoader implements Loader
             })->first();
         }
 
-        return;
+        return $this->translation->getGroupTranslationsFor($locale)->filter(function ($value, $key) use ($group, $namespace) {
+            return $key === "{$namespace}::{$group}";
+        })->first();
     }
 
     /**
