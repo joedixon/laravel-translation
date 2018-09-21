@@ -10,7 +10,7 @@
 
                 {{ __('translation::translation.languages') }}
 
-                <div class="flex flex-grow justify-end">
+                <div class="flex flex-grow justify-end items-center">
 
                     <a href="{{ route('languages.create') }}" class="button">
                         {{ __('translation::translation.add') }}
