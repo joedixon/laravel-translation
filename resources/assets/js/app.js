@@ -44,9 +44,20 @@ Vue.component('translation-input', require('./components/TranslationInput.vue'))
 const app = new Vue({
     el: '#app',
 
+    data: function () {
+        return {
+            showAdvancedOptions: false,
+        }
+    },
+
     methods: {
         submit: function(event) {
             event.target.form.submit();
+        },
+
+        toggleAdvancedOptions(event) {
+            event.preventDefault();
+            this.showAdvancedOptions = !this.showAdvancedOptions;
         }
     }
 });
