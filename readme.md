@@ -2,6 +2,10 @@
 
 ![Laravel Translation Manager](translation.png)
 
+<p align="center">
+  [![Build Status](https://travis-ci.org/joedixon/laravel-translation.svg?branch=master)](https://travis-ci.org/joedixon/laravel-translation)
+</p>
+
 ## Installation
 
 Install the package via Composer
