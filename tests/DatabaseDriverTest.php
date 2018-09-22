@@ -21,7 +21,7 @@ class DatabaseDriverTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->withFactories(__DIR__ . '/../database/factories');
+        $this->withFactories(__DIR__.'/../database/factories');
     }
 
     protected function getEnvironmentSetUp($app)
@@ -30,7 +30,7 @@ class DatabaseDriverTest extends TestCase
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
             'driver' => 'sqlite',
-            'database' => ':memory:'
+            'database' => ':memory:',
         ]);
 
         $this->translation = $app[Translation::class];
@@ -102,13 +102,13 @@ class DatabaseDriverTest extends TestCase
     {
         $this->assertDatabaseMissing(config('translation.database.languages_table'), [
             'language' => 'fr',
-            'name' => 'Français'
+            'name' => 'Français',
         ]);
 
         $this->translation->addLanguage('fr', 'Français');
         $this->assertDatabaseHas(config('translation.database.languages_table'), [
             'language' => 'fr',
-            'name' => 'Français'
+            'name' => 'Français',
         ]);
     }
 
@@ -162,7 +162,7 @@ class DatabaseDriverTest extends TestCase
         $language = factory(Language::class)->create(['language' => 'en']);
         factory(TranslationModel::class)->create([
             'language_id' => $language->id,
-            'group' => 'test'
+            'group' => 'test',
         ]);
 
         $groups = $this->translation->getGroupsFor('en');
@@ -186,19 +186,19 @@ class DatabaseDriverTest extends TestCase
             'group' => [
                 'test' => [
                     'hello' => ['en' => 'Hello', 'es' => 'Hola!'],
-                    'whats_up' => ['en' => "What's up!", 'es' => '']
-                ]
+                    'whats_up' => ['en' => "What's up!", 'es' => ''],
+                ],
             ],
             'single' => [
                 'Hello' => [
                     'en' => 'Hello',
-                    'es' => ''
+                    'es' => '',
                 ],
                 "What's up" => [
                     'en' => "What's up!",
-                    'es' => ''
-                ]
-            ]
+                    'es' => '',
+                ],
+            ],
         ]);
     }
 
@@ -210,10 +210,10 @@ class DatabaseDriverTest extends TestCase
         $this->assertEquals($this->translation->allTranslationsFor('es')->toArray(), [
             'group' => [
                 'translation_test::test' => [
-                    'hello' => 'Hola!'
-                ]
+                    'hello' => 'Hola!',
+                ],
             ],
-            'single' => []
+            'single' => [],
         ]);
     }
 
@@ -227,10 +227,10 @@ class DatabaseDriverTest extends TestCase
         $this->assertEquals($translations->toArray(), [
             'group' => [
                 'translation_test::test' => [
-                    'hello' => ['en' => 'Hello', 'es' => 'Hola!']
-                ]
+                    'hello' => ['en' => 'Hello', 'es' => 'Hola!'],
+                ],
             ],
-            'single' => []
+            'single' => [],
         ]);
     }
 
@@ -252,7 +252,7 @@ class DatabaseDriverTest extends TestCase
     {
         factory(Language::class)->create(['language' => config('app.locale'), 'name' => 'English']);
         $this->translation->addGroupTranslation('en', 'translation::translation.add_language', 'Add a new language');
-        $this->get(config('translation.ui_url') . '/create')
+        $this->get(config('translation.ui_url').'/create')
             ->assertSee('Add a new language');
     }
 
@@ -275,7 +275,7 @@ class DatabaseDriverTest extends TestCase
         factory(TranslationModel::class)->states('single')->create(['language_id' => $english->id, 'key' => 'Hello', 'value' => 'Hello!']);
         factory(TranslationModel::class)->states('single')->create(['language_id' => $english->id, 'key' => "What's up", 'value' => 'Sup!']);
 
-        $this->get(config('translation.ui_url') . '/en/translations')
+        $this->get(config('translation.ui_url').'/en/translations')
             ->assertSee('hello')
             ->assertSee('whats_up')
             ->assertSee('Hello')
@@ -287,7 +287,7 @@ class DatabaseDriverTest extends TestCase
     {
         factory(Language::class)->create(['language' => config('app.locale'), 'name' => 'English']);
         $this->translation->addGroupTranslation('en', 'translation::translation.add_translation', 'Add a translation');
-        $this->get(config('translation.ui_url') . '/' . config('app.locale') . '/translations/create')
+        $this->get(config('translation.ui_url').'/'.config('app.locale').'/translations/create')
             ->assertSee('Add a translation');
     }
 
@@ -295,7 +295,7 @@ class DatabaseDriverTest extends TestCase
     public function a_new_translation_can_be_added()
     {
         $english = factory(Language::class)->create(['language' => config('app.locale'), 'name' => 'English']);
-        $this->post(config('translation.ui_url') . '/en/translations', ['key' => 'joe', 'value' => 'is cool'])
+        $this->post(config('translation.ui_url').'/en/translations', ['key' => 'joe', 'value' => 'is cool'])
             ->assertRedirect();
 
         $this->assertDatabaseHas('translations', ['language_id' => 1, 'key' => 'joe', 'value' => 'is cool']);
@@ -308,7 +308,7 @@ class DatabaseDriverTest extends TestCase
         factory(TranslationModel::class)->states('group')->create(['language_id' => $english->id, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
         $this->assertDatabaseHas('translations', ['language_id' => 1, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
 
-        $this->post(config('translation.ui_url') . '/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
+        $this->post(config('translation.ui_url').'/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
             ->assertOk()
             ->assertSee(json_encode(['success' => true]));
 

@@ -35,7 +35,7 @@ class ListMissingTranslationKeys extends BaseCommand
         // check whether or not there are any missing translations
         $empty = true;
         foreach ($missingTranslations as $language => $values) {
-            if (!empty($values)) {
+            if (! empty($values)) {
                 $empty = false;
             }
         }

@@ -26,21 +26,21 @@ class MergeTranslationsCommand extends Command
     protected $description = 'Merge translations between drivers';
 
     /**
-     * File scanner
+     * File scanner.
      *
      * @var Scanner
      */
     private $scanner;
 
     /**
-     * Translation
+     * Translation.
      *
      * @var Translation
      */
     private $translation;
 
     /**
-     * Translation drivers
+     * Translation drivers.
      *
      * @var array
      */
@@ -68,17 +68,17 @@ class MergeTranslationsCommand extends Command
         $languages = array_keys($this->translation->allLanguages()->toArray());
 
         $fromDriver = $this->anticipate(__('translation::translation.prompt_from_driver'), $this->drivers);
-        if (!in_array($fromDriver, $this->drivers)) {
+        if (! in_array($fromDriver, $this->drivers)) {
             return $this->error(__('translation::translation.invalid_driver'));
         }
 
         $toDriver = $this->anticipate(__('translation::translation.prompt_to_driver'), $this->drivers);
-        if (!in_array($toDriver, $this->drivers)) {
+        if (! in_array($toDriver, $this->drivers)) {
             return $this->error(__('translation::translation.invalid_driver'));
         }
 
         $language = $this->anticipate(__('translation::translation.prompt_language_if_any'), $languages);
-        if ($language && !in_array($language, $languages)) {
+        if ($language && ! in_array($language, $languages)) {
             return $this->error(__('translation::translation.invalid_language'));
         }
 
