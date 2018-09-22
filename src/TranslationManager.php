@@ -27,7 +27,7 @@ class TranslationManager
         $driverResolver = studly_case($driver);
         $method = "resolve{$driverResolver}Driver";
 
-        if (!method_exists($this, $method)) {
+        if (! method_exists($this, $method)) {
             throw new \InvalidArgumentException("Invalid driver [$driver]");
         }
 

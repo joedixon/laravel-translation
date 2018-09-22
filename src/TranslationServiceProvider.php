@@ -4,13 +4,12 @@ namespace JoeDixon\Translation;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Translation\Translator;
-use JoeDixon\Translation\Drivers\File;
 use Illuminate\Support\ServiceProvider;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
 use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
-use JoeDixon\Translation\Console\Commands\MergeTranslationsCommand;
 use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
+use JoeDixon\Translation\Console\Commands\MergeTranslationsCommand;
 use JoeDixon\Translation\Console\Commands\ListMissingTranslationKeys;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
 
@@ -61,10 +60,10 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function loadViews()
     {
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'translation');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'translation');
 
         $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/translation'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/translation'),
         ]);
     }
 
@@ -75,7 +74,7 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function registerRoutes()
     {
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
     }
 
     /**
@@ -86,7 +85,7 @@ class TranslationServiceProvider extends ServiceProvider
     private function publishConfiguration()
     {
         $this->publishes([
-            __DIR__ . '/../config/translation.php' => config_path('translation.php'),
+            __DIR__.'/../config/translation.php' => config_path('translation.php'),
         ], 'config');
     }
 
@@ -97,7 +96,7 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function mergeConfiguration()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/translation.php', 'translation');
+        $this->mergeConfigFrom(__DIR__.'/../config/translation.php', 'translation');
     }
 
     /**
@@ -108,7 +107,7 @@ class TranslationServiceProvider extends ServiceProvider
     private function publishAssets()
     {
         $this->publishes([
-            __DIR__ . '/../public/assets' => public_path('vendor/translation'),
+            __DIR__.'/../public/assets' => public_path('vendor/translation'),
         ], 'assets');
     }
 
@@ -119,7 +118,7 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function loadMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 
     /**
@@ -129,10 +128,10 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function loadTranslations()
     {
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'translation');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'translation');
 
         $this->publishes([
-            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/translation'),
+            __DIR__.'/../resources/lang' => resource_path('lang/vendor/translation'),
         ]);
     }
 
@@ -150,7 +149,7 @@ class TranslationServiceProvider extends ServiceProvider
                 ListLanguagesCommand::class,
                 ListMissingTranslationKeys::class,
                 SynchroniseMissingTranslationKeys::class,
-                MergeTranslationsCommand::class
+                MergeTranslationsCommand::class,
             ]);
         }
     }
@@ -164,6 +163,7 @@ class TranslationServiceProvider extends ServiceProvider
     {
         $this->app->singleton(Scanner::class, function () {
             $config = $this->app['config']['translation'];
+
             return new Scanner(new Filesystem, $config['scan_paths'], $config['translation_methods']);
         });
 
@@ -179,7 +179,7 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function registerHelpers()
     {
-        require __DIR__ . '/../resources/helpers.php';
+        require __DIR__.'/../resources/helpers.php';
     }
 
     private function registerDatabaseLoader()
@@ -198,6 +198,7 @@ class TranslationServiceProvider extends ServiceProvider
             $locale = $app['config']['app.locale'];
             $trans = new Translator($loader, $locale);
             $trans->setFallback($app['config']['app.fallback_locale']);
+
             return $trans;
         });
     }

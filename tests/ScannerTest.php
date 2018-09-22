@@ -1,7 +1,7 @@
 <?php
 
-use Orchestra\Testbench\TestCase;
 use JoeDixon\Translation\Scanner;
+use Orchestra\Testbench\TestCase;
 
 class ScannerTest extends TestCase
 {
@@ -13,7 +13,7 @@ class ScannerTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        config(['translation.scan_paths' => __DIR__ . '/fixtures/scan-tests']);
+        config(['translation.scan_paths' => __DIR__.'/fixtures/scan-tests']);
     }
 
     protected function getPackageProviders($app)
