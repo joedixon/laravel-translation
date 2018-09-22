@@ -304,7 +304,7 @@ class DatabaseDriverTest extends TestCase
         $this->assertDatabaseHas('translations', ['language_id' => 1, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
 
         $this->post(config('translation.ui_url') . '/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
-            ->assertOk()
+            ->assertStatus(200)
             ->assertSee(json_encode(['success' => true]));
 
         $this->assertDatabaseHas('translations', ['language_id' => 1, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello there!']);
