@@ -1,5 +1,7 @@
 <?php
 
+namespace JoeDixon\Translation\Tests;
+
 use Orchestra\Testbench\TestCase;
 
 class PackageIsLoadedTest extends TestCase

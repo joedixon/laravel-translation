@@ -1,5 +1,7 @@
 <?php
 
+namespace JoeDixon\Translation\Tests;
+
 use Orchestra\Testbench\TestCase;
 use JoeDixon\Translation\Scanner;
 
