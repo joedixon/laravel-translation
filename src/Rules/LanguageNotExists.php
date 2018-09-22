@@ -18,7 +18,7 @@ class LanguageNotExists implements Rule
     {
         $translation = app()->make(Translation::class);
 
-        return !$translation->languageExists($value);
+        return ! $translation->languageExists($value);
     }
 
     /**

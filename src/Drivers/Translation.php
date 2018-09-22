@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 abstract class Translation
 {
     /**
-     * Find all of the translations in the app without translation for a given language
+     * Find all of the translations in the app without translation for a given language.
      *
      * @param string $language
      * @return array
@@ -21,7 +21,7 @@ abstract class Translation
     }
 
     /**
-     * Save all of the translations in the app without translation for a given language
+     * Save all of the translations in the app without translation for a given language.
      *
      * @param string $language
      * @return void
@@ -49,7 +49,7 @@ abstract class Translation
     }
 
     /**
-     * Get all translations for a given language merged with the source language
+     * Get all translations for a given language merged with the source language.
      *
      * @param string $language
      * @return Collection
@@ -80,12 +80,12 @@ abstract class Translation
 
         return Collection::make([
             'group' => $groupTranslations,
-            'single' => $singleTranslations
+            'single' => $singleTranslations,
         ]);
     }
 
     /**
-     * Filter all keys and translations for a given language and string
+     * Filter all keys and translations for a given language and string.
      *
      * @param string $language
      * @param string $filter
@@ -95,7 +95,7 @@ abstract class Translation
     {
         $filteredTranslations = new Collection;
         $allTranslations = $this->getSourceLanguageTranslationsWith(($language));
-        if (!$filter) {
+        if (! $filter) {
             return $allTranslations;
         }
 
@@ -107,7 +107,7 @@ abstract class Translation
                     continue;
                 }
                 if (strs_contain([$key, $translations[$language], $translations[$this->sourceLanguage]], $filter)) {
-                    $current = (array)$filteredGroupTranslations->get($groupKey);
+                    $current = (array) $filteredGroupTranslations->get($groupKey);
                     $current[$key] = $translations;
                     $filteredGroupTranslations->put($groupKey, $current);
                 }

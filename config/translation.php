@@ -26,7 +26,7 @@ return [
 
     'route_group_config' => [
         'middleware' => 'web',
-        'namespace' => 'JoeDixon\\Translation\\Http\\Controllers'
+        'namespace' => 'JoeDixon\\Translation\\Http\\Controllers',
     ],
 
     /*
@@ -77,5 +77,5 @@ return [
         'languages_table' => 'languages',
 
         'translations_table' => 'translations',
-    ]
+    ],
 ];

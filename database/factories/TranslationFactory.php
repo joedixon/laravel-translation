@@ -11,7 +11,7 @@ $factory->define(Translation::class, function (Generator $faker) {
         },
         'group' => $faker->word,
         'key' => $faker->word,
-        'value' => $faker->sentence
+        'value' => $faker->sentence,
     ];
 });
 
@@ -22,7 +22,7 @@ $factory->state(Translation::class, 'group', function (Generator $faker) {
         },
         'group' => $faker->word,
         'key' => $faker->word,
-        'value' => $faker->sentence
+        'value' => $faker->sentence,
     ];
 });
 
@@ -33,6 +33,6 @@ $factory->state(Translation::class, 'single', function (Generator $faker) {
         },
         'group' => null,
         'key' => $faker->word,
-        'value' => $faker->sentence
+        'value' => $faker->sentence,
     ];
 });
