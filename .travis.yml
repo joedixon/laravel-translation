@@ -7,5 +7,13 @@ php:
   - 7.2
   - nightly
 
+env:
+  matrix:
+    - COMPOSER_FLAGS="--prefer-lowest"
+    - COMPOSER_FLAGS=""
+
+before_script:
+  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction
+
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
