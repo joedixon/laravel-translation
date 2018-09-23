@@ -1,6 +1,6 @@
-# Laravel Translation
-
 <div align="center">
+  
+# Laravel Translation
   
 Translation management for your Laravel application.
 
