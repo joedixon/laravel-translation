@@ -26,7 +26,6 @@ return [
 
     'route_group_config' => [
         'middleware' => 'web',
-        'namespace' => 'JoeDixon\\Translation\\Http\\Controllers',
     ],
 
     /*
@@ -62,7 +61,7 @@ return [
     |
      */
 
-    'ui_url' => 'translations',
+    'ui_url' => 'languages',
 
     /*
     |--------------------------------------------------------------------------
