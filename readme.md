@@ -1,6 +1,7 @@
-<section style="text-align: center;">
-
 # Laravel Translation
+
+<div style="text-align: center;">
+  
 Translation management for your Laravel application.
 
 ![Laravel Translation](translation.png)
@@ -9,7 +10,7 @@ Translation management for your Laravel application.
 ![Scrutinizer](https://img.shields.io/scrutinizer/g/joedixon/laravel-translation.svg?style=for-the-badge)
 ![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/joedixon/laravel-translation.svg?style=for-the-badge)
 
-</section>
+</div>
 
 ------
 
