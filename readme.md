@@ -1,6 +1,7 @@
-<div style="text-align: center;">
-
+<div align="center">
+  
 # Laravel Translation
+  
 Translation management for your Laravel application.
 
 ![Laravel Translation](translation.png)
