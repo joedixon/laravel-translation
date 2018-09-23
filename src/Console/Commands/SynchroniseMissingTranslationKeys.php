@@ -16,7 +16,7 @@ class SynchroniseMissingTranslationKeys extends BaseCommand
      *
      * @var string
      */
-    protected $description = 'Add all of the missing tranlation keys for all languages or a single language';
+    protected $description = 'Add all of the missing translation keys for all languages or a single language';
 
     /**
      * Execute the console command.

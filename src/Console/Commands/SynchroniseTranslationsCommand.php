@@ -9,21 +9,21 @@ use JoeDixon\Translation\Drivers\File;
 use JoeDixon\Translation\Drivers\Database;
 use JoeDixon\Translation\Drivers\Translation;
 
-class MergeTranslationsCommand extends Command
+class SynchroniseTranslationsCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'translation:merge-translations';
+    protected $signature = 'translation:sync-translations';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Merge translations between drivers';
+    protected $description = 'Synchronise translations between drivers';
 
     /**
      * File scanner.
@@ -68,24 +68,24 @@ class MergeTranslationsCommand extends Command
         $languages = array_keys($this->translation->allLanguages()->toArray());
 
         $fromDriver = $this->anticipate(__('translation::translation.prompt_from_driver'), $this->drivers);
-        if (! in_array($fromDriver, $this->drivers)) {
+        if (!in_array($fromDriver, $this->drivers)) {
             return $this->error(__('translation::translation.invalid_driver'));
         }
 
         $toDriver = $this->anticipate(__('translation::translation.prompt_to_driver'), $this->drivers);
-        if (! in_array($toDriver, $this->drivers)) {
+        if (!in_array($toDriver, $this->drivers)) {
             return $this->error(__('translation::translation.invalid_driver'));
         }
 
         $language = $this->anticipate(__('translation::translation.prompt_language_if_any'), $languages);
-        if ($language && ! in_array($language, $languages)) {
+        if ($language && !in_array($language, $languages)) {
             return $this->error(__('translation::translation.invalid_language'));
         }
 
         $fromDriver = $this->createDriver($fromDriver);
         $toDriver = $this->createDriver($toDriver);
 
-        $this->line(__('translation::translation.merging'));
+        $this->line(__('translation::translation.syncing'));
 
         if ($language) {
             $this->mergeTranslations($toDriver, $language, $fromDriver->allTranslationsFor($language));
@@ -93,7 +93,7 @@ class MergeTranslationsCommand extends Command
             $translations = $this->mergeLanguages($toDriver, $fromDriver->allTranslations());
         }
 
-        $this->info(__('translation::translation.merged'));
+        $this->info(__('translation::translation.synced'));
     }
 
     private function createDriver($driver)
