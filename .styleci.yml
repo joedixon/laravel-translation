@@ -1,0 +1,4 @@
+preset: laravel
+finder:
+  exclude:
+    - "tests/fixtures"
