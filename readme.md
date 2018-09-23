@@ -1,4 +1,4 @@
-<div style="text-align: center;">
+<section style="text-align: center;">
 
 # Laravel Translation
 Translation management for your Laravel application.
@@ -9,7 +9,7 @@ Translation management for your Laravel application.
 ![Scrutinizer](https://img.shields.io/scrutinizer/g/joedixon/laravel-translation.svg?style=for-the-badge)
 ![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/joedixon/laravel-translation.svg?style=for-the-badge)
 
-</div>
+</section>
 
 ------
 
