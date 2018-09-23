@@ -9,8 +9,8 @@ use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
 use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
 use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
-use JoeDixon\Translation\Console\Commands\MergeTranslationsCommand;
 use JoeDixon\Translation\Console\Commands\ListMissingTranslationKeys;
+use JoeDixon\Translation\Console\Commands\SynchroniseTranslationsCommand;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
 
 class TranslationServiceProvider extends ServiceProvider
@@ -149,7 +149,7 @@ class TranslationServiceProvider extends ServiceProvider
                 ListLanguagesCommand::class,
                 ListMissingTranslationKeys::class,
                 SynchroniseMissingTranslationKeys::class,
-                MergeTranslationsCommand::class,
+                SynchroniseTranslationsCommand::class,
             ]);
         }
     }
