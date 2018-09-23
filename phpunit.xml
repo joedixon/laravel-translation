@@ -18,6 +18,11 @@
             <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
+    <filter>
+        <blacklist>
+              <directory>./src/Console</directory>
+        </blacklist>
+    </filter>
     <php>
         <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
     </php>
