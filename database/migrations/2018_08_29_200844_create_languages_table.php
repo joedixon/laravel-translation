@@ -22,7 +22,7 @@ class CreateLanguagesTable extends Migration
         });
 
         Language::create([
-            'language' => config('app.locale')
+            'language' => config('app.locale'),
         ]);
     }
 

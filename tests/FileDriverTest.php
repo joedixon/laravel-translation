@@ -17,7 +17,7 @@ class FileDriverTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        app()['path.lang'] = __DIR__ . '/fixtures/lang';
+        app()['path.lang'] = __DIR__.'/fixtures/lang';
         $this->translation = app()->make(Translation::class);
     }
 
@@ -73,11 +73,11 @@ class FileDriverTest extends TestCase
     {
         $this->translation->addLanguage('fr');
 
-        $this->assertTrue(file_exists(__DIR__ . '/fixtures/lang/fr.json'));
-        $this->assertTrue(file_exists(__DIR__ . '/fixtures/lang/fr'));
+        $this->assertTrue(file_exists(__DIR__.'/fixtures/lang/fr.json'));
+        $this->assertTrue(file_exists(__DIR__.'/fixtures/lang/fr'));
 
-        rmdir(__DIR__ . '/fixtures/lang/fr');
-        unlink(__DIR__ . '/fixtures/lang/fr.json');
+        rmdir(__DIR__.'/fixtures/lang/fr');
+        unlink(__DIR__.'/fixtures/lang/fr.json');
     }
 
     /** @test */
@@ -89,7 +89,7 @@ class FileDriverTest extends TestCase
 
         $this->assertArraySubset(['group' => ['test' => ['hello' => 'Hola!']]], $translations->toArray());
 
-        unlink(__DIR__ . '/fixtures/lang/es/test.php');
+        unlink(__DIR__.'/fixtures/lang/es/test.php');
     }
 
     /** @test */
@@ -102,8 +102,8 @@ class FileDriverTest extends TestCase
         $this->assertArraySubset(['group' => ['test' => ['hello' => 'Hello', 'whats_up' => 'What\'s up!', 'test' => 'Testing']]], $translations->toArray());
 
         file_put_contents(
-            app()['path.lang'] . '/en/test.php',
-            "<?php\n\nreturn " . var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true) . ';' . \PHP_EOL
+            app()['path.lang'].'/en/test.php',
+            "<?php\n\nreturn ".var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true).';'.\PHP_EOL
         );
     }
 
@@ -116,7 +116,7 @@ class FileDriverTest extends TestCase
 
         $this->assertArraySubset(['single' => ['Hello' => 'Hola!']], $translations->toArray());
 
-        unlink(__DIR__ . '/fixtures/lang/es.json');
+        unlink(__DIR__.'/fixtures/lang/es.json');
     }
 
     /** @test */
@@ -129,7 +129,7 @@ class FileDriverTest extends TestCase
         $this->assertArraySubset(['single' => ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'Test' => 'Testing']], $translations->toArray());
 
         file_put_contents(
-            app()['path.lang'] . '/en.json',
+            app()['path.lang'].'/en.json',
             json_encode((object) ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
         );
     }
@@ -167,7 +167,7 @@ class FileDriverTest extends TestCase
             ],
         ]);
 
-        unlink(__DIR__ . '/fixtures/lang/es/test.php');
+        unlink(__DIR__.'/fixtures/lang/es/test.php');
     }
 
     /** @test */
@@ -184,7 +184,7 @@ class FileDriverTest extends TestCase
             'single' => [],
         ]);
 
-        \File::deleteDirectory(__DIR__ . '/fixtures/lang/vendor');
+        \File::deleteDirectory(__DIR__.'/fixtures/lang/vendor');
     }
 
     /** @test */
@@ -216,7 +216,7 @@ class FileDriverTest extends TestCase
             ],
         ]);
 
-        \File::deleteDirectory(__DIR__ . '/fixtures/lang/vendor');
+        \File::deleteDirectory(__DIR__.'/fixtures/lang/vendor');
     }
 
     /** @test */
@@ -229,7 +229,7 @@ class FileDriverTest extends TestCase
     /** @test */
     public function the_language_creation_page_can_be_viewed()
     {
-        $this->get(config('translation.ui_url') . '/create')
+        $this->get(config('translation.ui_url').'/create')
             ->assertSee('Add a new language');
     }
 
@@ -239,17 +239,17 @@ class FileDriverTest extends TestCase
         $this->post(config('translation.ui_url'), ['locale' => 'de'])
             ->assertRedirect();
 
-        $this->assertTrue(file_exists(__DIR__ . '/fixtures/lang/de.json'));
-        $this->assertTrue(file_exists(__DIR__ . '/fixtures/lang/de'));
+        $this->assertTrue(file_exists(__DIR__.'/fixtures/lang/de.json'));
+        $this->assertTrue(file_exists(__DIR__.'/fixtures/lang/de'));
 
-        rmdir(__DIR__ . '/fixtures/lang/de');
-        unlink(__DIR__ . '/fixtures/lang/de.json');
+        rmdir(__DIR__.'/fixtures/lang/de');
+        unlink(__DIR__.'/fixtures/lang/de.json');
     }
 
     /** @test */
     public function a_list_of_translations_can_be_viewed()
     {
-        $this->get(config('translation.ui_url') . '/en/translations')
+        $this->get(config('translation.ui_url').'/en/translations')
             ->assertSee('hello')
             ->assertSee('whats_up');
     }
@@ -257,21 +257,21 @@ class FileDriverTest extends TestCase
     /** @test */
     public function the_translation_creation_page_can_be_viewed()
     {
-        $this->get(config('translation.ui_url') . '/' . config('app.locale') . '/translations/create')
+        $this->get(config('translation.ui_url').'/'.config('app.locale').'/translations/create')
             ->assertSee('Add a translation');
     }
 
     /** @test */
     public function a_new_translation_can_be_added()
     {
-        $this->post(config('translation.ui_url') . '/en/translations', ['key' => 'joe', 'value' => 'is cool'])
+        $this->post(config('translation.ui_url').'/en/translations', ['key' => 'joe', 'value' => 'is cool'])
             ->assertRedirect();
         $translations = $this->translation->getSingleTranslationsFor('en');
 
         $this->assertArraySubset(['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'joe' => 'is cool'], $translations->toArray());
 
         file_put_contents(
-            app()['path.lang'] . '/en.json',
+            app()['path.lang'].'/en.json',
             json_encode((object) ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
         );
     }
@@ -279,7 +279,7 @@ class FileDriverTest extends TestCase
     /** @test */
     public function a_translation_can_be_updated()
     {
-        $this->post(config('translation.ui_url') . '/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
+        $this->post(config('translation.ui_url').'/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
             ->assertStatus(200)
             ->assertSee(json_encode(['success' => true]));
         $translations = $this->translation->getGroupTranslationsFor('en');
@@ -287,8 +287,8 @@ class FileDriverTest extends TestCase
         $this->assertArraySubset(['test' => ['hello' => 'Hello there!', 'whats_up' => 'What\'s up!']], $translations->toArray());
 
         file_put_contents(
-            app()['path.lang'] . '/en/test.php',
-            "<?php\n\nreturn " . var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true) . ';' . \PHP_EOL
+            app()['path.lang'].'/en/test.php',
+            "<?php\n\nreturn ".var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true).';'.\PHP_EOL
         );
     }
 }
