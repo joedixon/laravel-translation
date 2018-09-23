@@ -2,7 +2,9 @@
 
 ![Laravel Translation Manager](translation.png)
 
-[![Build Status](https://travis-ci.org/joedixon/laravel-translation.svg?branch=master)](https://travis-ci.org/joedixon/laravel-translation)
+![Travis (.org) branch](https://img.shields.io/travis/joedixon/laravel-translation/master.svg?style=for-the-badge)
+![Scrutinizer](https://img.shields.io/scrutinizer/g/joedixon/laravel-translation.svg?style=for-the-badge)
+![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/joedixon/laravel-translation.svg?style=for-the-badge)
 
 ## Installation
 
