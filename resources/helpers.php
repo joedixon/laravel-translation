@@ -20,7 +20,7 @@ if (! function_exists('strs_contain')) {
      *
      * @param  array  $haystacks
      * @param  string  $needle
-     * @return boolean
+     * @return bool
      */
     function strs_contain($haystacks, $needle)
     {
