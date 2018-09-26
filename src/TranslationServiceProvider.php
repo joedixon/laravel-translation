@@ -206,7 +206,14 @@ class TranslationServiceProvider extends ServiceProvider
     private function registerLoader()
     {
         $this->app->singleton('translation.loader', function ($app) {
-            return new DatabaseLoader($this->app->make(Translation::class));
+            // Post Laravel 5.4, the interface was moved to the contracts
+            // directory. Here we perform a check to see whether or not the
+            // interface exists and instantiate the relevant loader accordingly.
+            if (interface_exists('Illuminate\Contracts\Translation\Loader')) {
+                return new ContractDatabaseLoader($this->app->make(Translation::class));
+            }
+
+            return new InterfaceDatabaseLoader($this->app->make(Translation::class));
         });
     }
 }
