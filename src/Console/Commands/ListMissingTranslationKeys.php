@@ -46,7 +46,7 @@ class ListMissingTranslationKeys extends BaseCommand
         }
 
         // set some headers for the table of results
-        $headers = [__('translation::translation.language'), __('translation::translation.type'), __('translation::translation.file'), __('translation::translation.key')];
+        $headers = [__('translation::translation.language'), __('translation::translation.type'), __('translation::translation.group'), __('translation::translation.key')];
 
         // iterate over each of the missing languages
         foreach ($missingTranslations as $language => $types) {
@@ -59,12 +59,12 @@ class ListMissingTranslationKeys extends BaseCommand
                     // due to the need to store the filename, so handle accordingly
                     if (is_array($value)) {
                         foreach ($value as $k => $v) {
-                            $rows[] = [$language, $type, "{$key}.php", $k];
+                            $rows[] = [$language, $type, $key, $k];
                         }
                     }
                     // handle json file type
                     else {
-                        $rows[] = [$language, $type, "{$language}.json", $key];
+                        $rows[] = [$language, $type, strtolower(__('translation::translation.single')), $key];
                     }
                 }
             }
