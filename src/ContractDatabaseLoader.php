@@ -5,7 +5,7 @@ namespace JoeDixon\Translation;
 use Illuminate\Contracts\Translation\Loader;
 use JoeDixon\Translation\Drivers\Translation;
 
-class DatabaseLoader implements Loader
+class ContractDatabaseLoader implements Loader
 {
     private $translation;
 
