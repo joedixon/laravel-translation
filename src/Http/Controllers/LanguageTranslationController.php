@@ -28,7 +28,7 @@ class LanguageTranslationController extends Controller
         $groups = $this->translation->getGroupsFor(config('app.locale'))->prepend('single');
         $translations = $this->translation->filterTranslationsFor($language, $request->get('filter'));
 
-        if ($request->filled('group')) {
+        if ($request->has('group') && $request->get('group')) {
             if ($request->get('group') === 'single') {
                 $translations = $translations->get('single');
                 $translations = new Collection(['single' => $translations]);
@@ -51,8 +51,8 @@ class LanguageTranslationController extends Controller
 
     public function store(TranslationRequest $request, $language)
     {
-        if ($request->filled('group')) {
-            $namespace = $request->filled('namespace') ? "{$request->get('namespace')}::" : '';
+        if ($request->has('group') && $request->get('group')) {
+            $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
             $this->translation->addGroupTranslation($language, "{$namespace}{$request->get('group')}.{$request->get('key')}", $request->get('value') ?: '');
         } else {
             $this->translation->addSingleTranslation($language, $request->get('key'), $request->get('value') ?: '');
