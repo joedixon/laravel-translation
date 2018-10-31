@@ -36,7 +36,7 @@ class File extends Translation implements DriverInterface
         $directories = Collection::make($this->disk->directories($this->languageFilesPath));
 
         return $directories->mapWithKeys(function ($directory) {
-            $language = array_last(explode('/', $directory));
+            $language = basename($directory);
 
             return [$language => $language];
         })->filter(function ($language) {
