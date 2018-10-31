@@ -146,6 +146,7 @@ nav a:hover {
 }
 
 .panel-body td textarea {
+    overflow-wrap: inherit;
     @apply border-none resize-none bg-transparent text-grey-darker w-full font-thin h-auto p-0
 }
 
