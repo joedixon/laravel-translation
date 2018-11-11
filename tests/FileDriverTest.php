@@ -3,7 +3,6 @@
 namespace JoeDixon\Translation\Tests;
 
 use Orchestra\Testbench\TestCase;
-use JoeDixon\Translation\Drivers\File;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 

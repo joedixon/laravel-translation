@@ -4,7 +4,6 @@ namespace JoeDixon\Translation\Tests;
 
 use Orchestra\Testbench\TestCase;
 use JoeDixon\Translation\Language;
-use JoeDixon\Translation\Drivers\Database;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\TranslationServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
