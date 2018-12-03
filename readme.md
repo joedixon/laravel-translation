@@ -165,7 +165,7 @@ database driver. Running this command will take all of the translations from the
 language files and insert them in to the database.
 
 ```
-translation:sync-missing-tranlsation-keys
+translation:sync-missing-translation-keys
 ```
 This command will scan your project (using the paths supplied in the
 configuration file) and create all of the missing translation keys. This can be
