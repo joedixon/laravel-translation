@@ -9,7 +9,7 @@ class SynchroniseMissingTranslationKeys extends BaseCommand
      *
      * @var string
      */
-    protected $signature = 'translation:sync-missing-tranlsation-keys {language?}';
+    protected $signature = 'translation:sync-missing-translation-keys {language?}';
 
     /**
      * The console command description.
