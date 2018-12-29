@@ -118,7 +118,9 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function loadMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        if (config('translation.driver') == 'database') {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
     }
 
     /**
