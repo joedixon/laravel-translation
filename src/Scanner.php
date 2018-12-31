@@ -51,7 +51,7 @@ class Scanner
                         $results['group'][$file][$k] = '';
                         continue;
                     } else {
-                        $results['single'][$key] = '';
+                        $results['single']['single'][$key] = '';
                     }
                 }
             }

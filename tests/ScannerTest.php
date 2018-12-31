@@ -15,7 +15,6 @@ class ScannerTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        config(['translation.scan_paths' => __DIR__.'/fixtures/scan-tests']);
     }
 
     protected function getPackageProviders($app)
@@ -23,15 +22,19 @@ class ScannerTest extends TestCase
         return ['JoeDixon\Translation\TranslationServiceProvider'];
     }
 
+    protected function getEnvironmentSetUp($app)
+    {
+        $app['config']->set('translation.scan_paths', __DIR__.'/fixtures/scan-tests');
+        $app['config']->set('translation.translation_methods', ['__', 'trans', 'trans_choice', '@lang', 'Lang::get']);
+    }
+
     /** @test */
     public function it_finds_all_translations()
     {
-        config(['translation.translation_methods' => ['__', 'trans', 'trans_choice', '@lang', 'Lang::get']]);
-
         $this->scanner = app()->make(Scanner::class);
         $matches = $this->scanner->findTranslations();
 
-        $this->assertEquals($matches, ['single' => ['This will go in the JSON array' => '', 'trans' => ''], 'group' => ['lang' => ['first_match' => ''], 'lang_get' => ['first' => '', 'second' => ''], 'trans' => ['first_match' => '', 'third_match' => ''], 'trans_choice' => ['with_params' => '']]]);
+        $this->assertEquals($matches, ['single' => ['single' => ['This will go in the JSON array' => '', 'trans' => '']], 'group' => ['lang' => ['first_match' => ''], 'lang_get' => ['first' => '', 'second' => ''], 'trans' => ['first_match' => '', 'third_match' => ''], 'trans_choice' => ['with_params' => '']]]);
         $this->assertCount(2, $matches);
     }
 }

@@ -105,7 +105,7 @@ class File extends Translation implements DriverInterface
 
         $this->disk->makeDirectory("{$this->languageFilesPath}/$language");
         if (! $this->disk->exists("{$this->languageFilesPath}/{$language}.json")) {
-            $this->saveSingleTranslations($language, []);
+            $this->saveSingleTranslations($language, collect(['single' => collect()]));
         }
     }
 
@@ -128,12 +128,12 @@ class File extends Translation implements DriverInterface
 
         // does the group exist? If not, create it.
         if (! $translations->keys()->contains($group)) {
-            $translations->put($group, []);
+            $translations->put($group, collect());
         }
 
         $values = $translations->get($group);
         $values[$key] = $value;
-        $translations->put($group, $values);
+        $translations->put($group, collect($values));
 
         $this->saveGroupTranslations($language, $group, $translations->get($group));
     }
@@ -146,15 +146,15 @@ class File extends Translation implements DriverInterface
      * @param string $value
      * @return void
      */
-    public function addSingleTranslation($language, $key, $value = '')
+    public function addSingleTranslation($language, $vendor, $key, $value = '')
     {
         if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
 
         $translations = $this->getSingleTranslationsFor($language);
-
-        $translations->put($key, $value);
+        $translations->get($vendor) ?: $translations->put($vendor, collect());
+        $translations->get($vendor)->put($key, $value);
 
         $this->saveSingleTranslations($language, $translations);
     }
@@ -167,13 +167,16 @@ class File extends Translation implements DriverInterface
      */
     public function getSingleTranslationsFor($language)
     {
-        $singlePath = $this->languageFilesPath."/$language.json";
-
-        if ($this->disk->exists($singlePath)) {
-            return new Collection(json_decode($this->disk->get($singlePath), true));
-        }
-
-        return new Collection;
+        $files = new Collection($this->disk->allFiles($this->languageFilesPath));
+        return $files->filter(function ($file) use ($language) {
+            return strpos($file, "{$language}.json");
+        })->flatMap(function ($file) {
+            if (strpos($file->getPathname(), 'vendor')) {
+                $vendor = str_before(str_after($file->getPathname(), 'vendor/'), '/');
+                return ["{$vendor}::single" => new Collection(json_decode($this->disk->get($file), true))];
+            }
+            return ['single' => new Collection(json_decode($this->disk->get($file), true))];
+        });
     }
 
     /**
@@ -190,10 +193,10 @@ class File extends Translation implements DriverInterface
             if (str_contains($group->getPathname(), 'vendor')) {
                 $vendor = str_before(str_after($group->getPathname(), 'vendor/'), '/');
 
-                return ["{$vendor}::{$group->getBasename('.php')}" => $this->disk->getRequire($group->getPathname())];
+                return ["{$vendor}::{$group->getBasename('.php')}" => new Collection($this->disk->getRequire($group->getPathname()))];
             }
 
-            return [$group->getBasename('.php') => $this->disk->getRequire($group->getPathname())];
+            return [$group->getBasename('.php') => new Collection($this->disk->getRequire($group->getPathname()))];
         });
     }
 
@@ -252,6 +255,7 @@ class File extends Translation implements DriverInterface
     {
         // here we check if it's a namespaced translation which need saving to a
         // different path
+        $translations = $translations instanceof Collection ? $translations->toArray() : $translations;
         if (str_contains($group, '::')) {
             return $this->saveNamespacedGroupTranslations($language, $group, $translations);
         }
@@ -287,10 +291,14 @@ class File extends Translation implements DriverInterface
      */
     private function saveSingleTranslations($language, $translations)
     {
-        $this->disk->put(
-            "{$this->languageFilesPath}/$language.json",
-            json_encode((object) $translations, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-        );
+        foreach ($translations as $group => $translation) {
+            $vendor = str_before($group, '::single');
+            $languageFilePath = $vendor !== 'single' ? "vendor/{$vendor}/{$language}.json" : "{$language}.json";
+            $this->disk->put(
+                "{$this->languageFilesPath}/$languageFilePath",
+                json_encode((object) $translations->get($group), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+            );
+        }
     }
 
     /**

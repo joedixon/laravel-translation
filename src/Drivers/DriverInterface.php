@@ -59,7 +59,7 @@ interface DriverInterface
      * @param string $value
      * @return void
      */
-    public function addSingleTranslation($language, $key, $value = '');
+    public function addSingleTranslation($language, $vendor, $key, $value = '');
 
     /**
      * Get all of the single translations for a given language.

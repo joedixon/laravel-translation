@@ -45,7 +45,7 @@ class FileDriverTest extends TestCase
         $translations = $this->translation->allTranslations();
 
         $this->assertEquals($translations->count(), 2);
-        $this->assertArraySubset(['en' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]]], $translations->toArray());
+        $this->assertArraySubset(['en' => ['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]]], $translations->toArray());
         $this->assertArrayHasKey('en', $translations->toArray());
         $this->assertArrayHasKey('es', $translations->toArray());
     }
@@ -55,7 +55,7 @@ class FileDriverTest extends TestCase
     {
         $translations = $this->translation->allTranslationsFor('en');
         $this->assertEquals($translations->count(), 2);
-        $this->assertEquals(['single' => ['Hello' => 'Hello', "What's up" => "What's up!"], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]], $translations->toArray());
+        $this->assertEquals(['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]], $translations->toArray());
         $this->assertArrayHasKey('single', $translations->toArray());
         $this->assertArrayHasKey('group', $translations->toArray());
     }
@@ -109,11 +109,11 @@ class FileDriverTest extends TestCase
     /** @test */
     public function it_can_add_a_new_single_translation()
     {
-        $this->translation->addSingleTranslation('es', 'Hello', 'Hola!');
+        $this->translation->addSingleTranslation('es', 'single', 'Hello', 'Hola!');
 
         $translations = $this->translation->allTranslationsFor('es');
 
-        $this->assertArraySubset(['single' => ['Hello' => 'Hola!']], $translations->toArray());
+        $this->assertArraySubset(['single' => ['single' => ['Hello' => 'Hola!']]], $translations->toArray());
 
         unlink(__DIR__.'/fixtures/lang/es.json');
     }
@@ -121,11 +121,11 @@ class FileDriverTest extends TestCase
     /** @test */
     public function it_can_add_a_new_single_translation_to_an_existing_language()
     {
-        $this->translation->addSingleTranslation('en', 'Test', 'Testing');
+        $this->translation->addSingleTranslation('en', 'single', 'Test', 'Testing');
 
         $translations = $this->translation->allTranslationsFor('en');
 
-        $this->assertArraySubset(['single' => ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'Test' => 'Testing']], $translations->toArray());
+        $this->assertArraySubset(['single' => ['single' => ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'Test' => 'Testing']]], $translations->toArray());
 
         file_put_contents(
             app()['path.lang'].'/en.json',
@@ -155,13 +155,15 @@ class FileDriverTest extends TestCase
                 ],
             ],
             'single' => [
-                'Hello' => [
-                    'en' => 'Hello',
-                    'es' => '',
-                ],
-                "What's up" => [
-                    'en' => "What's up!",
-                    'es' => '',
+                'single' => [
+                    'Hello' => [
+                        'en' => 'Hello',
+                        'es' => '',
+                    ],
+                    "What's up" => [
+                        'en' => "What's up!",
+                        'es' => '',
+                    ],
                 ],
             ],
         ]);
@@ -204,13 +206,15 @@ class FileDriverTest extends TestCase
                 ],
             ],
             'single' => [
-                'Hello' => [
-                    'en' => 'Hello',
-                    'es' => '',
-                ],
-                "What's up" => [
-                    'en' => "What's up!",
-                    'es' => '',
+                'single' => [
+                    'Hello' => [
+                        'en' => 'Hello',
+                        'es' => '',
+                    ],
+                    "What's up" => [
+                        'en' => "What's up!",
+                        'es' => '',
+                    ],
                 ],
             ],
         ]);
@@ -263,11 +267,11 @@ class FileDriverTest extends TestCase
     /** @test */
     public function a_new_translation_can_be_added()
     {
-        $this->post(config('translation.ui_url').'/en/translations', ['key' => 'joe', 'value' => 'is cool'])
+        $this->post(config('translation.ui_url').'/en/translations', ['key' => 'joe', 'group' => 'single', 'value' => 'is cool'])
             ->assertRedirect();
         $translations = $this->translation->getSingleTranslationsFor('en');
 
-        $this->assertArraySubset(['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'joe' => 'is cool'], $translations->toArray());
+        $this->assertArraySubset(['single' => ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'joe' => 'is cool']], $translations->toArray());
 
         file_put_contents(
             app()['path.lang'].'/en.json',

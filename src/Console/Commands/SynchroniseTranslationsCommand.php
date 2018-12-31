@@ -114,11 +114,11 @@ class SynchroniseTranslationsCommand extends Command
 
     private function mergeTranslations($driver, $language, $translations)
     {
-        $this->mergeGroupTranlsations($driver, $language, $translations['group']);
-        $this->mergeSingleTranlsations($driver, $language, $translations['single']);
+        $this->mergeGroupTranslations($driver, $language, $translations['group']);
+        $this->mergeSingleTranslations($driver, $language, $translations['single']);
     }
 
-    private function mergeGroupTranlsations($driver, $language, $groups)
+    private function mergeGroupTranslations($driver, $language, $groups)
     {
         foreach ($groups as $group => $translations) {
             foreach ($translations as $key => $value) {
@@ -130,10 +130,15 @@ class SynchroniseTranslationsCommand extends Command
         }
     }
 
-    private function mergeSingleTranlsations($driver, $language, $translations)
+    private function mergeSingleTranslations($driver, $language, $vendors)
     {
-        foreach ($translations as $key => $value) {
-            $driver->addSingleTranslation($language, $key, $value);
+        foreach ($vendors as $vendor => $translations) {
+            foreach ($translations as $key => $value) {
+                if (is_array($value)) {
+                    continue;
+                }
+                $driver->addSingleTranslation($language, $vendor, $key, $value);
+            }
         }
     }
 }

@@ -54,17 +54,9 @@ class ListMissingTranslationKeys extends BaseCommand
             foreach ($types as $type => $keys) {
                 // iterate over each of the keys
                 foreach ($keys as $key => $value) {
-                    // at this point, if we have an array, we are confident of
-                    // an array file type as they will have an additional layer
-                    // due to the need to store the filename, so handle accordingly
-                    if (is_array($value)) {
-                        foreach ($value as $k => $v) {
-                            $rows[] = [$language, $type, $key, $k];
-                        }
-                    }
-                    // handle json file type
-                    else {
-                        $rows[] = [$language, $type, strtolower(__('translation::translation.single')), $key];
+                    // populate the array with the relevant data to fill the table
+                    foreach ($value as $k => $v) {
+                        $rows[] = [$language, $type, $key, $k];
                     }
                 }
             }

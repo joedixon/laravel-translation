@@ -42,7 +42,7 @@ class AddTranslationKeyCommand extends BaseCommand
         // exception is thrown
         if ($type === 'single') {
             try {
-                $this->translation->addSingleTranslation($language, $key, $value);
+                $this->translation->addSingleTranslation($language, 'single', $key, $value);
 
                 return $this->info(__('translation::translation.language_key_added'));
             } catch (\Exception $e) {

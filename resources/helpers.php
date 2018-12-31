@@ -63,7 +63,7 @@ if (! function_exists('array_diff_assoc_recursive')) {
             }
         }
 
-        return ! isset($difference) ? false : $difference;
+        return ! isset($difference) ? [] : $difference;
     }
 }
 
