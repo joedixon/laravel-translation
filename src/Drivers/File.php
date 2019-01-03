@@ -168,13 +168,16 @@ class File extends Translation implements DriverInterface
     public function getSingleTranslationsFor($language)
     {
         $files = new Collection($this->disk->allFiles($this->languageFilesPath));
+
         return $files->filter(function ($file) use ($language) {
             return strpos($file, "{$language}.json");
         })->flatMap(function ($file) {
             if (strpos($file->getPathname(), 'vendor')) {
                 $vendor = str_before(str_after($file->getPathname(), 'vendor/'), '/');
+
                 return ["{$vendor}::single" => new Collection(json_decode($this->disk->get($file), true))];
             }
+
             return ['single' => new Collection(json_decode($this->disk->get($file), true))];
         });
     }

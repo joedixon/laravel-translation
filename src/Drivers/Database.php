@@ -236,7 +236,7 @@ class Database extends Translation implements DriverInterface
      * we use 'single' to cater for vendor JSON language files.
      *
      * @param Collection $groups
-     * @return boolean
+     * @return bool
      */
     private function hasLegacyGroups($groups)
     {

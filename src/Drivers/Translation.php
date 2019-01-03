@@ -64,7 +64,7 @@ abstract class Translation
                 array_walk($translations, function (&$value, &$key) use ($type, $group, $language, $languageTranslations) {
                     $value = [
                         $this->sourceLanguage => $value,
-                        $language => $languageTranslations->get($type, collect())->get($group, collect())->get($key)
+                        $language => $languageTranslations->get($type, collect())->get($group, collect())->get($key),
                     ];
                 });
 

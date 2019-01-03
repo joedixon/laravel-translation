@@ -198,7 +198,7 @@ class DatabaseDriverTest extends TestCase
                         'en' => "What's up!",
                         'es' => '',
                     ],
-                ]
+                ],
             ],
         ]);
     }
