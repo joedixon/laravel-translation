@@ -267,7 +267,7 @@ class FileDriverTest extends TestCase
     /** @test */
     public function a_new_translation_can_be_added()
     {
-        $this->post(config('translation.ui_url').'/en/translations', ['key' => 'joe', 'group' => 'single', 'value' => 'is cool'])
+        $this->post(config('translation.ui_url').'/en/translations', ['key' => 'joe', 'value' => 'is cool'])
             ->assertRedirect();
         $translations = $this->translation->getSingleTranslationsFor('en');
 
