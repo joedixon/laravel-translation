@@ -27,7 +27,9 @@ if (! function_exists('strs_contain')) {
         $haystacks = (array) $haystacks;
 
         foreach ($haystacks as $haystack) {
-            if (str_contains(strtolower($haystack), strtolower($needle))) {
+            if (is_array($haystack)) {
+                return strs_contain($haystack, $needle);
+            } elseif (str_contains(strtolower($haystack), strtolower($needle))) {
                 return true;
             }
         }
