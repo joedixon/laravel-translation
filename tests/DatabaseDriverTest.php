@@ -52,7 +52,7 @@ class DatabaseDriverTest extends TestCase
         $languages = $this->translation->allLanguages();
 
         $this->assertEquals($languages->count(), 3);
-        $this->assertEquals($languages->toArray(), ['en' => null] + $newLanguages);
+        $this->assertEquals($languages->toArray(), ['en' => 'en'] + $newLanguages);
     }
 
     /** @test */
