@@ -23,6 +23,10 @@ class Translation extends Model
     {
         return static::whereHas('language', function ($q) use ($language) {
             $q->where('language', $language);
-        })->whereNotNull('group')->select('group')->distinct()->get();
+        })->whereNotNull('group')
+            ->where('group', 'not like', '%single')
+            ->select('group')
+            ->distinct()
+            ->get();
     }
 }

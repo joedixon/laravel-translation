@@ -31,7 +31,7 @@ $factory->state(Translation::class, 'single', function (Generator $faker) {
         'language_id' => function () {
             return factory(Language::class)->create()->id;
         },
-        'group' => null,
+        'group' => 'single',
         'key' => $faker->word,
         'value' => $faker->sentence,
     ];
