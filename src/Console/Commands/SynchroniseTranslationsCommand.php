@@ -16,7 +16,7 @@ class SynchroniseTranslationsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'translation:sync-translations';
+    protected $signature = 'translation:sync-translations {from?} {to?} {language?}';
 
     /**
      * The console command description.
@@ -38,6 +38,16 @@ class SynchroniseTranslationsCommand extends Command
      * @var Translation
      */
     private $translation;
+
+    /**
+     * From driver.
+     */
+    private $fromDriver;
+
+    /**
+     * To driver.
+     */
+    private $toDriver;
 
     /**
      * Translation drivers.
@@ -67,30 +77,70 @@ class SynchroniseTranslationsCommand extends Command
     {
         $languages = array_keys($this->translation->allLanguages()->toArray());
 
-        $fromDriver = $this->anticipate(__('translation::translation.prompt_from_driver'), $this->drivers);
-        if (! in_array($fromDriver, $this->drivers)) {
-            return $this->error(__('translation::translation.invalid_driver'));
+        // If a valid from driver has been specified as an argument.
+        if ($this->argument('from') && in_array($this->argument('from'), $this->drivers)) {
+            $this->fromDriver = $this->argument('from');
         }
 
-        $toDriver = $this->anticipate(__('translation::translation.prompt_to_driver'), $this->drivers);
-        if (! in_array($toDriver, $this->drivers)) {
-            return $this->error(__('translation::translation.invalid_driver'));
+        // When the from driver will be entered manually or if the argument is invalid.
+        else {
+            $this->fromDriver = $this->anticipate(__('translation::translation.prompt_from_driver'), $this->drivers);
+
+            if (! in_array($this->fromDriver, $this->drivers)) {
+                return $this->error(__('translation::translation.invalid_driver'));
+            }
         }
 
-        $language = $this->anticipate(__('translation::translation.prompt_language_if_any'), $languages);
-        if ($language && ! in_array($language, $languages)) {
-            return $this->error(__('translation::translation.invalid_language'));
+        // Create the driver.
+        $this->fromDriver = $this->createDriver($this->fromDriver);
+
+        // When the to driver has been specified.
+        if ($this->argument('to')) {
+            $this->toDriver = $this->argument('to');
         }
 
-        $fromDriver = $this->createDriver($fromDriver);
-        $toDriver = $this->createDriver($toDriver);
+        // When the to driver will be entered manually.
+        else {
+            $this->toDriver = $this->anticipate(__('translation::translation.prompt_to_driver'), $this->drivers);
+
+            if (! in_array($this->toDriver, $this->drivers)) {
+                return $this->error(__('translation::translation.invalid_driver'));
+            }
+        }
+
+        // Create the driver.
+        $this->toDriver = $this->createDriver($this->toDriver);
+
+        // If the language argument is set.
+        if ($this->argument('language')) {
+            
+            // If all languages should be synced.
+            if ($this->argument('language') == 'all') {
+                $language = false;
+            }
+            // When a specific language is set and is valid.
+            elseif (in_array($this->argument('language'), $languages)) {
+                $language = $this->argument('language');
+            } else {
+                return $this->error(__('translation::translation.invalid_language'));
+            }
+        } // When the language will be entered manually or if the argument is invalid.
+        else {
+            $language = $this->anticipate(__('translation::translation.prompt_language_if_any'), $languages);
+
+            if ($language && ! in_array($language, $languages)) {
+                return $this->error(__('translation::translation.invalid_language'));
+            }
+        }
 
         $this->line(__('translation::translation.syncing'));
-
+        
+        // If a specific language is set.
         if ($language) {
-            $this->mergeTranslations($toDriver, $language, $fromDriver->allTranslationsFor($language));
-        } else {
-            $translations = $this->mergeLanguages($toDriver, $fromDriver->allTranslations());
+            $this->mergeTranslations($this->toDriver, $language, $this->fromDriver->allTranslationsFor($language));
+        } // Else process all languages.
+        else {
+            $translations = $this->mergeLanguages($this->toDriver, $this->fromDriver->allTranslations());
         }
 
         $this->info(__('translation::translation.synced'));
