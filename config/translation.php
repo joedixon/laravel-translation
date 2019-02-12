@@ -19,7 +19,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | The package ships with routes to handle language management. Update the
-    | configuration here to configure the routes with your preferred goup options.
+    | configuration here to configure the routes with your preferred group options.
     |
     */
     'route_group_config' => [
