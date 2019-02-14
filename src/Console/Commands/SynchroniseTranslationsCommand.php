@@ -95,7 +95,7 @@ class SynchroniseTranslationsCommand extends Command
         $this->fromDriver = $this->createDriver($this->fromDriver);
 
         // When the to driver has been specified.
-        if ($this->argument('to')) {
+        if ($this->argument('to') && in_array($this->argument('to'), $this->drivers)) {
             $this->toDriver = $this->argument('to');
         }
 
