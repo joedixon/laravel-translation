@@ -126,7 +126,7 @@ class DatabaseDriverTest extends TestCase
     {
         $translation = factory(TranslationModel::class)->create();
 
-        $this->translation->addGroupTranslation($translation->language->language, "{$translation->group}", "test", "Testing');
+        $this->translation->addGroupTranslation($translation->language->language, "{$translation->group}", 'test', 'Testing');
 
         $translations = $this->translation->allTranslationsFor($translation->language->language);
 
