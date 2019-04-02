@@ -219,7 +219,7 @@ class File extends Translation implements DriverInterface
         if ($this->disk->exists($filePath)) {
             $translations = Arr::dot($this->disk->getRequire($filePath));
         }
-        
+
         return $translations;
     }
 
@@ -247,21 +247,6 @@ class File extends Translation implements DriverInterface
     }
 
     /**
-     * Transform array with dot notation to multidiemsional array.
-     *
-     * @param array $dotNotationArray
-     * @return array
-     */
-    private function arrayUndot(array $dotNotationArray)
-    {
-        $array = [];
-        foreach ($dotNotationArray as $key => $value) {
-            array_set($array, $key, $value);
-        }
-        return $array;
-    }
-    
-    /**
      * Save group type language translations.
      *
      * @param string $language
@@ -275,7 +260,7 @@ class File extends Translation implements DriverInterface
         // different path
         $translations = $translations instanceof Collection ? $translations->toArray() : $translations;
         ksort($translations);
-        $translations = $this->arrayUndot($translations);
+        $translations = array_undot($translations);
         if (str_contains($group, '::')) {
             return $this->saveNamespacedGroupTranslations($language, $group, $translations);
         }

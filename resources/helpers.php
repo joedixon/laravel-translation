@@ -48,6 +48,7 @@ if (! function_exists('array_diff_assoc_recursive')) {
      */
     function array_diff_assoc_recursive($arrayOne, $arrayTwo)
     {
+        $difference = [];
         foreach ($arrayOne as $key => $value) {
             if (is_array($value) || $value instanceof Illuminate\Support\Collection) {
                 if (! isset($arrayTwo[$key])) {
@@ -65,7 +66,7 @@ if (! function_exists('array_diff_assoc_recursive')) {
             }
         }
 
-        return ! isset($difference) ? [] : $difference;
+        return $difference;
     }
 }
 
@@ -80,5 +81,24 @@ if (! function_exists('str_before')) {
     function str_before($subject, $search)
     {
         return $search === '' ? $subject : explode($search, $subject)[0];
+    }
+}
+
+// Array undot
+if (!function_exists("array_undot")) {
+    /**
+     * Expands a single level array with dot notation into a multi-dimensional array
+     *
+     * @param array $dotNotationArray
+     *
+     * @return array
+     */
+    function array_undot(array $dotNotationArray)
+    {
+        $array = [];
+        foreach ($dotNotationArray as $key => $value) {
+            array_set($array, $key, $value);
+        }
+        return $array;
     }
 }
