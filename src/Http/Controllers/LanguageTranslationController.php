@@ -53,7 +53,7 @@ class LanguageTranslationController extends Controller
     {
         if ($request->filled('group')) {
             $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
-            $this->translation->addGroupTranslation($language, "{$namespace}{$request->get('group')}.{$request->get('key')}", $request->get('value') ?: '');
+            $this->translation->addGroupTranslation($language, "{$namespace}{$request->get('group')}", $request->get('key'), $request->get('value') ?: '');
         } else {
             $this->translation->addSingleTranslation($language, 'single', $request->get('key'), $request->get('value') ?: '');
         }
@@ -66,7 +66,7 @@ class LanguageTranslationController extends Controller
     public function update(Request $request, $language)
     {
         if (! str_contains($request->get('group'), 'single')) {
-            $this->translation->addGroupTranslation($language, "{$request->get('group')}.{$request->get('key')}", $request->get('value') ?: '');
+            $this->translation->addGroupTranslation($language, $request->get('group'), $request->get('key'), $request->get('value') ?: '');
         } else {
             $this->translation->addSingleTranslation($language, $request->get('group'), $request->get('key'), $request->get('value') ?: '');
         }

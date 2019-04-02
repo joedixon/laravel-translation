@@ -97,13 +97,11 @@ class Database extends Translation implements DriverInterface
      * @param string $value
      * @return void
      */
-    public function addGroupTranslation($language, $key, $value = '')
+    public function addGroupTranslation($language, $group, $key, $value = '')
     {
         if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
-
-        list($group, $key) = explode('.', $key);
 
         Language::where('language', $language)
             ->first()
