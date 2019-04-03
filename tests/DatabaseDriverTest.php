@@ -283,7 +283,7 @@ class DatabaseDriverTest extends TestCase
     /** @test */
     public function the_translation_creation_page_can_be_viewed()
     {
-        $this->translation->addGroupTranslation('en', 'translation::translation.add_translation', 'Add a translation');
+        $this->translation->addGroupTranslation('en', 'translation::translation', 'add_translation', 'Add a translation');
         $this->get(config('translation.ui_url').'/'.config('app.locale').'/translations/create')
             ->assertSee('Add a translation');
     }
