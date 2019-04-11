@@ -189,6 +189,42 @@ class FileDriverTest extends TestCase
     }
 
     /** @test */
+    public function it_can_add_a_nested_translation()
+    {
+        $this->translation->addGroupTranslation('en', 'test', 'test.nested', 'Nested!');
+
+        $this->assertEquals($this->translation->getGroupTranslationsFor('en')->toArray(), [
+            'test' => [
+                'hello' => 'Hello',
+                'test.nested' => 'Nested!',
+                'whats_up' => 'What\'s up!',
+            ],
+        ]);
+
+        file_put_contents(
+            app()['path.lang'].'/en/test.php',
+            "<?php\n\nreturn ".var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true).';'.\PHP_EOL
+        );
+    }
+
+    /** @test */
+    public function it_can_add_nested_vendor_namespaced_translations()
+    {
+        $this->translation->addGroupTranslation('es', 'translation_test::test', 'nested.hello', 'Hola!');
+
+        $this->assertEquals($this->translation->allTranslationsFor('es')->toArray(), [
+            'group' => [
+                'translation_test::test' => [
+                    'nested.hello' => 'Hola!',
+                ],
+            ],
+            'single' => [],
+        ]);
+
+        \File::deleteDirectory(__DIR__.'/fixtures/lang/vendor');
+    }
+
+    /** @test */
     public function it_can_merge_a_namespaced_language_with_the_base_language()
     {
         $this->translation->addGroupTranslation('en', 'translation_test::test', 'hello', 'Hello');
