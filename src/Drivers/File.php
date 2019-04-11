@@ -2,6 +2,7 @@
 
 namespace JoeDixon\Translation\Drivers;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
@@ -117,13 +118,12 @@ class File extends Translation implements DriverInterface
      * @param string $value
      * @return void
      */
-    public function addGroupTranslation($language, $key, $value = '')
+    public function addGroupTranslation($language, $group, $key, $value = '')
     {
         if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
 
-        list($group, $key) = explode('.', $key);
         $translations = $this->getGroupTranslationsFor($language);
 
         // does the group exist? If not, create it.
@@ -196,10 +196,10 @@ class File extends Translation implements DriverInterface
             if (str_contains($group->getPathname(), 'vendor')) {
                 $vendor = str_before(str_after($group->getPathname(), 'vendor/'), '/');
 
-                return ["{$vendor}::{$group->getBasename('.php')}" => new Collection($this->disk->getRequire($group->getPathname()))];
+                return ["{$vendor}::{$group->getBasename('.php')}" => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
             }
 
-            return [$group->getBasename('.php') => new Collection($this->disk->getRequire($group->getPathname()))];
+            return [$group->getBasename('.php') => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
         });
     }
 
@@ -217,10 +217,10 @@ class File extends Translation implements DriverInterface
         $translations = [];
 
         if ($this->disk->exists($filePath)) {
-            return $this->disk->getRequire($filePath);
+            $translations = Arr::dot($this->disk->getRequire($filePath));
         }
 
-        return [];
+        return $translations;
     }
 
     /**
@@ -259,6 +259,8 @@ class File extends Translation implements DriverInterface
         // here we check if it's a namespaced translation which need saving to a
         // different path
         $translations = $translations instanceof Collection ? $translations->toArray() : $translations;
+        ksort($translations);
+        $translations = array_undot($translations);
         if (str_contains($group, '::')) {
             return $this->saveNamespacedGroupTranslations($language, $group, $translations);
         }

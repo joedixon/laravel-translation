@@ -49,7 +49,7 @@ interface DriverInterface
      * @param string $value
      * @return void
      */
-    public function addGroupTranslation($language, $key, $value = '');
+    public function addGroupTranslation($language, $group, $key, $value = '');
 
     /**
      * Add a new single type translation.

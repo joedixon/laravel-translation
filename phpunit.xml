@@ -16,12 +16,10 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
+            <exclude>
+                <directory>./src/Console</directory>
+            </exclude>
         </whitelist>
-    </filter>
-    <filter>
-        <blacklist>
-              <directory>./src/Console</directory>
-        </blacklist>
     </filter>
     <php>
         <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>

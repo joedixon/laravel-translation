@@ -51,7 +51,7 @@ class AddTranslationKeyCommand extends BaseCommand
         } elseif ($type === 'group') {
             try {
                 $file = str_replace('.php', '', $file);
-                $this->translation->addGroupTranslation($language, "{$file}.{$key}", $value);
+                $this->translation->addGroupTranslation($language, $file, $key, $value);
 
                 return $this->info(__('translation::translation.language_key_added'));
             } catch (\Exception $e) {

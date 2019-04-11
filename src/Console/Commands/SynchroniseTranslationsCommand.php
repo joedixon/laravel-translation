@@ -175,7 +175,7 @@ class SynchroniseTranslationsCommand extends Command
                 if (is_array($value)) {
                     continue;
                 }
-                $driver->addGroupTranslation($language, "{$group}.{$key}", $value);
+                $driver->addGroupTranslation($language, $group, $key, $value);
             }
         }
     }

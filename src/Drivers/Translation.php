@@ -39,7 +39,7 @@ abstract class Translation
                         if (str_contains($group, 'single')) {
                             $this->addSingleTranslation($language, $group, $key);
                         } else {
-                            $this->addGroupTranslation($language, "{$group}.{$key}");
+                            $this->addGroupTranslation($language, $group, $key);
                         }
                     }
                 }
