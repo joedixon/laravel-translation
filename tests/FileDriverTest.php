@@ -13,7 +13,7 @@ class FileDriverTest extends TestCase
     /**
      * Setup the test environment.
      */
-    protected function setUp()
+    protected function setUp() :void
     {
         parent::setUp();
         app()['path.lang'] = __DIR__.'/fixtures/lang';

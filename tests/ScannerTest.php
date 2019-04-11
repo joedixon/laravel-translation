@@ -9,14 +9,6 @@ class ScannerTest extends TestCase
 {
     private $scanner;
 
-    /**
-     * Setup the test environment.
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-    }
-
     protected function getPackageProviders($app)
     {
         return ['JoeDixon\Translation\TranslationServiceProvider'];
