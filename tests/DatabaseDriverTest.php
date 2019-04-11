@@ -225,7 +225,7 @@ class DatabaseDriverTest extends TestCase
 
         $this->assertEquals($this->translation->getGroupTranslationsFor('en')->toArray(), [
             'test' => [
-                'test.nested' => 'Nested!'
+                'test.nested' => 'Nested!',
             ],
         ]);
     }

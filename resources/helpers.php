@@ -87,7 +87,7 @@ if (! function_exists('str_before')) {
 // Array undot
 if (! function_exists('array_undot')) {
     /**
-     * Expands a single level array with dot notation into a multi-dimensional array
+     * Expands a single level array with dot notation into a multi-dimensional array.
      *
      * @param array $dotNotationArray
      *
@@ -99,6 +99,7 @@ if (! function_exists('array_undot')) {
         foreach ($dotNotationArray as $key => $value) {
             array_set($array, $key, $value);
         }
+
         return $array;
     }
 }
