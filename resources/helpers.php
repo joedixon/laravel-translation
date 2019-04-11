@@ -85,7 +85,7 @@ if (! function_exists('str_before')) {
 }
 
 // Array undot
-if (!function_exists("array_undot")) {
+if (! function_exists('array_undot')) {
     /**
      * Expands a single level array with dot notation into a multi-dimensional array
      *
