@@ -45,8 +45,7 @@ Install the package via Composer
 
 Publish configuration and assets
 
-`php artisan vendor:publish
---provider=JoeDixon\\Translation\\TranslationServiceProvider`
+`php artisan vendor:publish --provider="JoeDixon\Translation\TranslationServiceProvider"`
 
 The service provider is loaded automatically using [package discovery](https://laravel.com/docs/5.7/packages#package-discovery).
 
