@@ -39,7 +39,7 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('translation-input', require('./components/TranslationInput.vue'));
+Vue.component('translation-input', require('./components/TranslationInput.vue').default);
 
 const app = new Vue({
     el: '#app',
