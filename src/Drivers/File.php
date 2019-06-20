@@ -254,7 +254,7 @@ class File extends Translation implements DriverInterface
      * @param array $translations
      * @return void
      */
-    private function saveGroupTranslations($language, $group, $translations)
+    public function saveGroupTranslations($language, $group, $translations)
     {
         // here we check if it's a namespaced translation which need saving to a
         // different path
