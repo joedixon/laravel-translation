@@ -97,7 +97,13 @@ if (! function_exists('array_undot')) {
     {
         $array = [];
         foreach ($dotNotationArray as $key => $value) {
-            array_set($array, $key, $value);
+            // if there is a space after the dot, this could legitimately be
+            // a single key and not nested.
+            if (count(explode('. ', $key)) > 1) {
+                $array[$key] = $value;
+            } else {
+                array_set($array, $key, $value);
+            }
         }
 
         return $array;
