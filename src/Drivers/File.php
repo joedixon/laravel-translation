@@ -277,7 +277,7 @@ class File extends Translation implements DriverInterface
      */
     private function saveNamespacedGroupTranslations($language, $group, $translations)
     {
-        list($namespace, $group) = explode('::', $group);
+        [$namespace, $group] = explode('::', $group);
         $directory = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$namespace}".DIRECTORY_SEPARATOR."{$language}";
 
         if (! $this->disk->exists($directory)) {
