@@ -22,9 +22,17 @@ class CreateLanguagesTable extends Migration
                 $table->timestamps();
             });
 
-        Language::create([
-            'language' => config('app.locale'),
+        $initialLanguages = array_unique([
+            config('app.fallback_locale'),
+            config('app.locale'),
         ]);
+
+        foreach ($initialLanguages as $language) {
+            Language::create([
+                'language' => $language,
+            ]);
+        }
+
     }
 
     /**
