@@ -32,7 +32,6 @@ class CreateLanguagesTable extends Migration
                 'language' => $language,
             ]);
         }
-
     }
 
     /**
