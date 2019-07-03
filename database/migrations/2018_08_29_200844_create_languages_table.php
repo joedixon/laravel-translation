@@ -28,7 +28,7 @@ class CreateLanguagesTable extends Migration
         ]);
 
         foreach ($initialLanguages as $language) {
-            Language::create([
+            Language::firstOrCreate([
                 'language' => $language,
             ]);
         }
