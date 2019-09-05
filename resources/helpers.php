@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+
 if (! function_exists('set_active')) {
     /**
      * Determine if a route is the currently active route.
@@ -29,7 +32,7 @@ if (! function_exists('strs_contain')) {
         foreach ($haystacks as $haystack) {
             if (is_array($haystack)) {
                 return strs_contain($haystack, $needle);
-            } elseif (str_contains(strtolower($haystack), strtolower($needle))) {
+            } elseif (Str::contains(strtolower($haystack), strtolower($needle))) {
                 return true;
             }
         }
@@ -102,7 +105,7 @@ if (! function_exists('array_undot')) {
             if (count(explode('. ', $key)) > 1) {
                 $array[$key] = $value;
             } else {
-                array_set($array, $key, $value);
+                Arr::set($array, $key, $value);
             }
         }
 
