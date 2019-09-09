@@ -2,6 +2,7 @@
 
 namespace JoeDixon\Translation\Drivers;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 abstract class Translation
@@ -36,7 +37,7 @@ abstract class Translation
             foreach ($missingTranslations as $type => $groups) {
                 foreach ($groups as $group => $translations) {
                     foreach ($translations as $key => $value) {
-                        if (str_contains($group, 'single')) {
+                        if (Str::contains($group, 'single')) {
                             $this->addSingleTranslation($language, $group, $key);
                         } else {
                             $this->addGroupTranslation($language, $group, $key);

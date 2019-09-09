@@ -9,11 +9,10 @@
             "email": "hello@joedixon.co.uk"
         }
     ],
-    "require": {
-    },
+    "require": {},
     "require-dev": {
-        "orchestra/testbench": "^3.6",
-        "phpunit/phpunit": "^7.0",
+        "orchestra/testbench": "^4.0",
+        "phpunit/phpunit": "^8.0",
         "mockery/mockery": "^1.0.0"
     },
     "autoload": {

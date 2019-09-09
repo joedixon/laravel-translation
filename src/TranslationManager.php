@@ -2,6 +2,7 @@
 
 namespace JoeDixon\Translation;
 
+use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
 use JoeDixon\Translation\Drivers\File;
 use JoeDixon\Translation\Drivers\Database;
@@ -24,7 +25,7 @@ class TranslationManager
     public function resolve()
     {
         $driver = $this->config['driver'];
-        $driverResolver = studly_case($driver);
+        $driverResolver = Str::studly($driver);
         $method = "resolve{$driverResolver}Driver";
 
         if (! method_exists($this, $method)) {

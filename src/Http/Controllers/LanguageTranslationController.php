@@ -2,6 +2,7 @@
 
 namespace JoeDixon\Translation\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
@@ -65,7 +66,7 @@ class LanguageTranslationController extends Controller
 
     public function update(Request $request, $language)
     {
-        if (! str_contains($request->get('group'), 'single')) {
+        if (! Str::contains($request->get('group'), 'single')) {
             $this->translation->addGroupTranslation($language, $request->get('group'), $request->get('key'), $request->get('value') ?: '');
         } else {
             $this->translation->addSingleTranslation($language, $request->get('group'), $request->get('key'), $request->get('value') ?: '');
