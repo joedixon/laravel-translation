@@ -174,7 +174,7 @@ class File extends Translation implements DriverInterface
             return strpos($file, "{$language}.json");
         })->flatMap(function ($file) {
             if (strpos($file->getPathname(), 'vendor')) {
-                $vendor = str_before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+                $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
                 return ["{$vendor}::single" => new Collection(json_decode($this->disk->get($file), true))];
             }
@@ -195,7 +195,7 @@ class File extends Translation implements DriverInterface
             // here we check if the path contains 'vendor' as these will be the
             // files which need namespacing
             if (Str::contains($group->getPathname(), 'vendor')) {
-                $vendor = str_before(Str::after($group->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+                $vendor = Str::before(Str::after($group->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
                 return ["{$vendor}::{$group->getBasename('.php')}" => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
             }
@@ -213,7 +213,7 @@ class File extends Translation implements DriverInterface
      */
     public function getTranslationsForFile($language, $file)
     {
-        $file = str_finish($file, '.php');
+        $file = Str::finish($file, '.php');
         $filePath = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}".DIRECTORY_SEPARATOR."{$file}";
         $translations = [];
 
@@ -298,7 +298,7 @@ class File extends Translation implements DriverInterface
     private function saveSingleTranslations($language, $translations)
     {
         foreach ($translations as $group => $translation) {
-            $vendor = str_before($group, '::single');
+            $vendor = Str::before($group, '::single');
             $languageFilePath = $vendor !== 'single' ? 'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}.json" : "{$language}.json";
             $this->disk->put(
                 "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$languageFilePath}",
@@ -333,7 +333,7 @@ class File extends Translation implements DriverInterface
     {
         return $this->getGroupFilesFor($language)->map(function ($file) {
             if (Str::contains($file->getPathname(), 'vendor')) {
-                $vendor = str_before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+                $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
                 return "{$vendor}::{$file->getBasename('.php')}";
             }
