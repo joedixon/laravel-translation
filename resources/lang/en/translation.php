@@ -29,7 +29,6 @@ return [
     'group_single' => 'Group / Single',
     'group' => 'Group',
     'single' => 'Single',
-    'key' => 'Key',
     'value' => 'Value',
     'namespace' => 'Namespace',
     'prompt_from_driver' => 'Which driver would you like to take translations from?',
