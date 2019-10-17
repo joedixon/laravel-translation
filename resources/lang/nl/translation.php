@@ -29,7 +29,6 @@ return [
     'group_single' => 'Groep / Enkelvoudig',
     'group' => 'Groep',
     'single' => 'Enkelvoudig',
-    'key' => 'Sleutel',
     'value' => 'Waarde',
     'namespace' => 'Namespace',
     'prompt_from_driver' => 'Van welke driver wilt u vertalingen meenemen?',

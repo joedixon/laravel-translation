@@ -29,7 +29,6 @@ return [
     'group_single' => 'Gruppe / Single',
     'Gruppe' => 'Gruppe',
     'single' => 'single',
-    'key' => 'Schlüssel',
     'value' => 'Wert',
     'namespace' => 'Namespace',
     'prompt_from_driver' => 'Von welchem Treiber möchten Sie Übersetzungen übernehmen?',
