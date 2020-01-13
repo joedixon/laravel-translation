@@ -7,7 +7,7 @@ use JoeDixon\Translation\Scanner;
 use Illuminate\Filesystem\Filesystem;
 use JoeDixon\Translation\Drivers\File;
 use JoeDixon\Translation\Drivers\Database;
-use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Drivers\DriverInterface;
 
 class SynchroniseTranslationsCommand extends Command
 {
@@ -54,14 +54,14 @@ class SynchroniseTranslationsCommand extends Command
      *
      * @var array
      */
-    private $drivers = ['file', 'database'];
+    private $drivers = ['file', 'file:php', 'file:json', 'database'];
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(Scanner $scanner, Translation $translation)
+    public function __construct(Scanner $scanner, DriverInterface $translation)
     {
         parent::__construct();
         $this->scanner = $scanner;
@@ -80,10 +80,8 @@ class SynchroniseTranslationsCommand extends Command
         // If a valid from driver has been specified as an argument.
         if ($this->argument('from') && in_array($this->argument('from'), $this->drivers)) {
             $this->fromDriver = $this->argument('from');
-        }
-
-        // When the from driver will be entered manually or if the argument is invalid.
-        else {
+        } else {
+            // When the from driver will be entered manually or if the argument is invalid.
             $this->fromDriver = $this->anticipate(__('translation::translation.prompt_from_driver'), $this->drivers);
 
             if (! in_array($this->fromDriver, $this->drivers)) {
@@ -97,10 +95,8 @@ class SynchroniseTranslationsCommand extends Command
         // When the to driver has been specified.
         if ($this->argument('to') && in_array($this->argument('to'), $this->drivers)) {
             $this->toDriver = $this->argument('to');
-        }
-
-        // When the to driver will be entered manually.
-        else {
+        } else {
+            // When the to driver will be entered manually.
             $this->toDriver = $this->anticipate(__('translation::translation.prompt_to_driver'), $this->drivers);
 
             if (! in_array($this->toDriver, $this->drivers)) {
@@ -113,19 +109,17 @@ class SynchroniseTranslationsCommand extends Command
 
         // If the language argument is set.
         if ($this->argument('language')) {
-
             // If all languages should be synced.
             if ($this->argument('language') == 'all') {
                 $language = false;
-            }
-            // When a specific language is set and is valid.
-            elseif (in_array($this->argument('language'), $languages)) {
+            } elseif (in_array($this->argument('language'), $languages)) {
+                // When a specific language is set and is valid.
                 $language = $this->argument('language');
             } else {
                 return $this->error(__('translation::translation.invalid_language'));
             }
-        } // When the language will be entered manually or if the argument is invalid.
-        else {
+        } else {
+            // When the language will be entered manually or if the argument is invalid.
             $language = $this->anticipate(__('translation::translation.prompt_language_if_any'), $languages);
 
             if ($language && ! in_array($language, $languages)) {
@@ -138,8 +132,8 @@ class SynchroniseTranslationsCommand extends Command
         // If a specific language is set.
         if ($language) {
             $this->mergeTranslations($this->toDriver, $language, $this->fromDriver->allTranslationsFor($language));
-        } // Else process all languages.
-        else {
+        } else {
+            // Else process all languages.
             $translations = $this->mergeLanguages($this->toDriver, $this->fromDriver->allTranslations());
         }
 
@@ -148,8 +142,9 @@ class SynchroniseTranslationsCommand extends Command
 
     private function createDriver($driver)
     {
-        if ($driver === 'file') {
-            return new File(new Filesystem, app('path.lang'), config('app.locale'), $this->scanner);
+        if (in_array($driver, ['file', 'file:php', 'file:json'])) {
+            $ext = explode(':', $driver)[1] ?? 'php';
+            return new File(new Filesystem, app('path.lang'), $ext);
         }
 
         return new Database(config('app.locale'), $this->scanner);

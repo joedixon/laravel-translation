@@ -24,7 +24,7 @@ class TranslationManager
 
     public function resolve()
     {
-        $driver = $this->config['driver'];
+        $driver = explode(':', $this->config['driver'])[0] ?? 'file';
         $driverResolver = Str::studly($driver);
         $method = "resolve{$driverResolver}Driver";
 
@@ -37,11 +37,11 @@ class TranslationManager
 
     protected function resolveFileDriver()
     {
-        return new File(new Filesystem, $this->app['path.lang'], $this->app->config['app']['locale'], $this->scanner);
+        return new File(new Filesystem, $this->app['path.lang']);
     }
 
     protected function resolveDatabaseDriver()
     {
-        return new Database($this->app->config['app']['locale'], $this->scanner);
+        return new Database();
     }
 }
