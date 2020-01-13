@@ -144,7 +144,7 @@ class SynchroniseTranslationsCommand extends Command
     {
         if (in_array($driver, ['file', 'file:php', 'file:json'])) {
             $ext = explode(':', $driver)[1] ?? 'php';
-            return new File(new Filesystem, app('path.lang'), $ext);
+            return new File(new Filesystem(), app('path.lang'), $ext);
         }
 
         return new Database(config('app.locale'), $this->scanner);

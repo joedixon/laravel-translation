@@ -167,7 +167,7 @@ class TranslationServiceProvider extends ServiceProvider
         $this->app->singleton(Scanner::class, function () {
             $config = $this->app['config']['translation'];
 
-            return new Scanner(new Filesystem, $config['scan_paths'], $config['translation_methods']);
+            return new Scanner(new Filesystem(), $config['scan_paths'], $config['translation_methods']);
         });
 
         $this->app->singleton(DriverInterface::class, function ($app) {

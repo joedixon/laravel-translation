@@ -3,7 +3,7 @@
 namespace JoeDixon\Translation\Tests;
 
 use Orchestra\Testbench\TestCase;
-use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Drivers\DriverInterface;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 
 class FileDriverTest extends TestCase
@@ -17,7 +17,7 @@ class FileDriverTest extends TestCase
     {
         parent::setUp();
         app()['path.lang'] = __DIR__.'/fixtures/lang';
-        $this->translation = app()->make(Translation::class);
+        $this->translation = app()->make(DriverInterface::class);
     }
 
     protected function getPackageProviders($app)

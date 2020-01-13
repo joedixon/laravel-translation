@@ -6,14 +6,14 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
-use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Drivers\DriverInterface;
 use JoeDixon\Translation\Http\Requests\TranslationRequest;
 
 class LanguageTranslationController extends Controller
 {
     private $translation;
 
-    public function __construct(Translation $translation)
+    public function __construct(DriverInterface $translation)
     {
         $this->translation = $translation;
     }

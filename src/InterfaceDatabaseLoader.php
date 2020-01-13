@@ -3,13 +3,13 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Translation\LoaderInterface;
-use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Drivers\DriverInterface;
 
 class InterfaceDatabaseLoader implements LoaderInterface
 {
     private $translation;
 
-    public function __construct(Translation $translation)
+    public function __construct(DriverInterface $translation)
     {
         $this->translation = $translation;
     }

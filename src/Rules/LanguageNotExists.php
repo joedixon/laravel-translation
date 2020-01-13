@@ -3,7 +3,7 @@
 namespace JoeDixon\Translation\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Drivers\DriverInterface;
 
 class LanguageNotExists implements Rule
 {
@@ -16,7 +16,7 @@ class LanguageNotExists implements Rule
      */
     public function passes($attribute, $value)
     {
-        $translation = app()->make(Translation::class);
+        $translation = app()->make(DriverInterface::class);
 
         return ! $translation->languageExists($value);
     }

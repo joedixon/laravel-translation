@@ -4,14 +4,14 @@ namespace JoeDixon\Translation\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Drivers\DriverInterface;
 use JoeDixon\Translation\Http\Requests\LanguageRequest;
 
 class LanguageController extends Controller
 {
     private $translation;
 
-    public function __construct(Translation $translation)
+    public function __construct(DriverInterface $translation)
     {
         $this->translation = $translation;
     }

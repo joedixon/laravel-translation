@@ -37,7 +37,7 @@ class TranslationManager
 
     protected function resolveFileDriver()
     {
-        return new File(new Filesystem, $this->app['path.lang']);
+        return new File(new Filesystem(), $this->app['path.lang']);
     }
 
     protected function resolveDatabaseDriver()

@@ -4,7 +4,7 @@ namespace JoeDixon\Translation\Tests;
 
 use Orchestra\Testbench\TestCase;
 use JoeDixon\Translation\Language;
-use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Drivers\DriverInterface;
 use JoeDixon\Translation\TranslationServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use JoeDixon\Translation\Translation as TranslationModel;
@@ -34,7 +34,7 @@ class DatabaseDriverTest extends TestCase
             'database' => ':memory:',
         ]);
 
-        $this->translation = $app[Translation::class];
+        $this->translation = $app[DriverInterface::class];
     }
 
     protected function getPackageProviders($app)

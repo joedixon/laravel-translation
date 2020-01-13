@@ -7,7 +7,7 @@ use JoeDixon\Translation\Language;
 use JoeDixon\Translation\Translation as TranslationModel;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 
-class Database extends Translation implements DriverInterface
+class Database implements DriverInterface
 {
     use Translation;
 
