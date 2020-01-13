@@ -4,8 +4,9 @@ namespace JoeDixon\Translation\Drivers;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use JoeDixon\Translation\Scanner;
 
-abstract class Translation
+trait Translation
 {
     /**
      * Find all of the translations in the app without translation for a given language.
@@ -16,7 +17,7 @@ abstract class Translation
     public function findMissingTranslations($language)
     {
         return array_diff_assoc_recursive(
-            $this->scanner->findTranslations(),
+            $this->getScanner()->findTranslations(),
             $this->allTranslationsFor($language)
         );
     }
@@ -56,7 +57,7 @@ abstract class Translation
      */
     public function getSourceLanguageTranslationsWith($language)
     {
-        $sourceTranslations = $this->allTranslationsFor($this->sourceLanguage);
+        $sourceTranslations = $this->allTranslationsFor($this->getSourceLanguage());
         $languageTranslations = $this->allTranslationsFor($language);
 
         return $sourceTranslations->map(function ($groups, $type) use ($language, $languageTranslations) {
@@ -64,7 +65,7 @@ abstract class Translation
                 $translations = $translations->toArray();
                 array_walk($translations, function (&$value, &$key) use ($type, $group, $language, $languageTranslations) {
                     $value = [
-                        $this->sourceLanguage => $value,
+                        $this->getSourceLanguage() => $value,
                         $language => $languageTranslations->get($type, collect())->get($group, collect())->get($key),
                     ];
                 });
@@ -91,11 +92,27 @@ abstract class Translation
         return $allTranslations->map(function ($groups, $type) use ($language, $filter) {
             return $groups->map(function ($keys, $group) use ($language, $filter, $type) {
                 return collect($keys)->filter(function ($translations, $key) use ($group, $language, $filter, $type) {
-                    return strs_contain([$group, $key, $translations[$language], $translations[$this->sourceLanguage]], $filter);
+                    return strs_contain([$group, $key, $translations[$language], $translations[$this->getSourceLanguage()]], $filter);
                 });
             })->filter(function ($keys) {
                 return $keys->isNotEmpty();
             });
         });
+    }
+
+    /**
+     * @return Scanner
+     */
+    protected function getScanner(): Scanner
+    {
+        return app()->get(Scanner::class);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSourceLanguage(): string
+    {
+        return app()->config['app']['locale'];
     }
 }

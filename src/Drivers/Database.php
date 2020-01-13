@@ -9,15 +9,7 @@ use JoeDixon\Translation\Exceptions\LanguageExistsException;
 
 class Database extends Translation implements DriverInterface
 {
-    protected $sourceLanguage;
-
-    protected $scanner;
-
-    public function __construct($sourceLanguage, $scanner)
-    {
-        $this->sourceLanguage = $sourceLanguage;
-        $this->scanner = $scanner;
-    }
+    use Translation;
 
     /**
      * Get all languages from the application.
@@ -139,7 +131,7 @@ class Database extends Translation implements DriverInterface
             ], [
                 'key' => $key,
                 'value' => $value,
-        ]);
+            ]);
     }
 
     /**
