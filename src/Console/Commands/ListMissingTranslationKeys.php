@@ -9,14 +9,14 @@ class ListMissingTranslationKeys extends BaseCommand
      *
      * @var string
      */
-    protected $signature = 'translation:list-missing-translation-keys';
+    protected $signature = 'translation:list-missing-translation-keys {language?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'List all of the translation keys in the app which don\'t have a corresponding translation';
+    protected $description = "List all of the translation keys in the app which don't have a corresponding translation";
 
     /**
      * Execute the console command.
@@ -25,16 +25,25 @@ class ListMissingTranslationKeys extends BaseCommand
      */
     public function handle()
     {
+        $only = $this->argument('language') ?: false;
         $missingTranslations = [];
         $rows = [];
 
         foreach ($this->translation->allLanguages() as $language => $name) {
+            if ($only && $only != $language) {
+                continue;
+            }
+
             $missingTranslations[$language] = $this->translation->findMissingTranslations($language);
         }
 
         // check whether or not there are any missing translations
         $empty = true;
         foreach ($missingTranslations as $language => $values) {
+            if ($only && $only != $language) {
+                continue;
+            }
+
             if (! empty($values)) {
                 $empty = false;
             }
@@ -46,10 +55,19 @@ class ListMissingTranslationKeys extends BaseCommand
         }
 
         // set some headers for the table of results
-        $headers = [__('translation::translation.language'), __('translation::translation.type'), __('translation::translation.group'), __('translation::translation.key')];
+        $headers = [
+            __('translation::translation.language'),
+            __('translation::translation.type'),
+            __('translation::translation.group'),
+            __('translation::translation.key')
+        ];
 
         // iterate over each of the missing languages
         foreach ($missingTranslations as $language => $types) {
+            if ($only && $only != $language) {
+                continue;
+            }
+
             // iterate over each of the file types (json or array)
             foreach ($types as $type => $keys) {
                 // iterate over each of the keys
