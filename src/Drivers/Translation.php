@@ -2,7 +2,9 @@
 
 namespace JoeDixon\Translation\Drivers;
 
+use Exception;
 use Illuminate\Support\Str;
+use Yandex\Translate\Translator;
 use Illuminate\Support\Collection;
 
 abstract class Translation
@@ -38,7 +40,22 @@ abstract class Translation
                 foreach ($groups as $group => $translations) {
                     foreach ($translations as $key => $value) {
                         if (Str::contains($group, 'single')) {
-                            $this->addSingleTranslation($language, $group, $key);
+                            if (config('app.locale') == $language && config('translation.copy_key_to_value_if_default_locale') == true) {
+                                // on default locale copy key to index
+                                $this->addSingleTranslation($language, $group, $key, $key);
+                            } elseif (config('translation.yandex.api_key') && !in_array($language, config('translation.yandex.exclude_locales'))) {
+                                // yandex auto translate
+                                try {
+                                    $translator = new Translator(config('translation.yandex.api_key'));
+                                    $direction = config('app.locale') . '-' . $language;
+                                    $value = config('translation.yandex.prefix') . $translator->translate($key, $direction);
+                                    $this->addSingleTranslation($language, $group, $key, (string) $value);
+                                } catch (\Exception $e) {
+                                    $this->addSingleTranslation($language, $group, $key, '!!yandexerror!! ' . $e->getMessage());
+                                }
+                            } else {
+                                $this->addSingleTranslation($language, $group, $key);
+                            }
                         } else {
                             $this->addGroupTranslation($language, $group, $key);
                         }
