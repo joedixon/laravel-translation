@@ -3,13 +3,13 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Contracts\Translation\Loader;
-use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Drivers\DriverInterface;
 
 class ContractDatabaseLoader implements Loader
 {
     private $translation;
 
-    public function __construct(Translation $translation)
+    public function __construct(DriverInterface $translation)
     {
         $this->translation = $translation;
     }
