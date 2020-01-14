@@ -82,5 +82,8 @@ class ListMissingTranslationKeys extends BaseCommand
 
         // render the table of results
         $this->table($headers, $rows);
+
+        // exit 1 if there are missing translations
+        return 1;
     }
 }
