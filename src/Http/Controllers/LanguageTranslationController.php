@@ -2,10 +2,10 @@
 
 namespace JoeDixon\Translation\Http\Controllers;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Http\Requests\TranslationRequest;
 
@@ -26,7 +26,7 @@ class LanguageTranslationController extends Controller
         }
 
         $languages = $this->translation->allLanguages();
-        $groups = $this->translation->getGroupsFor(config('app.locale'))->merge('single');
+        $groups = $this->translation->getGroupsFor(config('app.locale'))->toBase()->merge('single');
         $translations = $this->translation->filterTranslationsFor($language, $request->get('filter'));
 
         if ($request->has('group') && $request->get('group')) {
