@@ -170,7 +170,7 @@ class Database extends Translation implements DriverInterface
             return $translations->mapWithKeys(function ($translation) {
                 return [$translation->key => $translation->value];
             });
-        });
+        })->collapse();
     }
 
     /**
