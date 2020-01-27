@@ -9,6 +9,7 @@ use JoeDixon\Translation\TranslationServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use JoeDixon\Translation\Translation as TranslationModel;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
+use JoeDixon\Translation\TranslationBindingsServiceProvider;
 
 class DatabaseDriverTest extends TestCase
 {
@@ -23,6 +24,7 @@ class DatabaseDriverTest extends TestCase
     {
         parent::setUp();
         $this->withFactories(__DIR__.'/../database/factories');
+        $this->translation = $this->app[Translation::class];
     }
 
     protected function getEnvironmentSetUp($app)
@@ -33,13 +35,14 @@ class DatabaseDriverTest extends TestCase
             'driver' => 'sqlite',
             'database' => ':memory:',
         ]);
-
-        $this->translation = $app[Translation::class];
     }
 
     protected function getPackageProviders($app)
     {
-        return [TranslationServiceProvider::class];
+        return [
+            TranslationServiceProvider::class,
+            TranslationBindingsServiceProvider::class,
+        ];
     }
 
     /** @test */

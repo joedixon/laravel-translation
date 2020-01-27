@@ -4,6 +4,8 @@ namespace JoeDixon\Translation\Tests;
 
 use JoeDixon\Translation\Scanner;
 use Orchestra\Testbench\TestCase;
+use JoeDixon\Translation\TranslationServiceProvider;
+use JoeDixon\Translation\TranslationBindingsServiceProvider;
 
 class ScannerTest extends TestCase
 {
@@ -11,7 +13,10 @@ class ScannerTest extends TestCase
 
     protected function getPackageProviders($app)
     {
-        return ['JoeDixon\Translation\TranslationServiceProvider'];
+        return [
+            TranslationServiceProvider::class,
+            TranslationBindingsServiceProvider::class,
+        ];
     }
 
     protected function getEnvironmentSetUp($app)

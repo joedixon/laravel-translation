@@ -2,10 +2,7 @@
 
 namespace JoeDixon\Translation;
 
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Translation\Translator;
 use Illuminate\Support\ServiceProvider;
-use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
 use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
 use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
@@ -34,11 +31,7 @@ class TranslationServiceProvider extends ServiceProvider
 
         $this->loadTranslations();
 
-        $this->registerCommands();
-
         $this->registerHelpers();
-
-        $this->registerDatabaseLoader();
     }
 
     /**
@@ -50,7 +43,7 @@ class TranslationServiceProvider extends ServiceProvider
     {
         $this->mergeConfiguration();
 
-        $this->registerContainerBindings();
+        $this->registerCommands();
     }
 
     /**
@@ -129,7 +122,7 @@ class TranslationServiceProvider extends ServiceProvider
     private function loadTranslations()
     {
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'translation');
-
+        
         $this->publishes([
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/translation'),
         ]);
@@ -155,24 +148,6 @@ class TranslationServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register package bindings in the container.
-     *
-     * @return void
-     */
-    private function registerContainerBindings()
-    {
-        $this->app->singleton(Scanner::class, function () {
-            $config = $this->app['config']['translation'];
-
-            return new Scanner(new Filesystem, $config['scan_paths'], $config['translation_methods']);
-        });
-
-        $this->app->singleton(Translation::class, function ($app) {
-            return (new TranslationManager($app, $app['config']['translation'], $app->make(Scanner::class)))->resolve();
-        });
-    }
-
-    /**
      * Register package helper functions.
      *
      * @return void
@@ -180,40 +155,5 @@ class TranslationServiceProvider extends ServiceProvider
     private function registerHelpers()
     {
         require __DIR__.'/../resources/helpers.php';
-    }
-
-    private function registerDatabaseLoader()
-    {
-        if ($this->app['config']['translation.driver'] !== 'database') {
-            return;
-        }
-
-        $this->registerLoader();
-
-        $this->app->singleton('translator', function ($app) {
-            $loader = $app['translation.loader'];
-            // When registering the translator component, we'll need to set the default
-            // locale as well as the fallback locale. So, we'll grab the application
-            // configuration so we can easily get both of these values from there.
-            $locale = $app['config']['app.locale'];
-            $trans = new Translator($loader, $locale);
-            $trans->setFallback($app['config']['app.fallback_locale']);
-
-            return $trans;
-        });
-    }
-
-    private function registerLoader()
-    {
-        $this->app->singleton('translation.loader', function ($app) {
-            // Post Laravel 5.4, the interface was moved to the contracts
-            // directory. Here we perform a check to see whether or not the
-            // interface exists and instantiate the relevant loader accordingly.
-            if (interface_exists('Illuminate\Contracts\Translation\Loader')) {
-                return new ContractDatabaseLoader($this->app->make(Translation::class));
-            }
-
-            return new InterfaceDatabaseLoader($this->app->make(Translation::class));
-        });
     }
 }

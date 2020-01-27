@@ -20,6 +20,7 @@ class LanguageTranslationController extends Controller
 
     public function index(Request $request, $language)
     {
+        // dd($this->translation->getSingleTranslationsFor('en'));
         if ($request->has('language') && $request->get('language') !== $language) {
             return redirect()
                 ->route('languages.translations.index', ['language' => $request->get('language'), 'group' => $request->get('group'), 'filter' => $request->get('filter')]);

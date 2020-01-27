@@ -4,7 +4,9 @@ namespace JoeDixon\Translation\Tests;
 
 use Orchestra\Testbench\TestCase;
 use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\TranslationServiceProvider;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
+use JoeDixon\Translation\TranslationBindingsServiceProvider;
 
 class FileDriverTest extends TestCase
 {
@@ -22,7 +24,10 @@ class FileDriverTest extends TestCase
 
     protected function getPackageProviders($app)
     {
-        return ['JoeDixon\Translation\TranslationServiceProvider'];
+        return [
+            TranslationServiceProvider::class,
+            TranslationBindingsServiceProvider::class,
+        ];
     }
 
     protected function getEnvironmentSetUp($app)
