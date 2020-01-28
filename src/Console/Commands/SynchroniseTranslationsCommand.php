@@ -3,11 +3,11 @@
 namespace JoeDixon\Translation\Console\Commands;
 
 use Illuminate\Console\Command;
-use JoeDixon\Translation\Scanner;
 use Illuminate\Filesystem\Filesystem;
-use JoeDixon\Translation\Drivers\File;
 use JoeDixon\Translation\Drivers\Database;
+use JoeDixon\Translation\Drivers\File;
 use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Scanner;
 
 class SynchroniseTranslationsCommand extends Command
 {

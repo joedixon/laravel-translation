@@ -3,9 +3,9 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Translation\TranslationServiceProvider as ServiceProvider;
 use Illuminate\Translation\Translator;
 use JoeDixon\Translation\Drivers\Translation;
-use Illuminate\Translation\TranslationServiceProvider as ServiceProvider;
 
 class TranslationBindingsServiceProvider extends ServiceProvider
 {
