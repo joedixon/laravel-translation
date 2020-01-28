@@ -2,14 +2,14 @@
 
 namespace JoeDixon\Translation\Tests;
 
-use Orchestra\Testbench\TestCase;
-use JoeDixon\Translation\Language;
-use JoeDixon\Translation\Drivers\Translation;
-use JoeDixon\Translation\TranslationServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use JoeDixon\Translation\Translation as TranslationModel;
+use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
+use JoeDixon\Translation\Language;
+use JoeDixon\Translation\Translation as TranslationModel;
 use JoeDixon\Translation\TranslationBindingsServiceProvider;
+use JoeDixon\Translation\TranslationServiceProvider;
+use Orchestra\Testbench\TestCase;
 
 class DatabaseDriverTest extends TestCase
 {
@@ -20,7 +20,7 @@ class DatabaseDriverTest extends TestCase
     /**
      * Setup the test environment.
      */
-    public function setUp() :void
+    public function setUp(): void
     {
         parent::setUp();
         $this->withFactories(__DIR__.'/../database/factories');
@@ -193,7 +193,7 @@ class DatabaseDriverTest extends TestCase
             ],
             'single' => [
                 'single' => [
-                        'Hello' => [
+                    'Hello' => [
                         'en' => 'Hello',
                         'es' => '',
                     ],

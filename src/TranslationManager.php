@@ -2,10 +2,10 @@
 
 namespace JoeDixon\Translation;
 
-use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
-use JoeDixon\Translation\Drivers\File;
+use Illuminate\Support\Str;
 use JoeDixon\Translation\Drivers\Database;
+use JoeDixon\Translation\Drivers\File;
 
 class TranslationManager
 {

@@ -2,8 +2,8 @@
 
 namespace JoeDixon\Translation\Drivers;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 abstract class Translation
 {

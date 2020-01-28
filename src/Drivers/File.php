@@ -2,10 +2,10 @@
 
 namespace JoeDixon\Translation\Drivers;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 
 class File extends Translation implements DriverInterface
