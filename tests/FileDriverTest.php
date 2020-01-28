@@ -2,11 +2,11 @@
 
 namespace JoeDixon\Translation\Tests;
 
-use Orchestra\Testbench\TestCase;
 use JoeDixon\Translation\Drivers\Translation;
-use JoeDixon\Translation\TranslationServiceProvider;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\TranslationBindingsServiceProvider;
+use JoeDixon\Translation\TranslationServiceProvider;
+use Orchestra\Testbench\TestCase;
 
 class FileDriverTest extends TestCase
 {
@@ -15,7 +15,7 @@ class FileDriverTest extends TestCase
     /**
      * Setup the test environment.
      */
-    protected function setUp() :void
+    protected function setUp(): void
     {
         parent::setUp();
         app()['path.lang'] = __DIR__.'/fixtures/lang';

@@ -2,9 +2,9 @@
 
 namespace JoeDixon\Translation\Tests;
 
-use Orchestra\Testbench\TestCase;
-use JoeDixon\Translation\TranslationServiceProvider;
 use JoeDixon\Translation\TranslationBindingsServiceProvider;
+use JoeDixon\Translation\TranslationServiceProvider;
+use Orchestra\Testbench\TestCase;
 
 class PackageIsLoadedTest extends TestCase
 {
