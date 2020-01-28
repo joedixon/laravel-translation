@@ -25,7 +25,7 @@ class InterfaceDatabaseLoader implements LoaderInterface
     public function load($locale, $group, $namespace = null)
     {
         if ($group == '*' && $namespace == '*') {
-            return $this->translation->getSingleTranslationsFor($locale)->get('single')->toArray();
+            return $this->translation->getSingleTranslationsFor($locale)->get('single', collect())->toArray();
         }
 
         if (is_null($namespace) || $namespace == '*') {
