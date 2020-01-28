@@ -4,11 +4,11 @@ namespace JoeDixon\Translation;
 
 use Illuminate\Support\ServiceProvider;
 use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
-use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
 use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
+use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
 use JoeDixon\Translation\Console\Commands\ListMissingTranslationKeys;
-use JoeDixon\Translation\Console\Commands\SynchroniseTranslationsCommand;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
+use JoeDixon\Translation\Console\Commands\SynchroniseTranslationsCommand;
 
 class TranslationServiceProvider extends ServiceProvider
 {
@@ -122,7 +122,7 @@ class TranslationServiceProvider extends ServiceProvider
     private function loadTranslations()
     {
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'translation');
-        
+
         $this->publishes([
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/translation'),
         ]);

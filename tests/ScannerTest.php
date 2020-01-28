@@ -3,9 +3,9 @@
 namespace JoeDixon\Translation\Tests;
 
 use JoeDixon\Translation\Scanner;
-use Orchestra\Testbench\TestCase;
-use JoeDixon\Translation\TranslationServiceProvider;
 use JoeDixon\Translation\TranslationBindingsServiceProvider;
+use JoeDixon\Translation\TranslationServiceProvider;
+use Orchestra\Testbench\TestCase;
 
 class ScannerTest extends TestCase
 {
