@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1b0994534f8177b529fa3ed5b2fb6fd",
+    "content-hash": "d0c1b291e9cc2cde01437f4a43634b59",
     "packages": [],
     "packages-dev": [
         {
@@ -1001,24 +1001,24 @@
         },
         {
             "name": "orchestra/testbench",
-            "version": "v4.0.0",
+            "version": "v4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench.git",
-                "reference": "bde8b826bde3bd39a2a87e6cd328501e19c60cc9"
+                "reference": "a10dbc9dba64c6fb98b5169f4daf476691596968"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench/zipball/bde8b826bde3bd39a2a87e6cd328501e19c60cc9",
-                "reference": "bde8b826bde3bd39a2a87e6cd328501e19c60cc9",
+                "url": "https://api.github.com/repos/orchestral/testbench/zipball/a10dbc9dba64c6fb98b5169f4daf476691596968",
+                "reference": "a10dbc9dba64c6fb98b5169f4daf476691596968",
                 "shasum": ""
             },
             "require": {
                 "laravel/framework": "^6.0",
-                "mockery/mockery": "^1.0",
+                "mockery/mockery": "^1.2.3",
                 "orchestra/testbench-core": "^4.0",
                 "php": ">=7.2",
-                "phpunit/phpunit": "^8.0"
+                "phpunit/phpunit": "^8.3"
             },
             "type": "library",
             "extra": {
@@ -1047,7 +1047,7 @@
                 "orchestral",
                 "testing"
             ],
-            "time": "2019-09-03T20:02:19+00:00"
+            "time": "2019-09-24T06:46:06+00:00"
         },
         {
             "name": "orchestra/testbench-core",
