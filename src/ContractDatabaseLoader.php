@@ -29,9 +29,15 @@ class ContractDatabaseLoader implements Loader
         }
 
         if (is_null($namespace) || $namespace == '*') {
-            return $this->translation->getGroupTranslationsFor($locale)->filter(function ($value, $key) use ($group) {
+            $dotted = [];
+
+            $this->translation->getGroupTranslationsFor($locale)->filter(function ($value, $key) use ($group) {
                 return $key === $group;
-            })->first();
+            })->first()->each(function ($key, $value) use (&$dotted) {
+                Arr::set($dotted, $value, $key);
+            });
+
+            return $dotted;
         }
 
         return $this->translation->getGroupTranslationsFor($locale)->filter(function ($value, $key) use ($group, $namespace) {
