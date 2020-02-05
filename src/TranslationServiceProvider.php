@@ -2,6 +2,7 @@
 
 namespace JoeDixon\Translation;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
 use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
@@ -9,6 +10,7 @@ use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
 use JoeDixon\Translation\Console\Commands\ListMissingTranslationKeys;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
 use JoeDixon\Translation\Console\Commands\SynchroniseTranslationsCommand;
+use JoeDixon\Translation\Drivers\Translation;
 
 class TranslationServiceProvider extends ServiceProvider
 {
@@ -44,6 +46,8 @@ class TranslationServiceProvider extends ServiceProvider
         $this->mergeConfiguration();
 
         $this->registerCommands();
+
+        $this->registerContainerBindings();
     }
 
     /**
@@ -155,5 +159,23 @@ class TranslationServiceProvider extends ServiceProvider
     private function registerHelpers()
     {
         require __DIR__.'/../resources/helpers.php';
+    }
+
+    /**
+     * Register package bindings in the container.
+     *
+     * @return void
+     */
+    private function registerContainerBindings()
+    {
+        $this->app->singleton(Scanner::class, function () {
+            $config = $this->app['config']['translation'];
+
+            return new Scanner(new Filesystem, $config['scan_paths'], $config['translation_methods']);
+        });
+
+        $this->app->singleton(Translation::class, function ($app) {
+            return (new TranslationManager($app, $app['config']['translation'], $app->make(Scanner::class)))->resolve();
+        });
     }
 }
