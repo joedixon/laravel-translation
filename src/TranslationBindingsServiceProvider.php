@@ -2,7 +2,6 @@
 
 namespace JoeDixon\Translation;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Translation\TranslationServiceProvider as ServiceProvider;
 use Illuminate\Translation\Translator;
 use JoeDixon\Translation\Drivers\Translation;
@@ -16,8 +15,6 @@ class TranslationBindingsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerContainerBindings();
-
         if ($this->app['config']['translation.driver'] === 'database') {
             $this->registerDatabaseTranslator();
         } else {
@@ -53,24 +50,6 @@ class TranslationBindingsServiceProvider extends ServiceProvider
             }
 
             return new InterfaceDatabaseLoader($this->app->make(Translation::class));
-        });
-    }
-
-    /**
-     * Register package bindings in the container.
-     *
-     * @return void
-     */
-    private function registerContainerBindings()
-    {
-        $this->app->singleton(Scanner::class, function () {
-            $config = $this->app['config']['translation'];
-
-            return new Scanner(new Filesystem, $config['scan_paths'], $config['translation_methods']);
-        });
-
-        $this->app->singleton(Translation::class, function ($app) {
-            return (new TranslationManager($app, $app['config']['translation'], $app->make(Scanner::class)))->resolve();
         });
     }
 }
