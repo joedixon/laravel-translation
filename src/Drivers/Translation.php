@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
-use JoeDixon\Translation\Events\TranslationUpdated;
+use JoeDixon\Translation\Events\TranslationAdded;
 
 abstract class Translation
 {
@@ -104,16 +104,17 @@ abstract class Translation
 
     public function add(Request $request, $language, $isGroupTranslation)
     {
-        $group = $request->get('group');
+        $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
+        $group = $namespace . $request->get('group');
         $key = $request->get('key');
         $value = $request->get('value') ?: '';
-
+        
         if ($isGroupTranslation) {
-            $this->addGroupTranslation($language, $group, $key, $value);
+            $this->addGroupTranslation($language, $group , $key, $value);
         } else {
-            $this->addSingleTranslation($language, $group, $key, $value);
+            $this->addSingleTranslation($language, 'single', $key, $value);
         }
 
-        Event::dispatch(new TranslationUpdated($key, $value));
+        Event::dispatch(new TranslationAdded($language, $group ?: 'single', $key, $value));
     }
 }
