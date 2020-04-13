@@ -2,6 +2,8 @@
 
 namespace JoeDixon\Translation\Tests;
 
+use Illuminate\Support\Facades\Event;
+use JoeDixon\Translation\Events\TranslationAdded;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
@@ -340,4 +342,36 @@ class DatabaseDriverTest extends TestCase
 
         $this->assertDatabaseHas('translations', ['language_id' => 1, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello there!']);
     }
+        /** @test */
+        public function adding_a_translation_fires_an_event_with_the_expected_data()
+        {
+            Event::fake();
+    
+            $data = ['key' => 'joe', 'value' => 'is cool'];
+            $this->post(config('translation.ui_url').'/en/translations', $data);
+    
+            Event::assertDispatched(TranslationAdded::class, function ($event) use ($data) {
+                return $event->language === 'en' &&
+                    $event->group === 'single' &&
+                    $event->value === $data['value'] &&
+                    $event->key === $data['key'];
+            });
+        }
+    
+        /** @test */
+        public function updating_a_translation_fires_an_event_with_the_expected_data()
+        {
+            Event::fake();
+    
+            $data = ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'];
+            $this->post(config('translation.ui_url').'/en/translations', $data);
+    
+            Event::assertDispatched(TranslationAdded::class, function ($event) use ($data) {
+                return $event->language === 'en' &&
+                    $event->group === $data['group'] &&
+                    $event->value === $data['value'] &&
+                    $event->key === $data['key'];
+            });
+        }
+
 }
