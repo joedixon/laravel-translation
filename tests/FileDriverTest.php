@@ -2,9 +2,9 @@
 
 namespace JoeDixon\Translation\Tests;
 
-use JoeDixon\Translation\Events\TranslationAdded;
 use Illuminate\Support\Facades\Event;
 use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Events\TranslationAdded;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\TranslationBindingsServiceProvider;
 use JoeDixon\Translation\TranslationServiceProvider;
@@ -337,7 +337,7 @@ class FileDriverTest extends TestCase
             "<?php\n\nreturn ".var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true).';'.\PHP_EOL
         );
     }
-    
+
     /** @test */
     public function adding_a_translation_fires_an_event_with_the_expected_data()
     {
