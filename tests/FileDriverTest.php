@@ -2,7 +2,9 @@
 
 namespace JoeDixon\Translation\Tests;
 
+use Illuminate\Support\Facades\Event;
 use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Events\TranslationAdded;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\TranslationBindingsServiceProvider;
 use JoeDixon\Translation\TranslationServiceProvider;
@@ -330,6 +332,46 @@ class FileDriverTest extends TestCase
 
         $this->assertArraySubset(['test' => ['hello' => 'Hello there!', 'whats_up' => 'What\'s up!']], $translations->toArray());
 
+        file_put_contents(
+            app()['path.lang'].'/en/test.php',
+            "<?php\n\nreturn ".var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true).';'.\PHP_EOL
+        );
+    }
+
+    /** @test */
+    public function adding_a_translation_fires_an_event_with_the_expected_data()
+    {
+        Event::fake();
+
+        $data = ['key' => 'joe', 'value' => 'is cool'];
+        $this->post(config('translation.ui_url').'/en/translations', $data);
+
+        Event::assertDispatched(TranslationAdded::class, function ($event) use ($data) {
+            return $event->language === 'en' &&
+                $event->group === 'single' &&
+                $event->value === $data['value'] &&
+                $event->key === $data['key'];
+        });
+        file_put_contents(
+            app()['path.lang'].'/en.json',
+            json_encode((object) ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+        );
+    }
+
+    /** @test */
+    public function updating_a_translation_fires_an_event_with_the_expected_data()
+    {
+        Event::fake();
+
+        $data = ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'];
+        $this->post(config('translation.ui_url').'/en/translations', $data);
+
+        Event::assertDispatched(TranslationAdded::class, function ($event) use ($data) {
+            return $event->language === 'en' &&
+                $event->group === $data['group'] &&
+                $event->value === $data['value'] &&
+                $event->key === $data['key'];
+        });
         file_put_contents(
             app()['path.lang'].'/en/test.php',
             "<?php\n\nreturn ".var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true).';'.\PHP_EOL
