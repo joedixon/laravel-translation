@@ -47,25 +47,33 @@
 
                         <tbody>
                             @foreach($translations as $type => $items)
-                                
+
                                 @foreach($items as $group => $translations)
 
                                     @foreach($translations as $key => $value)
 
-                                        @if(!is_array($value[config('app.locale')]))
+                                        @if(!isset($value[config('app.locale')]) || !is_array($value[config('app.locale')]))
                                             <tr>
                                                 <td>{{ $group }}</td>
                                                 <td>{{ $key }}</td>
-                                                <td>{{ $value[config('app.locale')] }}</td>
+                                                <td>{{ isset($value[config('app.locale')]) ? $value[config('app.locale')] : $key }}</td>
                                                 <td>
-                                                    <translation-input 
-                                                        initial-translation="{{ $value[$language] }}" 
-                                                        language="{{ $language }}" 
-                                                        group="{{ $group }}" 
-                                                        translation-key="{{ $key }}" 
+                                                    <translation-input
+                                                        initial-translation="{{ $value[$language] }}"
+                                                        language="{{ $language }}"
+                                                        group="{{ $group }}"
+                                                        translation-key="{{ $key }}"
                                                         route="{{ config('translation.ui_url') }}">
                                                     </translation-input>
                                                 </td>
+                                            </tr>
+                                        @endif
+
+                                    @endforeach
+
+                                @endforeach
+
+                            @endforeach
                                             </tr>
                                         @endif
 
