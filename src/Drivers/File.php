@@ -269,16 +269,15 @@ class File extends Translation implements DriverInterface
 
         $groupName = '';
         $groupPath = '';
-        $pathArray = explode( DIRECTORY_SEPARATOR , $group);
-        foreach($pathArray as $key => $value){
-            if( $key == (count($pathArray)-1) ){
+        $pathArray = explode(DIRECTORY_SEPARATOR, $group);
+        foreach ($pathArray as $key => $value) {
+            if ($key == (count($pathArray) - 1)) {
                 $groupName = $value;
-            }
-            else{
+            } else {
                 $groupPath .= $value.DIRECTORY_SEPARATOR;
             }
         }
-        
+
         $directory = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}".DIRECTORY_SEPARATOR."{$groupPath}";
 
         if (! $this->disk->exists($directory)) {
@@ -302,16 +301,15 @@ class File extends Translation implements DriverInterface
 
         $groupName = '';
         $groupPath = '';
-        $pathArray = explode( DIRECTORY_SEPARATOR , $group);
-        foreach($pathArray as $key => $value){
-            if( $key == (count($pathArray)-1) ){
+        $pathArray = explode(DIRECTORY_SEPARATOR, $group);
+        foreach ($pathArray as $key => $value) {
+            if ($key == (count($pathArray) - 1)) {
                 $groupName = $value;
-            }
-            else{
+            } else {
                 $groupPath .= $value.DIRECTORY_SEPARATOR;
             }
         }
-        
+
         $directory = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$namespace}".DIRECTORY_SEPARATOR."{$language}".DIRECTORY_SEPARATOR."{$groupPath}";
 
         if (! $this->disk->exists($directory)) {
@@ -370,7 +368,7 @@ class File extends Translation implements DriverInterface
                 $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
                 return "{$vendor}::{$nameWithPath}";
             }
-            
+
             return str_replace('.php', '', $nameWithPath);
         });
     }
