@@ -191,16 +191,17 @@ class File extends Translation implements DriverInterface
      */
     public function getGroupTranslationsFor($language)
     {
-        return $this->getGroupFilesFor($language)->mapWithKeys(function ($group) {
-            // here we check if the path contains 'vendor' as these will be the
-            // files which need namespacing
+        return $this->getGroupFilesFor($language)->mapWithKeys(function ($group) use ($language) {
+            $nameWithPath = str_replace('.php', '', explode(DIRECTORY_SEPARATOR.$language.DIRECTORY_SEPARATOR, $group->getPathname())[1]);
+
+            // here we check if the path contains 'vendor' as these will be the files which need namespacing
             if (Str::contains($group->getPathname(), 'vendor')) {
                 $vendor = Str::before(Str::after($group->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
-                return ["{$vendor}::{$group->getBasename('.php')}" => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
+                return ["{$vendor}::{$nameWithPath}" => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
             }
 
-            return [$group->getBasename('.php') => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
+            return [$nameWithPath => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
         });
     }
 
@@ -265,7 +266,26 @@ class File extends Translation implements DriverInterface
         if (Str::contains($group, '::')) {
             return $this->saveNamespacedGroupTranslations($language, $group, $translations);
         }
-        $this->disk->put("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}".DIRECTORY_SEPARATOR."{$group}.php", "<?php\n\nreturn ".var_export($translations, true).';'.\PHP_EOL);
+
+        $groupName = '';
+        $groupPath = '';
+        $pathArray = explode( DIRECTORY_SEPARATOR , $group);
+        foreach($pathArray as $key => $value){
+            if( $key == (count($pathArray)-1) ){
+                $groupName = $value;
+            }
+            else{
+                $groupPath .= $value.DIRECTORY_SEPARATOR;
+            }
+        }
+        
+        $directory = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}".DIRECTORY_SEPARATOR."{$groupPath}";
+
+        if (! $this->disk->exists($directory)) {
+            $this->disk->makeDirectory($directory, 0755, true);
+        }
+
+        $this->disk->put($directory.DIRECTORY_SEPARATOR."{$groupName}.php", "<?php\n\nreturn ".var_export($translations, true).';'.\PHP_EOL);
     }
 
     /**
@@ -279,7 +299,20 @@ class File extends Translation implements DriverInterface
     private function saveNamespacedGroupTranslations($language, $group, $translations)
     {
         [$namespace, $group] = explode('::', $group);
-        $directory = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$namespace}".DIRECTORY_SEPARATOR."{$language}";
+
+        $groupName = '';
+        $groupPath = '';
+        $pathArray = explode( DIRECTORY_SEPARATOR , $group);
+        foreach($pathArray as $key => $value){
+            if( $key == (count($pathArray)-1) ){
+                $groupName = $value;
+            }
+            else{
+                $groupPath .= $value.DIRECTORY_SEPARATOR;
+            }
+        }
+        
+        $directory = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$namespace}".DIRECTORY_SEPARATOR."{$language}".DIRECTORY_SEPARATOR."{$groupPath}";
 
         if (! $this->disk->exists($directory)) {
             $this->disk->makeDirectory($directory, 0755, true);
@@ -331,14 +364,14 @@ class File extends Translation implements DriverInterface
      */
     public function getGroupsFor($language)
     {
-        return $this->getGroupFilesFor($language)->map(function ($file) {
+        return $this->getGroupFilesFor($language)->map(function ($file) use ($language) {
+            $nameWithPath = str_replace('.php', '', explode(DIRECTORY_SEPARATOR.$language.DIRECTORY_SEPARATOR, $file->getPathname())[1]);
             if (Str::contains($file->getPathname(), 'vendor')) {
                 $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
-
-                return "{$vendor}::{$file->getBasename('.php')}";
+                return "{$vendor}::{$nameWithPath}";
             }
-
-            return $file->getBasename('.php');
+            
+            return str_replace('.php', '', $nameWithPath);
         });
     }
 
