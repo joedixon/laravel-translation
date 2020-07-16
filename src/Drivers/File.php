@@ -366,6 +366,7 @@ class File extends Translation implements DriverInterface
             $nameWithPath = str_replace('.php', '', explode(DIRECTORY_SEPARATOR.$language.DIRECTORY_SEPARATOR, $file->getPathname())[1]);
             if (Str::contains($file->getPathname(), 'vendor')) {
                 $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+
                 return "{$vendor}::{$nameWithPath}";
             }
 
