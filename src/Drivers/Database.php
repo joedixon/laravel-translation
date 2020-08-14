@@ -13,6 +13,10 @@ class Database extends Translation implements DriverInterface
 
     protected $scanner;
 
+    // Store translations to avoid multiple reloads of the same translations per
+    // request.
+    protected static $translations = [];
+
     public function __construct($sourceLanguage, $scanner)
     {
         $this->sourceLanguage = $sourceLanguage;
@@ -150,6 +154,10 @@ class Database extends Translation implements DriverInterface
      */
     public function getSingleTranslationsFor($language)
     {
+        if (!empty(self::$translations['single'][$language])) {
+            return self::$translations['single'][$language];
+        }
+
         $translations = $this->getLanguage($language)
             ->translations()
             ->where('group', 'like', '%single')
@@ -166,11 +174,13 @@ class Database extends Translation implements DriverInterface
             return $this->getSingleTranslationsFor($language);
         }
 
-        return $translations->map(function ($translations, $group) use ($language) {
+        self::$translations['single'][$language] = $translations->map(function ($translations, $group) use ($language) {
             return $translations->mapWithKeys(function ($translation) {
                 return [$translation->key => $translation->value];
             });
         });
+
+        return self::$translations['single'][$language];
     }
 
     /**
@@ -181,6 +191,10 @@ class Database extends Translation implements DriverInterface
      */
     public function getGroupTranslationsFor($language)
     {
+        if (!empty(self::$translations['group'][$language])) {
+            return self::$translations['group'][$language];
+        }
+
         $translations = $this->getLanguage($language)
             ->translations()
             ->whereNotNull('group')
@@ -188,11 +202,15 @@ class Database extends Translation implements DriverInterface
             ->get()
             ->groupBy('group');
 
-        return $translations->map(function ($translations) {
+
+
+        self::$translations['group'][$language] = $translations->map(function ($translations) {
             return $translations->mapWithKeys(function ($translation) {
                 return [$translation->key => $translation->value];
             });
         });
+
+        return self::$translations['group'][$language];
     }
 
     /**
