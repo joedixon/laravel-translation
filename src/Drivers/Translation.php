@@ -6,6 +6,8 @@ use Exception;
 use Illuminate\Support\Str;
 use Yandex\Translate\Translator;
 use Illuminate\Support\Collection;
+use Aws\Translate\TranslateClient; 
+use Aws\Exception\AwsException;
 
 abstract class Translation
 {
@@ -33,32 +35,69 @@ abstract class Translation
     {
         $languages = $language ? [$language => $language] : $this->allLanguages();
 
+        $client = new TranslateClient([
+            'profile' => 'default',
+            'region' => 'eu-central-1',
+            'version' => '2017-07-01'
+        ]);
+
+        
+
         foreach ($languages as $language => $name) {
             $missingTranslations = $this->findMissingTranslations($language);
+            $defaultTranslations = $this->allTranslationsFor(config('app.locale'));
 
             foreach ($missingTranslations as $type => $groups) {
                 foreach ($groups as $group => $translations) {
                     foreach ($translations as $key => $value) {
-                        if (Str::contains($group, 'single')) {
-                            if (config('app.locale') == $language && config('translation.copy_key_to_value_if_default_locale') == true) {
-                                // on default locale copy key to index
+             
+                        if (config('app.locale') == $language && config('translation.copy_key_to_value_if_default_locale') == true) {
+                            /**
+                             * Missing in default locale
+                             */
+                            if ($type == 'single') {
+                                /**
+                                 * Single copy $key to $value
+                                 */
                                 $this->addSingleTranslation($language, $group, $key, $key);
-                            } elseif (config('translation.yandex.api_key') && !in_array($language, config('translation.yandex.exclude_locales'))) {
-                                // yandex auto translate
-                                try {
-                                    $translator = new Translator(config('translation.yandex.api_key'));
-                                    $direction = config('app.locale') . '-' . $language;
-                                    $value = config('translation.yandex.prefix') . $translator->translate($key, $direction);
-                                    $this->addSingleTranslation($language, $group, $key, (string) $value);
-                                } catch (\Exception $e) {
-                                    $this->addSingleTranslation($language, $group, $key, '!!yandexerror!! ' . $e->getMessage());
-                                }
-                            } else {
-                                $this->addSingleTranslation($language, $group, $key);
+                            }else{
+                                /**
+                                 * Group add empty translation
+                                 */
+                                $this->addGroupTranslation($language, $group, $key);
                             }
+
+
                         } else {
-                            $this->addGroupTranslation($language, $group, $key);
-                        }
+                            /**
+                             * Missing in any other locale
+                             */
+                            $newValue = $defaultTranslations->get($type)->get($group)->get($key);
+                            //dd($newValue);
+                            
+                            try {
+                                $result = $client->translateText([
+                                    'SourceLanguageCode' => config('app.locale'),
+                                    'TargetLanguageCode' => $language, 
+                                    'Text' => $newValue, 
+                                ]);
+                                $newValue = config('translation.services.aws.prefix-new') . (string) $result->get('TranslatedText');
+            
+                            } catch (\Exception $e) {
+                                $newValue = config('translation.services.aws.prefix-error') . $e->getMessage() . $newValue;
+                            }
+                            if ($type == 'single') {
+                                /**
+                                 * Add single translation
+                                 */
+                                $this->addSingleTranslation($language, $group, $key, $newValue);
+                            }else{
+                                /**
+                                 * Add Group Translation
+                                 */
+                                $this->addGroupTranslation($language, $group, $key, $newValue);
+                            }
+                        } 
                     }
                 }
             }
