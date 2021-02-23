@@ -68,7 +68,6 @@ return [
     */
     'database' => [
 
-        // Leave empty to disable migrations
         'connection' => '',
 
         'languages_table' => 'languages',
