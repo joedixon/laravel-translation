@@ -115,8 +115,8 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function loadMigrations()
     {
-        // Don't migrate if no database connection is given
-        if (! config('translation.database.connection')) {
+        // Don't migrate if file driver is being used
+        if (config('translation.driver') === 'file') {
             return;
         }
 
