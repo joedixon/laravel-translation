@@ -53,7 +53,7 @@ return [
     | UI URL
     |--------------------------------------------------------------------------
     |
-    | Define the URL used to access the language management too.
+    | Define the URL used to access the language management tool.
     |
     */
     'ui_url' => 'languages',

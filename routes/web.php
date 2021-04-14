@@ -1,6 +1,12 @@
 <?php
 
-Route::group(config('translation.route_group_config') + ['namespace' => 'JoeDixon\\Translation\\Http\\Controllers'], function ($router) {
+$routesDefaultFormat = config('translation.route_group_config');
+
+if(is_callable($routesDefaultFormat)){
+    $routesDefaultFormat = $routesDefaultFormat();
+}
+
+Route::group($routesDefaultFormat + ['namespace' => 'JoeDixon\\Translation\\Http\\Controllers'], function ($router) {
     $router->get(config('translation.ui_url'), 'LanguageController@index')
         ->name('languages.index');
 
