@@ -93,7 +93,9 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function mergeConfiguration()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/translation.php', 'translation');
+        if (config('translation.driver') == 'database') {
+            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        }
     }
 
     /**
