@@ -20,7 +20,7 @@
 
                     @include('translation::forms.select', ['name' => 'group', 'items' => $groups, 'submit' => true, 'selected' => Request::get('group'), 'optional' => true])
                     
-                    <a href="{{ route('languages.translations.create', $language) }}" class="button">
+                    <a id="create-button" href="{{ route('languages.translations.create', $language) }}" class="button">
                         {{ __('translation::translation.add') }}
                     </a>
                 
@@ -86,4 +86,15 @@
 
     </form>
 
+@endsection
+
+@section('scripts')
+    <script>
+        const createBtn = document.querySelector("#create-button");
+        const selectMenu= document.querySelector("[name=group]");
+        const selectedLang = selectMenu.value;
+        let link = "{{  route('languages.translations.create', $language)  }}";
+        link = link + (selectedLang ? `?group=${selectedLang}` : "")
+        createBtn.setAttribute("href", link);
+    </script>
 @endsection
