@@ -8,7 +8,7 @@
         id="{{ $field }}" 
         type="text" 
         placeholder="{{ isset($placeholder) ? $placeholder : '' }}"
-        value="{{ old($field) }}"
+        value="{{ $value ?? old($field) }}"
         {{ isset($required) ? 'required' : '' }}>
     @if($errors->has($field))
         @foreach($errors->get($field) as $error)
