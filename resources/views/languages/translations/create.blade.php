@@ -18,7 +18,7 @@
 
                 <div class="panel-body p-4">
 
-                    @include('translation::forms.text', ['field' => 'group', 'label' => __('translation::translation.group_label'), 'placeholder' => __('translation::translation.group_placeholder')])
+                    @include('translation::forms.text', ['field' => 'group', 'value' => request()->has("group") ? request()->group : "", 'label' => __('translation::translation.group_label'), 'placeholder' => __('translation::translation.group_placeholder')])
                     
                     @include('translation::forms.text', ['field' => 'key', 'label' => __('translation::translation.key_label'), 'placeholder' => __('translation::translation.key_placeholder')])
 
