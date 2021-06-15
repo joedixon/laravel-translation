@@ -166,7 +166,7 @@ class Database extends Translation implements DriverInterface
             return $this->getSingleTranslationsFor($language);
         }
 
-        return $translations->map(function ($translations, $group) use ($language) {
+        return $translations->map(function ($translations, $group) {
             return $translations->mapWithKeys(function ($translation) {
                 return [$translation->key => $translation->value];
             });
