@@ -89,8 +89,8 @@ abstract class Translation
         }
 
         return $allTranslations->map(function ($groups, $type) use ($language, $filter) {
-            return $groups->map(function ($keys, $group) use ($language, $filter, $type) {
-                return collect($keys)->filter(function ($translations, $key) use ($group, $language, $filter, $type) {
+            return $groups->map(function ($keys, $group) use ($language, $filter) {
+                return collect($keys)->filter(function ($translations, $key) use ($group, $language, $filter) {
                     return strs_contain([$group, $key, $translations[$language], $translations[$this->sourceLanguage]], $filter);
                 });
             })->filter(function ($keys) {
