@@ -1,4 +1,5 @@
 <?php
+namespace JoeDixon\Translation;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
