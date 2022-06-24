@@ -324,8 +324,8 @@ class FileDriverTest extends TestCase
     public function a_translation_can_be_updated()
     {
         $this->post(config('translation.ui_url').'/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
-            ->assertStatus(200)
-            ->assertSee(json_encode(['success' => true]));
+            ->assertStatus(200);
+
         $translations = $this->translation->getGroupTranslationsFor('en');
 
         $this->assertArraySubset(['test' => ['hello' => 'Hello there!', 'whats_up' => 'What\'s up!']], $translations->toArray());
