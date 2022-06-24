@@ -60,7 +60,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Get all translations for a particular language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function allTranslationsFor($language)
@@ -74,7 +74,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Add a new language to the application.
      *
-     * @param string $language
+     * @param  string  $language
      * @return void
      */
     public function addLanguage($language, $name = null)
@@ -92,9 +92,9 @@ class Database extends Translation implements DriverInterface
     /**
      * Add a new group type translation.
      *
-     * @param string $language
-     * @param string $key
-     * @param string $value
+     * @param  string  $language
+     * @param  string  $key
+     * @param  string  $value
      * @return void
      */
     public function addGroupTranslation($language, $group, $key, $value = '')
@@ -119,9 +119,9 @@ class Database extends Translation implements DriverInterface
     /**
      * Add a new single type translation.
      *
-     * @param string $language
-     * @param string $key
-     * @param string $value
+     * @param  string  $language
+     * @param  string  $key
+     * @param  string  $value
      * @return void
      */
     public function addSingleTranslation($language, $vendor, $key, $value = '')
@@ -145,7 +145,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Get all of the single translations for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getSingleTranslationsFor($language)
@@ -166,7 +166,7 @@ class Database extends Translation implements DriverInterface
             return $this->getSingleTranslationsFor($language);
         }
 
-        return $translations->map(function ($translations, $group) use ($language) {
+        return $translations->map(function ($translations, $group) {
             return $translations->mapWithKeys(function ($translation) {
                 return [$translation->key => $translation->value];
             });
@@ -176,7 +176,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Get all of the group translations for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getGroupTranslationsFor($language)
@@ -198,7 +198,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Determine whether or not a language exists.
      *
-     * @param string $language
+     * @param  string  $language
      * @return bool
      */
     public function languageExists($language)
@@ -209,7 +209,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Get a collection of group names for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getGroupsFor($language)
@@ -220,7 +220,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Get a language from the database.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Language
      */
     private function getLanguage($language)
@@ -233,7 +233,7 @@ class Database extends Translation implements DriverInterface
      * Previously, this was handled by setting the group value to NULL, now
      * we use 'single' to cater for vendor JSON language files.
      *
-     * @param Collection $groups
+     * @param  Collection  $groups
      * @return bool
      */
     private function hasLegacyGroups($groups)
