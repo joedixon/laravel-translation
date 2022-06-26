@@ -4,20 +4,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [7.2, 7.3, 7.4]
-        os: [ubuntu-latest]
-        laravel: [6.*, 7.*]
-        include:
-          - laravel: 6.*
-            testbench: 4.*
-          - laravel: 7.*
-            testbench: 5.*
-
-    name: PHP${{ matrix.php }} - ${{ matrix.dependency-version }}
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -26,14 +13,12 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: 8.0
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
       - name: Install Composer dependencies
-        run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-          composer update --prefer-dist --no-interaction --no-suggest
+        run: composer install --prefer-dist --no-interaction
 
       - name: Execute tests
         run: vendor/bin/phpunit
