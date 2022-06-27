@@ -64,7 +64,7 @@ class DatabaseDriverTest extends TestCase
     public function it_returns_all_translations()
     {
         $default = Language::where('language', config('app.locale'))->first();
-        $spanish = factory(Language::class)->create(['language' => 'es', 'name' => 'Español']);
+        factory(Language::class)->create(['language' => 'es', 'name' => 'Español']);
         factory(TranslationModel::class)->states('group')->create(['language_id' => $default->id, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
         factory(TranslationModel::class)->states('group')->create(['language_id' => $default->id, 'group' => 'test', 'key' => 'whats_up', 'value' => "What's up!"]);
         factory(TranslationModel::class)->states('single')->create(['language_id' => $default->id, 'group' => 'single', 'key' => 'Hello', 'value' => 'Hello']);
@@ -73,7 +73,7 @@ class DatabaseDriverTest extends TestCase
         $translations = $this->translation->allTranslations();
 
         $this->assertEquals($translations->count(), 2);
-        $this->assertArraySubset(['en' => ['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]]], $translations->toArray());
+        $this->assertEquals(['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]], $translations->toArray()['en']);
         $this->assertArrayHasKey('en', $translations->toArray());
         $this->assertArrayHasKey('es', $translations->toArray());
     }
@@ -123,7 +123,7 @@ class DatabaseDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('es');
 
-        $this->assertArraySubset(['group' => ['test' => ['hello' => 'Hola!']]], $translations->toArray());
+        $this->assertEquals(['test' => ['hello' => 'Hola!']], $translations->toArray()['group']);
     }
 
     /** @test */
@@ -134,8 +134,7 @@ class DatabaseDriverTest extends TestCase
         $this->translation->addGroupTranslation($translation->language->language, "{$translation->group}", 'test', 'Testing');
 
         $translations = $this->translation->allTranslationsFor($translation->language->language);
-
-        $this->assertArraySubset(['group' => [$translation->group => [$translation->key => $translation->value, 'test' => 'Testing']]], $translations->toArray());
+        $this->assertSame([$translation->group => [$translation->key => $translation->value, 'test' => 'Testing']], $translations->toArray()['group']);
     }
 
     /** @test */
@@ -145,7 +144,7 @@ class DatabaseDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('es');
 
-        $this->assertArraySubset(['single' => ['single' => ['Hello' => 'Hola!']]], $translations->toArray());
+        $this->assertEquals(['single' => ['Hello' => 'Hola!']], $translations->toArray()['single']);
     }
 
     /** @test */
@@ -157,7 +156,7 @@ class DatabaseDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor($translation->language->language);
 
-        $this->assertArraySubset(['single' => ['single' => ['Test' => 'Testing', $translation->key => $translation->value]]], $translations->toArray());
+        $this->assertEquals(['single' => ['Test' => 'Testing', $translation->key => $translation->value]], $translations->toArray()['single']);
     }
 
     /** @test */

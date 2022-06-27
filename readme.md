@@ -35,6 +35,14 @@ Below are a full list of features:
 - Artisan commands to manage your translations
 - Scan your application for missing translations
 
+## Version Compatibility
+
+|    Laravel    | Laravel Translation |
+| ------------- | ------------------- |
+|      6.x      |          1.x        |
+|      7.x      |          1.x        |
+|      8.x      |          2.x        |
+
 ## Installation
 
 Install the package via Composer

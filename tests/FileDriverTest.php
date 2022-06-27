@@ -52,7 +52,7 @@ class FileDriverTest extends TestCase
         $translations = $this->translation->allTranslations();
 
         $this->assertEquals($translations->count(), 2);
-        $this->assertArraySubset(['en' => ['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]]], $translations->toArray());
+        $this->assertEquals(['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]], $translations->toArray()['en']);
         $this->assertArrayHasKey('en', $translations->toArray());
         $this->assertArrayHasKey('es', $translations->toArray());
     }
@@ -93,7 +93,7 @@ class FileDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('es');
 
-        $this->assertArraySubset(['group' => ['test' => ['hello' => 'Hola!']]], $translations->toArray());
+        $this->assertEquals(['test' => ['hello' => 'Hola!']], $translations->toArray()['group']);
 
         unlink(__DIR__.'/fixtures/lang/es/test.php');
     }
@@ -105,7 +105,7 @@ class FileDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('en');
 
-        $this->assertArraySubset(['group' => ['test' => ['hello' => 'Hello', 'whats_up' => 'What\'s up!', 'test' => 'Testing']]], $translations->toArray());
+        $this->assertEquals(['test' => ['hello' => 'Hello', 'whats_up' => 'What\'s up!', 'test' => 'Testing']], $translations->toArray()['group']);
 
         file_put_contents(
             app()['path.lang'].'/en/test.php',
@@ -120,7 +120,7 @@ class FileDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('es');
 
-        $this->assertArraySubset(['single' => ['single' => ['Hello' => 'Hola!']]], $translations->toArray());
+        $this->assertEquals(['single' => ['Hello' => 'Hola!']], $translations->toArray()['single']);
 
         unlink(__DIR__.'/fixtures/lang/es.json');
     }
@@ -132,7 +132,7 @@ class FileDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('en');
 
-        $this->assertArraySubset(['single' => ['single' => ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'Test' => 'Testing']]], $translations->toArray());
+        $this->assertEquals(['single' => ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'Test' => 'Testing']], $translations->toArray()['single']);
 
         file_put_contents(
             app()['path.lang'].'/en.json',
@@ -314,7 +314,7 @@ class FileDriverTest extends TestCase
             ->assertRedirect();
         $translations = $this->translation->getSingleTranslationsFor('en');
 
-        $this->assertArraySubset(['single' => ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'joe' => 'is cool']], $translations->toArray());
+        $this->assertEquals(['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'joe' => 'is cool'], $translations->toArray()['single']);
 
         file_put_contents(
             app()['path.lang'].'/en.json',
@@ -330,7 +330,7 @@ class FileDriverTest extends TestCase
 
         $translations = $this->translation->getGroupTranslationsFor('en');
 
-        $this->assertArraySubset(['test' => ['hello' => 'Hello there!', 'whats_up' => 'What\'s up!']], $translations->toArray());
+        $this->assertEquals(['hello' => 'Hello there!', 'whats_up' => 'What\'s up!'], $translations->toArray()['test']);
 
         file_put_contents(
             app()['path.lang'].'/en/test.php',
