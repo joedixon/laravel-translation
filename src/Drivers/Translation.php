@@ -2,8 +2,11 @@
 
 namespace JoeDixon\Translation\Drivers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use JoeDixon\Translation\Events\TranslationAdded;
 
 abstract class Translation
 {
@@ -97,5 +100,21 @@ abstract class Translation
                 return $keys->isNotEmpty();
             });
         });
+    }
+
+    public function add(Request $request, $language, $isGroupTranslation)
+    {
+        $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
+        $group = $namespace.$request->get('group');
+        $key = $request->get('key');
+        $value = $request->get('value') ?: '';
+
+        if ($isGroupTranslation) {
+            $this->addGroupTranslation($language, $group, $key, $value);
+        } else {
+            $this->addSingleTranslation($language, 'single', $key, $value);
+        }
+
+        Event::dispatch(new TranslationAdded($language, $group ?: 'single', $key, $value));
     }
 }
