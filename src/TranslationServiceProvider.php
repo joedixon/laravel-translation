@@ -115,6 +115,10 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function loadMigrations()
     {
+        if (config('translation.driver') !== 'database') {
+            return;
+        }
+
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 
@@ -171,7 +175,7 @@ class TranslationServiceProvider extends ServiceProvider
         $this->app->singleton(Scanner::class, function () {
             $config = $this->app['config']['translation'];
 
-            return new Scanner(new Filesystem, $config['scan_paths'], $config['translation_methods']);
+            return new Scanner(new Filesystem(), $config['scan_paths'], $config['translation_methods']);
         });
 
         $this->app->singleton(Translation::class, function ($app) {
