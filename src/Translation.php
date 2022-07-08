@@ -2,10 +2,14 @@
 
 namespace JoeDixon\Translation;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use JoeDixon\Translation\Database\Factories\TranslationFactory;
 
 class Translation extends Model
 {
+    use HasFactory;
+
     protected $guarded = [];
 
     public function __construct(array $attributes = [])
@@ -29,5 +33,10 @@ class Translation extends Model
             ->select('group')
             ->distinct()
             ->get();
+    }
+
+    protected static function newFactory()
+    {
+        return TranslationFactory::new();
     }
 }
