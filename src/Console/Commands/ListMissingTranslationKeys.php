@@ -4,25 +4,10 @@ namespace JoeDixon\Translation\Console\Commands;
 
 class ListMissingTranslationKeys extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'translation:list-missing-translation-keys';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'List all of the translation keys in the app which don\'t have a corresponding translation';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         $missingTranslations = [];
@@ -35,7 +20,7 @@ class ListMissingTranslationKeys extends BaseCommand
         // check whether or not there are any missing translations
         $empty = true;
         foreach ($missingTranslations as $language => $values) {
-            if (! empty($values)) {
+            if (!empty($values)) {
                 $empty = false;
             }
         }

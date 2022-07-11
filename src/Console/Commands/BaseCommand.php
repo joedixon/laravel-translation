@@ -7,11 +7,8 @@ use JoeDixon\Translation\Drivers\Translation;
 
 class BaseCommand extends Command
 {
-    protected $translation;
-
-    public function __construct(Translation $translation)
+    public function __construct(protected Translation $translation)
     {
         parent::__construct();
-        $this->translation = $translation;
     }
 }

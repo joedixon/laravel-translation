@@ -4,25 +4,10 @@ namespace JoeDixon\Translation\Console\Commands;
 
 class AddTranslationKeyCommand extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'translation:add-translation-key';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Add a new language key for the application';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         $language = $this->ask(__('translation::translation.prompt_language_for_key'));

@@ -11,61 +11,18 @@ use JoeDixon\Translation\Scanner;
 
 class SynchroniseTranslationsCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'translation:sync-translations {from?} {to?} {language?}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Synchronise translations between drivers';
 
-    /**
-     * File scanner.
-     *
-     * @var Scanner
-     */
-    private $scanner;
-
-    /**
-     * Translation.
-     *
-     * @var Translation
-     */
-    private $translation;
-
-    /**
-     * From driver.
-     */
     private $fromDriver;
 
-    /**
-     * To driver.
-     */
     private $toDriver;
 
-    /**
-     * Translation drivers.
-     *
-     * @var array
-     */
     private $drivers = ['file', 'database'];
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct(Scanner $scanner, Translation $translation)
+    public function __construct(private Scanner $scanner, private Translation $translation)
     {
-        parent::__construct();
-        $this->scanner = $scanner;
-        $this->translation = $translation;
     }
 
     /**
@@ -86,7 +43,7 @@ class SynchroniseTranslationsCommand extends Command
         else {
             $this->fromDriver = $this->anticipate(__('translation::translation.prompt_from_driver'), $this->drivers);
 
-            if (! in_array($this->fromDriver, $this->drivers)) {
+            if (!in_array($this->fromDriver, $this->drivers)) {
                 return $this->error(__('translation::translation.invalid_driver'));
             }
         }
@@ -103,7 +60,7 @@ class SynchroniseTranslationsCommand extends Command
         else {
             $this->toDriver = $this->anticipate(__('translation::translation.prompt_to_driver'), $this->drivers);
 
-            if (! in_array($this->toDriver, $this->drivers)) {
+            if (!in_array($this->toDriver, $this->drivers)) {
                 return $this->error(__('translation::translation.invalid_driver'));
             }
         }
@@ -128,7 +85,7 @@ class SynchroniseTranslationsCommand extends Command
         else {
             $language = $this->anticipate(__('translation::translation.prompt_language_if_any'), $languages);
 
-            if ($language && ! in_array($language, $languages)) {
+            if ($language && !in_array($language, $languages)) {
                 return $this->error(__('translation::translation.invalid_language'));
             }
         }
