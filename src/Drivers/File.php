@@ -161,10 +161,10 @@ class File extends Translation
             if (Str::contains($group->getPathname(), 'vendor')) {
                 $vendor = Str::before(Str::after($group->getPathname(), 'vendor' . DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
-                return ["{$vendor}::{$group->getBasename('.php')}" => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
+                return ["{$vendor}::{$group->getBasename('.php')}" => new Collection($this->disk->getRequire($group->getPathname()))];
             }
 
-            return [$group->getBasename('.php') => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
+            return [$group->getBasename('.php') => new Collection($this->disk->getRequire($group->getPathname()))];
         });
     }
 
@@ -228,13 +228,13 @@ class File extends Translation
 
             return;
         }
-        $this->disk->put("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$language}" . DIRECTORY_SEPARATOR . "{$group}.php", "<?php\n\nreturn " . var_export($translations, true) . ';' . \PHP_EOL);
+        $this->disk->put("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$language}" . DIRECTORY_SEPARATOR . "{$group}.php", "<?php\n\nreturn " . var_export($translations->toArray(), true) . ';' . \PHP_EOL);
     }
 
     /**
      * Save namespaced group type language translations.
      */
-    private function saveNamespacedGroupTranslations(string $language, string $group, string $translations): void
+    private function saveNamespacedGroupTranslations(string $language, string $group, Collection $translations): void
     {
         [$namespace, $group] = explode('::', $group);
         $directory = "{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . "{$namespace}" . DIRECTORY_SEPARATOR . "{$language}";
@@ -243,7 +243,7 @@ class File extends Translation
             $this->disk->makeDirectory($directory, 0755, true);
         }
 
-        $this->disk->put("$directory" . DIRECTORY_SEPARATOR . "{$group}.php", "<?php\n\nreturn " . var_export($translations, true) . ';' . \PHP_EOL);
+        $this->disk->put("$directory" . DIRECTORY_SEPARATOR . "{$group}.php", "<?php\n\nreturn " . var_export($translations->toArray(), true) . ';' . \PHP_EOL);
     }
 
     /**
