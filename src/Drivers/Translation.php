@@ -11,26 +11,77 @@ use JoeDixon\Translation\Events\TranslationAdded;
 abstract class Translation
 {
     /**
-     * Find all of the translations in the app without translation for a given language.
-     *
-     * @param  string  $language
-     * @return array
+     * Get all languages.
      */
-    public function findMissingTranslations($language)
+    public abstract function allLanguages(): Collection;
+
+    /**
+     * Get all translations.
+     */
+    public abstract function allTranslations(): Collection;
+
+    /**
+     * Get all group translations for a given language.
+     */
+    public abstract function allGroup(string $language): Collection;
+
+    /**
+     * Get all translations for a given language.
+     */
+    public abstract function allTranslationsFor(string $language): Collection;
+
+    /**
+     * Add a new language.
+     */
+    public abstract function addLanguage(string $language, ?string $name = null): void;
+
+    /**
+     * Add a group translation.
+     */
+    public abstract function addGroupTranslation(string $language, string $group, string $key, string $value = ''): void;
+
+    /**
+     * Add a single translation.
+     */
+    public abstract function addSingleTranslation(string $language, string $vendor, string $key, string $value = ''): void;
+
+    /**
+     * Get single translations for a given language.
+     */
+    public abstract function getSingleTranslationsFor(string $language): Collection;
+
+    /**
+     * Get group translations for a given language.
+     */
+    public abstract function getGroupTranslationsFor(string $language): Collection;
+
+    /**
+     * Determine whether the given language exists.
+     */
+    public abstract function languageExists(string $language): bool;
+
+    /**
+     * Get all the groups for a given language.
+     */
+    public abstract function getGroupsFor(string $language): Collection;
+
+    /**
+     * Find all of the translations in the app without translation for a given language.
+     */
+    public function findMissingTranslations(string $language): Collection
     {
-        return array_diff_assoc_recursive(
-            $this->scanner->findTranslations(),
-            $this->allTranslationsFor($language)
+        return new Collection(
+            array_diff_assoc_recursive(
+                $this->scanner->findTranslations(),
+                $this->allTranslationsFor($language)
+            )
         );
     }
 
     /**
      * Save all of the translations in the app without translation for a given language.
-     *
-     * @param  string  $language
-     * @return void
      */
-    public function saveMissingTranslations($language = false)
+    public function saveMissingTranslations(string $language = '')
     {
         $languages = $language ? [$language => $language] : $this->allLanguages();
 
@@ -53,11 +104,8 @@ abstract class Translation
 
     /**
      * Get all translations for a given language merged with the source language.
-     *
-     * @param  string  $language
-     * @return Collection
      */
-    public function getSourceLanguageTranslationsWith($language)
+    public function getSourceLanguageTranslationsWith(string $language): Collection
     {
         $sourceTranslations = $this->allTranslationsFor($this->sourceLanguage);
         $languageTranslations = $this->allTranslationsFor($language);
@@ -79,15 +127,11 @@ abstract class Translation
 
     /**
      * Filter all keys and translations for a given language and string.
-     *
-     * @param  string  $language
-     * @param  string  $filter
-     * @return Collection
      */
-    public function filterTranslationsFor($language, $filter)
+    public function filterTranslationsFor(string $language, string $filter): Collection
     {
         $allTranslations = $this->getSourceLanguageTranslationsWith(($language));
-        if (! $filter) {
+        if (!$filter) {
             return $allTranslations;
         }
 
@@ -105,7 +149,7 @@ abstract class Translation
     public function add(Request $request, $language, $isGroupTranslation)
     {
         $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
-        $group = $namespace.$request->get('group');
+        $group = $namespace . $request->get('group');
         $key = $request->get('key');
         $value = $request->get('value') ?: '';
 
