@@ -42,9 +42,9 @@ class File extends Translation
      */
     public function allGroup(string $language): Collection
     {
-        $groupPath = "{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$language}";
+        $groupPath = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}";
 
-        if (!$this->disk->exists($groupPath)) {
+        if (! $this->disk->exists($groupPath)) {
             return [];
         }
 
@@ -85,8 +85,8 @@ class File extends Translation
             throw new LanguageExistsException(__('translation::errors.language_exists', ['language' => $language]));
         }
 
-        $this->disk->makeDirectory("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "$language");
-        if (!$this->disk->exists("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$language}.json")) {
+        $this->disk->makeDirectory("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."$language");
+        if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}.json")) {
             $this->saveSingleTranslations($language, collect(['single' => collect()]));
         }
     }
@@ -96,14 +96,14 @@ class File extends Translation
      */
     public function addGroupTranslation(string $language, string $group, string $key, string $value = ''): void
     {
-        if (!$this->languageExists($language)) {
+        if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
 
         $translations = $this->getGroupTranslationsFor($language);
 
         // does the group exist? If not, create it.
-        if (!$translations->keys()->contains($group)) {
+        if (! $translations->keys()->contains($group)) {
             $translations->put($group, collect());
         }
 
@@ -119,7 +119,7 @@ class File extends Translation
      */
     public function addSingleTranslation(string $language, string $vendor, string $key, string $value = ''): void
     {
-        if (!$this->languageExists($language)) {
+        if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
 
@@ -141,7 +141,7 @@ class File extends Translation
             return strpos($file, "{$language}.json");
         })->flatMap(function ($file) {
             if (strpos($file->getPathname(), 'vendor')) {
-                $vendor = Str::before(Str::after($file->getPathname(), 'vendor' . DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+                $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
                 return ["{$vendor}::single" => new Collection(json_decode($this->disk->get($file), true))];
             }
@@ -159,7 +159,7 @@ class File extends Translation
             // here we check if the path contains 'vendor' as these will be the
             // files which need namespacing
             if (Str::contains($group->getPathname(), 'vendor')) {
-                $vendor = Str::before(Str::after($group->getPathname(), 'vendor' . DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+                $vendor = Str::before(Str::after($group->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
                 return ["{$vendor}::{$group->getBasename('.php')}" => new Collection($this->disk->getRequire($group->getPathname()))];
             }
@@ -183,7 +183,7 @@ class File extends Translation
     {
         return $this->getGroupFilesFor($language)->map(function ($file) {
             if (Str::contains($file->getPathname(), 'vendor')) {
-                $vendor = Str::before(Str::after($file->getPathname(), 'vendor' . DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+                $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
                 return "{$vendor}::{$file->getBasename('.php')}";
             }
@@ -198,7 +198,7 @@ class File extends Translation
     public function getTranslationsForFile(string $language, string $file): Collection
     {
         $file = Str::finish($file, '.php');
-        $filePath = "{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$language}" . DIRECTORY_SEPARATOR . "{$file}";
+        $filePath = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}".DIRECTORY_SEPARATOR."{$file}";
         $translations = new Collection;
 
         if ($this->disk->exists($filePath)) {
@@ -228,7 +228,7 @@ class File extends Translation
 
             return;
         }
-        $this->disk->put("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$language}" . DIRECTORY_SEPARATOR . "{$group}.php", "<?php\n\nreturn " . var_export($translations->toArray(), true) . ';' . \PHP_EOL);
+        $this->disk->put("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}".DIRECTORY_SEPARATOR."{$group}.php", "<?php\n\nreturn ".var_export($translations->toArray(), true).';'.\PHP_EOL);
     }
 
     /**
@@ -237,13 +237,13 @@ class File extends Translation
     private function saveNamespacedGroupTranslations(string $language, string $group, Collection $translations): void
     {
         [$namespace, $group] = explode('::', $group);
-        $directory = "{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . "{$namespace}" . DIRECTORY_SEPARATOR . "{$language}";
+        $directory = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$namespace}".DIRECTORY_SEPARATOR."{$language}";
 
-        if (!$this->disk->exists($directory)) {
+        if (! $this->disk->exists($directory)) {
             $this->disk->makeDirectory($directory, 0755, true);
         }
 
-        $this->disk->put("$directory" . DIRECTORY_SEPARATOR . "{$group}.php", "<?php\n\nreturn " . var_export($translations->toArray(), true) . ';' . \PHP_EOL);
+        $this->disk->put("$directory".DIRECTORY_SEPARATOR."{$group}.php", "<?php\n\nreturn ".var_export($translations->toArray(), true).';'.\PHP_EOL);
     }
 
     /**
@@ -253,9 +253,9 @@ class File extends Translation
     {
         foreach ($translations as $group => $translation) {
             $vendor = Str::before($group, '::single');
-            $languageFilePath = $vendor !== 'single' ? 'vendor' . DIRECTORY_SEPARATOR . "{$vendor}" . DIRECTORY_SEPARATOR . "{$language}.json" : "{$language}.json";
+            $languageFilePath = $vendor !== 'single' ? 'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}.json" : "{$language}.json";
             $this->disk->put(
-                "{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$languageFilePath}",
+                "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$languageFilePath}",
                 json_encode((object) $translations->get($group), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
             );
         }
@@ -266,7 +266,7 @@ class File extends Translation
      */
     public function getGroupFilesFor(string $language): Collection
     {
-        $groups = new Collection($this->disk->allFiles("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$language}"));
+        $groups = new Collection($this->disk->allFiles("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}"));
         // namespaced files reside in the vendor directory so we'll grab these
         // the `getVendorGroupFileFor` method
         $groups = $groups->merge($this->getVendorGroupFilesFor($language));
@@ -279,17 +279,17 @@ class File extends Translation
      */
     public function getVendorGroupFilesFor(string $language): ?Collection
     {
-        if (!$this->disk->exists("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor')) {
+        if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor')) {
             return null;
         }
 
         $vendorGroups = [];
-        foreach ($this->disk->directories("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor') as $vendor) {
+        foreach ($this->disk->directories("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor') as $vendor) {
             $vendor = Arr::last(explode(DIRECTORY_SEPARATOR, $vendor));
-            if (!$this->disk->exists("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . "{$vendor}" . DIRECTORY_SEPARATOR . "{$language}")) {
+            if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}")) {
                 array_push($vendorGroups, []);
             } else {
-                array_push($vendorGroups, $this->disk->allFiles("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . "{$vendor}" . DIRECTORY_SEPARATOR . "{$language}"));
+                array_push($vendorGroups, $this->disk->allFiles("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}"));
             }
         }
 
