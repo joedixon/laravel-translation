@@ -23,6 +23,7 @@ class SynchroniseTranslationsCommand extends Command
 
     public function __construct(private Scanner $scanner, private Translation $translation)
     {
+        parent::__construct();
     }
 
     /**

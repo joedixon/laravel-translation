@@ -128,7 +128,7 @@ abstract class Translation
     /**
      * Filter all keys and translations for a given language and string.
      */
-    public function filterTranslationsFor(string $language, string $filter): Collection
+    public function filterTranslationsFor(string $language, ?string $filter): Collection
     {
         $allTranslations = $this->getSourceLanguageTranslationsWith(($language));
         if (!$filter) {

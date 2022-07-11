@@ -181,7 +181,7 @@ class Database extends Translation
     /**
      * Get a language from the database.
      */
-    private function getLanguage(string $language): Model
+    private function getLanguage(string $language): ?Model
     {
         return Language::where('language', $language)->first();
     }
