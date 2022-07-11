@@ -2,7 +2,7 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-class AddTranslationKeyCommand extends BaseCommand
+class AddTranslationKey extends Command
 {
     protected $signature = 'translation:add-translation-key';
 

@@ -2,7 +2,7 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-class SynchroniseMissingTranslationKeys extends BaseCommand
+class SynchroniseMissingTranslationKeys extends Command
 {
     protected $signature = 'translation:sync-missing-translation-keys {language?}';
 

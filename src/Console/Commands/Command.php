@@ -2,10 +2,10 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-use Illuminate\Console\Command;
+use Illuminate\Console\Command as BaseCommand;
 use JoeDixon\Translation\Drivers\Translation;
 
-class BaseCommand extends Command
+class Command extends BaseCommand
 {
     public function __construct(protected Translation $translation)
     {

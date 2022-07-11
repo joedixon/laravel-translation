@@ -2,7 +2,7 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-class ListMissingTranslationKeys extends BaseCommand
+class ListMissingTranslationKeys extends Command
 {
     protected $signature = 'translation:list-missing-translation-keys';
 
@@ -13,9 +13,9 @@ class ListMissingTranslationKeys extends BaseCommand
         $missingTranslations = [];
         $rows = [];
 
-        foreach ($this->translation->allLanguages() as $language => $name) {
+        $this->translation->allLanguages()->each(function ($language) {
             $missingTranslations[$language] = $this->translation->findMissingTranslations($language);
-        }
+        });
 
         // check whether or not there are any missing translations
         $empty = true;

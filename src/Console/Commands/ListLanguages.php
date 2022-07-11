@@ -2,7 +2,7 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-class ListLanguagesCommand extends BaseCommand
+class ListLanguages extends Command
 {
     protected $signature = 'translation:list-languages';
 

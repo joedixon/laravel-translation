@@ -9,7 +9,7 @@ use JoeDixon\Translation\Drivers\File;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Scanner;
 
-class SynchroniseTranslationsCommand extends Command
+class SynchroniseTranslations extends Command
 {
     protected $signature = 'translation:sync-translations {from?} {to?} {language?}';
 
