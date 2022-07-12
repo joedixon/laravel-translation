@@ -25,21 +25,21 @@ class TranslationFactory extends Factory
         ];
     }
 
-    public function single()
-    {
-        return $this->state(function () {
-            return [
-                'group' => 'single',
-
-            ];
-        });
-    }
-
-    public function group()
+    public function shortKey()
     {
         return $this->state(function () {
             return [
                 'group' => fake()->word,
+            ];
+        });
+    }
+
+    public function stringKey()
+    {
+        return $this->state(function () {
+            return [
+                'group' => 'string',
+
             ];
         });
     }

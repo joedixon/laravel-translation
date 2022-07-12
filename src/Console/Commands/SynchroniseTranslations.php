@@ -4,8 +4,8 @@ namespace JoeDixon\Translation\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use JoeDixon\Translation\Drivers\Database;
-use JoeDixon\Translation\Drivers\File;
+use JoeDixon\Translation\Drivers\Database\Database;
+use JoeDixon\Translation\Drivers\File\File;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Scanner;
 
@@ -133,7 +133,7 @@ class SynchroniseTranslations extends Command
                 if (is_array($value)) {
                     continue;
                 }
-                $driver->addGroupTranslation($language, $group, $key, $value);
+                $driver->addShortKeyTranslation($language, $group, $key, $value);
             }
         }
     }

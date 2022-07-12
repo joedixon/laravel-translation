@@ -16,19 +16,9 @@ abstract class Translation
     public abstract function allLanguages(): Collection;
 
     /**
-     * Get all translations.
+     * Determine whether the given language exists.
      */
-    public abstract function allTranslations(): Collection;
-
-    /**
-     * Get all group translations for a given language.
-     */
-    public abstract function allGroup(string $language): Collection;
-
-    /**
-     * Get all translations for a given language.
-     */
-    public abstract function allTranslationsFor(string $language): Collection;
+    public abstract function languageExists(string $language): bool;
 
     /**
      * Add a new language.
@@ -36,45 +26,48 @@ abstract class Translation
     public abstract function addLanguage(string $language, ?string $name = null): void;
 
     /**
-     * Add a group translation.
+     * Get all translations.
      */
-    public abstract function addGroupTranslation(string $language, string $group, string $key, string $value = ''): void;
+    public abstract function allTranslations(): Collection;
 
     /**
-     * Add a single translation.
+     * Get all translations for a given language.
      */
-    public abstract function addSingleTranslation(string $language, string $vendor, string $key, string $value = ''): void;
+    public abstract function allTranslationsFor(string $language): Collection;
 
     /**
-     * Get single translations for a given language.
+     * Get short key translations for a given language.
      */
-    public abstract function getSingleTranslationsFor(string $language): Collection;
+    public abstract function allShortKeyTranslationsFor(string $language): Collection;
 
     /**
-     * Get group translations for a given language.
+     * Get all the short key groups for a given language.
      */
-    public abstract function getGroupTranslationsFor(string $language): Collection;
+    public abstract function allShortKeyGroupsFor(string $language): Collection;
 
     /**
-     * Determine whether the given language exists.
+     * Add a short key translation.
      */
-    public abstract function languageExists(string $language): bool;
+    public abstract function addShortKeyTranslation(string $language, string $group, string $key, string $value = ''): void;
 
     /**
-     * Get all the groups for a given language.
+     * Get string key translations for a given language.
      */
-    public abstract function getGroupsFor(string $language): Collection;
+    public abstract function allStringKeyTranslationsFor(string $language): Collection;
+
+    /**
+     * Add a string key translation.
+     */
+    public abstract function addStringKeyTranslation(string $language, string $vendor, string $key, string $value = ''): void;
 
     /**
      * Find all of the translations in the app without translation for a given language.
      */
-    public function findMissingTranslations(string $language): Collection
+    public function findMissingTranslations(string $language): array
     {
-        return new Collection(
-            array_diff_assoc_recursive(
-                $this->scanner->findTranslations(),
-                $this->allTranslationsFor($language)
-            )
+        return array_diff_assoc_recursive(
+            $this->scanner->findTranslations(),
+            $this->allTranslationsFor($language)->toArray()
         );
     }
 
@@ -92,9 +85,9 @@ abstract class Translation
                 foreach ($groups as $group => $translations) {
                     foreach ($translations as $key => $value) {
                         if (Str::contains($group, 'single')) {
-                            $this->addSingleTranslation($language, $group, $key);
+                            $this->addStringKeyTranslation($language, $group, $key);
                         } else {
-                            $this->addGroupTranslation($language, $group, $key);
+                            $this->addShortKeyTranslation($language, $group, $key);
                         }
                     }
                 }
@@ -154,11 +147,11 @@ abstract class Translation
         $value = $request->get('value') ?: '';
 
         if ($isGroupTranslation) {
-            $this->addGroupTranslation($language, $group, $key, $value);
+            $this->addShortKeyTranslation($language, $group, $key, $value);
         } else {
-            $this->addSingleTranslation($language, 'single', $key, $value);
+            $this->addStringKeyTranslation($language, 'string', $key, $value);
         }
 
-        Event::dispatch(new TranslationAdded($language, $group ?: 'single', $key, $value));
+        Event::dispatch(new TranslationAdded($language, $group ?: 'string', $key, $value));
     }
 }

@@ -27,7 +27,7 @@ class AddTranslationKey extends Command
         // exception is thrown
         if ($type === 'single') {
             try {
-                $this->translation->addSingleTranslation($language, 'single', $key, $value);
+                $this->translation->addStringKeyTranslation($language, 'single', $key, $value);
 
                 return $this->info(__('translation::translation.language_key_added'));
             } catch (\Exception $e) {
@@ -36,7 +36,7 @@ class AddTranslationKey extends Command
         } elseif ($type === 'group') {
             try {
                 $file = str_replace('.php', '', $file);
-                $this->translation->addGroupTranslation($language, $file, $key, $value);
+                $this->translation->addShortKeyTranslation($language, $file, $key, $value);
 
                 return $this->info(__('translation::translation.language_key_added'));
             } catch (\Exception $e) {

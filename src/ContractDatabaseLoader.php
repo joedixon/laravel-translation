@@ -25,16 +25,16 @@ class ContractDatabaseLoader implements Loader
     public function load($locale, $group, $namespace = null)
     {
         if ($group == '*' && $namespace == '*') {
-            return $this->translation->getSingleTranslationsFor($locale)->get('single', collect())->toArray();
+            return $this->translation->allStringKeyTranslationsFor($locale)->get('single', collect())->toArray();
         }
 
         if (is_null($namespace) || $namespace == '*') {
-            return $this->translation->getGroupTranslationsFor($locale)->filter(function ($value, $key) use ($group) {
+            return $this->translation->allShortKeyTranslationsFor($locale)->filter(function ($value, $key) use ($group) {
                 return $key === $group;
             })->first();
         }
 
-        return $this->translation->getGroupTranslationsFor($locale)->filter(function ($value, $key) use ($group, $namespace) {
+        return $this->translation->allShortKeyTranslationsFor($locale)->filter(function ($value, $key) use ($group, $namespace) {
             return $key === "{$namespace}::{$group}";
         })->first();
     }

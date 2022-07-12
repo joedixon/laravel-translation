@@ -20,14 +20,13 @@ class LanguageTranslationController extends Controller
 
     public function index(Request $request, $language)
     {
-        // dd($this->translation->getSingleTranslationsFor('en'));
         if ($request->has('language') && $request->get('language') !== $language) {
             return redirect()
                 ->route('languages.translations.index', ['language' => $request->get('language'), 'group' => $request->get('group'), 'filter' => $request->get('filter')]);
         }
 
         $languages = $this->translation->allLanguages();
-        $groups = $this->translation->getGroupsFor(config('app.locale'))->merge('single');
+        $groups = $this->translation->allShortKeyGroupsFor(config('app.locale'))->merge('single');
         $translations = $this->translation->filterTranslationsFor($language, $request->get('filter'));
 
         if ($request->has('group') && $request->get('group')) {
@@ -64,7 +63,7 @@ class LanguageTranslationController extends Controller
 
     public function update(Request $request, $language)
     {
-        $isGroupTranslation = ! Str::contains($request->get('group'), 'single');
+        $isGroupTranslation = !Str::contains($request->get('group'), 'single');
 
         $this->translation->add($request, $language, $isGroupTranslation);
 
