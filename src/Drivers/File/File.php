@@ -55,8 +55,8 @@ class File extends Translation
             throw new LanguageExistsException(__('translation::errors.language_exists', ['language' => $language]));
         }
 
-        $this->disk->makeDirectory("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "$language");
-        if (!$this->disk->exists("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$language}.json")) {
+        $this->disk->makeDirectory("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."$language");
+        if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}.json")) {
             $this->saveStringKeyTranslations($language, collect(['string' => collect()]));
         }
     }

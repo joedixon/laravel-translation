@@ -13,52 +13,52 @@ abstract class Translation
     /**
      * Get all languages.
      */
-    public abstract function allLanguages(): Collection;
+    abstract public function allLanguages(): Collection;
 
     /**
      * Determine whether the given language exists.
      */
-    public abstract function languageExists(string $language): bool;
+    abstract public function languageExists(string $language): bool;
 
     /**
      * Add a new language.
      */
-    public abstract function addLanguage(string $language, ?string $name = null): void;
+    abstract public function addLanguage(string $language, ?string $name = null): void;
 
     /**
      * Get all translations.
      */
-    public abstract function allTranslations(): Collection;
+    abstract public function allTranslations(): Collection;
 
     /**
      * Get all translations for a given language.
      */
-    public abstract function allTranslationsFor(string $language): Collection;
+    abstract public function allTranslationsFor(string $language): Collection;
 
     /**
      * Get short key translations for a given language.
      */
-    public abstract function allShortKeyTranslationsFor(string $language): Collection;
+    abstract public function allShortKeyTranslationsFor(string $language): Collection;
 
     /**
      * Get all the short key groups for a given language.
      */
-    public abstract function allShortKeyGroupsFor(string $language): Collection;
+    abstract public function allShortKeyGroupsFor(string $language): Collection;
 
     /**
      * Add a short key translation.
      */
-    public abstract function addShortKeyTranslation(string $language, string $group, string $key, string $value = ''): void;
+    abstract public function addShortKeyTranslation(string $language, string $group, string $key, string $value = ''): void;
 
     /**
      * Get string key translations for a given language.
      */
-    public abstract function allStringKeyTranslationsFor(string $language): Collection;
+    abstract public function allStringKeyTranslationsFor(string $language): Collection;
 
     /**
      * Add a string key translation.
      */
-    public abstract function addStringKeyTranslation(string $language, string $vendor, string $key, string $value = ''): void;
+    abstract public function addStringKeyTranslation(string $language, string $vendor, string $key, string $value = ''): void;
 
     /**
      * Find all of the translations in the app without translation for a given language.
@@ -124,7 +124,7 @@ abstract class Translation
     public function filterTranslationsFor(string $language, ?string $filter): Collection
     {
         $allTranslations = $this->getSourceLanguageTranslationsWith(($language));
-        if (!$filter) {
+        if (! $filter) {
             return $allTranslations;
         }
 
@@ -142,7 +142,7 @@ abstract class Translation
     public function add(Request $request, $language, $isGroupTranslation)
     {
         $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
-        $group = $namespace . $request->get('group');
+        $group = $namespace.$request->get('group');
         $key = $request->get('key');
         $value = $request->get('value') ?: '';
 

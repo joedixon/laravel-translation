@@ -2,8 +2,8 @@
 
 namespace JoeDixon\Translation\Drivers\File;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait InteractsWithStringKeys
 {
@@ -18,7 +18,7 @@ trait InteractsWithStringKeys
             return strpos($file, "{$language}.json");
         })->flatMap(function ($file) {
             if (strpos($file->getPathname(), 'vendor')) {
-                $vendor = Str::before(Str::after($file->getPathname(), 'vendor' . DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+                $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
                 return ["{$vendor}::string" => new Collection(json_decode($this->disk->get($file), true))];
             }
@@ -32,7 +32,7 @@ trait InteractsWithStringKeys
      */
     public function addStringKeyTranslation(string $language, string $vendor, string $key, string $value = ''): void
     {
-        if (!$this->languageExists($language)) {
+        if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
 
@@ -50,9 +50,9 @@ trait InteractsWithStringKeys
     {
         foreach ($translations as $group => $translation) {
             $vendor = Str::before($group, '::string');
-            $languageFilePath = $vendor !== 'string' ? 'vendor' . DIRECTORY_SEPARATOR . "{$vendor}" . DIRECTORY_SEPARATOR . "{$language}.json" : "{$language}.json";
+            $languageFilePath = $vendor !== 'string' ? 'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}.json" : "{$language}.json";
             $this->disk->put(
-                "{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$languageFilePath}",
+                "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$languageFilePath}",
                 json_encode((object) $translations->get($group), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
             );
         }

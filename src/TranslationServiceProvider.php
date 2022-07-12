@@ -57,10 +57,10 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function loadViews()
     {
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'translation');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'translation');
 
         $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/translation'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/translation'),
         ]);
     }
 
@@ -71,7 +71,7 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function registerRoutes()
     {
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
     }
 
     /**
@@ -82,7 +82,7 @@ class TranslationServiceProvider extends ServiceProvider
     private function publishConfiguration()
     {
         $this->publishes([
-            __DIR__ . '/../config/translation.php' => config_path('translation.php'),
+            __DIR__.'/../config/translation.php' => config_path('translation.php'),
         ], 'config');
     }
 
@@ -93,7 +93,7 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function mergeConfiguration()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/translation.php', 'translation');
+        $this->mergeConfigFrom(__DIR__.'/../config/translation.php', 'translation');
     }
 
     /**
@@ -104,7 +104,7 @@ class TranslationServiceProvider extends ServiceProvider
     private function publishAssets()
     {
         $this->publishes([
-            __DIR__ . '/../public/assets' => public_path('vendor/translation'),
+            __DIR__.'/../public/assets' => public_path('vendor/translation'),
         ], 'assets');
     }
 
@@ -119,7 +119,7 @@ class TranslationServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 
     /**
@@ -129,10 +129,10 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function loadTranslations()
     {
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'translation');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'translation');
 
         $this->publishes([
-            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/translation'),
+            __DIR__.'/../resources/lang' => resource_path('lang/vendor/translation'),
         ]);
     }
 
@@ -162,7 +162,7 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function registerHelpers()
     {
-        require __DIR__ . '/../resources/helpers.php';
+        require __DIR__.'/../resources/helpers.php';
     }
 
     /**

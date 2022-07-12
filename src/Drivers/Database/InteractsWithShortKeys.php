@@ -44,7 +44,7 @@ trait InteractsWithShortKeys
      */
     public function addShortKeyTranslation($language, $group, $key, $value = ''): void
     {
-        if (!$this->languageExists($language)) {
+        if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
 
