@@ -63,7 +63,7 @@ class LanguageTranslationController extends Controller
 
     public function update(Request $request, $language)
     {
-        $isGroupTranslation = !Str::contains($request->get('group'), 'single');
+        $isGroupTranslation = ! Str::contains($request->get('group'), 'single');
 
         $this->translation->add($request, $language, $isGroupTranslation);
 

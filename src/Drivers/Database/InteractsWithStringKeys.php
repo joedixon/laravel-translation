@@ -41,7 +41,7 @@ trait InteractsWithStringKeys
      */
     public function addStringKeyTranslation($language, $vendor, $key, $value = ''): void
     {
-        if (!$this->languageExists($language)) {
+        if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
 

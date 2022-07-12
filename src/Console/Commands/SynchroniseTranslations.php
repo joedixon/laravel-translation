@@ -44,7 +44,7 @@ class SynchroniseTranslations extends Command
         else {
             $this->fromDriver = $this->anticipate(__('translation::translation.prompt_from_driver'), $this->drivers);
 
-            if (!in_array($this->fromDriver, $this->drivers)) {
+            if (! in_array($this->fromDriver, $this->drivers)) {
                 return $this->error(__('translation::translation.invalid_driver'));
             }
         }
@@ -61,7 +61,7 @@ class SynchroniseTranslations extends Command
         else {
             $this->toDriver = $this->anticipate(__('translation::translation.prompt_to_driver'), $this->drivers);
 
-            if (!in_array($this->toDriver, $this->drivers)) {
+            if (! in_array($this->toDriver, $this->drivers)) {
                 return $this->error(__('translation::translation.invalid_driver'));
             }
         }
@@ -86,7 +86,7 @@ class SynchroniseTranslations extends Command
         else {
             $language = $this->anticipate(__('translation::translation.prompt_language_if_any'), $languages);
 
-            if ($language && !in_array($language, $languages)) {
+            if ($language && ! in_array($language, $languages)) {
                 return $this->error(__('translation::translation.invalid_language'));
             }
         }

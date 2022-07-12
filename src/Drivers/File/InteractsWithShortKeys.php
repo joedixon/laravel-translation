@@ -3,8 +3,8 @@
 namespace JoeDixon\Translation\Drivers\File;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait InteractsWithShortKeys
 {
@@ -17,7 +17,7 @@ trait InteractsWithShortKeys
             // here we check if the path contains 'vendor' as these will be the
             // files which need namespacing
             if (Str::contains($group->getPathname(), 'vendor')) {
-                $vendor = Str::before(Str::after($group->getPathname(), 'vendor' . DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+                $vendor = Str::before(Str::after($group->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
                 return ["{$vendor}::{$group->getBasename('.php')}" => new Collection($this->disk->getRequire($group->getPathname()))];
             }
@@ -33,7 +33,7 @@ trait InteractsWithShortKeys
     {
         return $this->allShortKeyFilesFor($language)->map(function ($file) {
             if (Str::contains($file->getPathname(), 'vendor')) {
-                $vendor = Str::before(Str::after($file->getPathname(), 'vendor' . DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+                $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
                 return "{$vendor}::{$file->getBasename('.php')}";
             }
@@ -47,14 +47,14 @@ trait InteractsWithShortKeys
      */
     public function addShortKeyTranslation(string $language, string $group, string $key, string $value = ''): void
     {
-        if (!$this->languageExists($language)) {
+        if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
 
         $translations = $this->allShortKeyTranslationsFor($language);
 
         // does the group exist? If not, create it.
-        if (!$translations->keys()->contains($group)) {
+        if (! $translations->keys()->contains($group)) {
             $translations->put($group, collect());
         }
 
@@ -78,7 +78,7 @@ trait InteractsWithShortKeys
      */
     protected function allShortKeyFilesFor(string $language): Collection
     {
-        $groups = new Collection($this->disk->allFiles("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$language}"));
+        $groups = new Collection($this->disk->allFiles("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}"));
         // namespaced files reside in the vendor directory so we'll grab these
         // the `getVendorGroupFileFor` method
         $groups = $groups->merge($this->allVendorShortKeyFilesFor($language));
@@ -91,17 +91,17 @@ trait InteractsWithShortKeys
      */
     protected function allVendorShortKeyFilesFor(string $language): ?Collection
     {
-        if (!$this->disk->exists("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor')) {
+        if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor')) {
             return null;
         }
 
         $vendorGroups = [];
-        foreach ($this->disk->directories("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor') as $vendor) {
+        foreach ($this->disk->directories("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor') as $vendor) {
             $vendor = Arr::last(explode(DIRECTORY_SEPARATOR, $vendor));
-            if (!$this->disk->exists("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . "{$vendor}" . DIRECTORY_SEPARATOR . "{$language}")) {
+            if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}")) {
                 array_push($vendorGroups, []);
             } else {
-                array_push($vendorGroups, $this->disk->allFiles("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . "{$vendor}" . DIRECTORY_SEPARATOR . "{$language}"));
+                array_push($vendorGroups, $this->disk->allFiles("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}"));
             }
         }
 
@@ -121,7 +121,7 @@ trait InteractsWithShortKeys
             return;
         }
 
-        $this->disk->put("{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . "{$language}" . DIRECTORY_SEPARATOR . "{$group}.php", "<?php\n\nreturn " . var_export($translations->toArray(), true) . ';' . \PHP_EOL);
+        $this->disk->put("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}".DIRECTORY_SEPARATOR."{$group}.php", "<?php\n\nreturn ".var_export($translations->toArray(), true).';'.\PHP_EOL);
     }
 
     /**
@@ -130,12 +130,12 @@ trait InteractsWithShortKeys
     protected function saveNamespacedShortKeyTranslations(string $language, string $group, Collection $translations): void
     {
         [$namespace, $group] = explode('::', $group);
-        $directory = "{$this->languageFilesPath}" . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . "{$namespace}" . DIRECTORY_SEPARATOR . "{$language}";
+        $directory = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$namespace}".DIRECTORY_SEPARATOR."{$language}";
 
-        if (!$this->disk->exists($directory)) {
+        if (! $this->disk->exists($directory)) {
             $this->disk->makeDirectory($directory, 0755, true);
         }
 
-        $this->disk->put("$directory" . DIRECTORY_SEPARATOR . "{$group}.php", "<?php\n\nreturn " . var_export($translations->toArray(), true) . ';' . \PHP_EOL);
+        $this->disk->put("$directory".DIRECTORY_SEPARATOR."{$group}.php", "<?php\n\nreturn ".var_export($translations->toArray(), true).';'.\PHP_EOL);
     }
 }

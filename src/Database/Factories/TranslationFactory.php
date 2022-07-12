@@ -2,8 +2,8 @@
 
 namespace JoeDixon\Translation\Database\Factories;
 
-use JoeDixon\Translation\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use JoeDixon\Translation\Language;
 use JoeDixon\Translation\Translation;
 
 class TranslationFactory extends Factory
