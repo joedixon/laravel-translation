@@ -2,7 +2,7 @@
 
 namespace JoeDixon\Translation;
 
-use Illuminate\Translation\LoaderInterface;
+use Illuminate\Contracts\Translation\Loader as LoaderInterface;
 use JoeDixon\Translation\Drivers\Translation;
 
 class InterfaceDatabaseLoader implements LoaderInterface
