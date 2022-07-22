@@ -14,9 +14,9 @@ trait InteractsWithStringKeys
     {
         $files = new Collection($this->disk->allFiles($this->languageFilesPath));
 
-        return $files->filter(function ($file) use ($language) {
-            return strpos($file, "{$language}.json");
-        })->flatMap(function ($file) {
+        return $files->filter(
+            fn ($file) => str_ends_with($file, "{$language}.json")
+        )->flatMap(function ($file) {
             if (strpos($file->getPathname(), 'vendor')) {
                 $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
@@ -37,7 +37,7 @@ trait InteractsWithStringKeys
         }
 
         $translations = $this->allStringKeyTranslationsFor($language);
-        $translations->get($vendor) ?: $translations->put($vendor, collect());
+        $translations->get($vendor) ?: $translations->put($vendor, new Collection());
         $translations->get($vendor)->put($key, $value);
 
         $this->saveStringKeyTranslations($language, $translations);
@@ -51,9 +51,14 @@ trait InteractsWithStringKeys
         foreach ($translations as $group => $translation) {
             $vendor = Str::before($group, '::string');
             $languageFilePath = $vendor !== 'string' ? 'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}.json" : "{$language}.json";
+            $json = json_encode((object) $translations->get($group), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            if ($json === false) {
+                continue;
+            }
+            
             $this->disk->put(
                 "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$languageFilePath}",
-                json_encode((object) $translations->get($group), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                $json
             );
         }
     }

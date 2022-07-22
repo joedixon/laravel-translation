@@ -4,8 +4,10 @@ namespace JoeDixon\Translation\Drivers\File;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use JoeDixon\Translation\Drivers\CombinedTranslations;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
+use JoeDixon\Translation\Scanner;
 
 class File extends Translation
 {
@@ -13,9 +15,9 @@ class File extends Translation
 
     public function __construct(
         private Filesystem $disk,
-        private $languageFilesPath,
-        protected $sourceLanguage,
-        protected $scanner
+        private string $languageFilesPath,
+        protected string $sourceLanguage,
+        protected Scanner $scanner
     ) {
     }
 
@@ -57,28 +59,7 @@ class File extends Translation
 
         $this->disk->makeDirectory("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."$language");
         if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}.json")) {
-            $this->saveStringKeyTranslations($language, collect(['string' => collect()]));
+            $this->saveStringKeyTranslations($language, collect(['string' => new Collection()]));
         }
-    }
-
-    /**
-     * Get all translations.
-     */
-    public function allTranslations(): Collection
-    {
-        return $this->allLanguages()->mapWithKeys(function ($language) {
-            return [$language => $this->allTranslationsFor($language)];
-        });
-    }
-
-    /**
-     * Get all translations for a given language.
-     */
-    public function allTranslationsFor($language): Collection
-    {
-        return Collection::make([
-            'short' => $this->allShortKeyTranslationsFor($language),
-            'string' => $this->allStringKeyTranslationsFor($language),
-        ]);
     }
 }

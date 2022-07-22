@@ -3,7 +3,6 @@
 namespace JoeDixon\Translation\Drivers\Database;
 
 use Illuminate\Support\Collection;
-use JoeDixon\Translation\Language;
 use JoeDixon\Translation\Translation;
 
 trait InteractsWithStringKeys
@@ -39,14 +38,9 @@ trait InteractsWithStringKeys
     /**
      * Add a single translation.
      */
-    public function addStringKeyTranslation($language, $vendor, $key, $value = ''): void
+    public function addStringKeyTranslation(string $language, string $vendor, string $key, string $value = ''): void
     {
-        if (! $this->languageExists($language)) {
-            $this->addLanguage($language);
-        }
-
-        Language::where('language', $language)
-            ->first()
+        $this->getOrCreateLanguage($language)
             ->translations()
             ->updateOrCreate([
                 'group' => $vendor,

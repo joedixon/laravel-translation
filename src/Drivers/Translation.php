@@ -7,9 +7,13 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use JoeDixon\Translation\Events\TranslationAdded;
+use JoeDixon\Translation\Scanner;
 
 abstract class Translation
 {
+    protected Scanner $scanner;
+    protected string $sourceLanguage;
+
     /**
      * Get all languages.
      */
@@ -28,12 +32,23 @@ abstract class Translation
     /**
      * Get all translations.
      */
-    abstract public function allTranslations(): Collection;
+    public function allTranslations(): Collection
+    {
+        return $this->allLanguages()->mapWithKeys(fn ($name, $language) =>
+            [$language => $this->allTranslationsFor($language)]
+        );
+    }
 
     /**
      * Get all translations for a given language.
      */
-    abstract public function allTranslationsFor(string $language): Collection;
+    public function allTranslationsFor(string $language): CombinedTranslations
+    {
+        return new CombinedTranslations(
+            $this->allStringKeyTranslationsFor($language),
+            $this->allShortKeyTranslationsFor($language),
+        );
+    }
 
     /**
      * Get short key translations for a given language.
@@ -74,7 +89,7 @@ abstract class Translation
     /**
      * Save all of the translations in the app without translation for a given language.
      */
-    public function saveMissingTranslations(?string $language = null)
+    public function saveMissingTranslations(?string $language = null): void
     {
         $languages = $language ? [$language => $language] : $this->allLanguages();
 
@@ -98,7 +113,7 @@ abstract class Translation
     /**
      * Get all translations for a given language merged with the source language.
      */
-    public function getSourceLanguageTranslationsWith(string $language): Collection
+    public function getSourceLanguageTranslationsWith(string $language): CombinedTranslations
     {
         $sourceTranslations = $this->allTranslationsFor($this->sourceLanguage);
         $languageTranslations = $this->allTranslationsFor($language);
@@ -139,7 +154,7 @@ abstract class Translation
         });
     }
 
-    public function add(Request $request, $language, $isGroupTranslation)
+    public function add(Request $request, string $language, bool $isGroupTranslation): void
     {
         $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
         $group = $namespace.$request->get('group');

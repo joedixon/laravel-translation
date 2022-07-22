@@ -39,7 +39,6 @@ class TranslationFactory extends Factory
         return $this->state(function () {
             return [
                 'group' => 'string',
-
             ];
         });
     }

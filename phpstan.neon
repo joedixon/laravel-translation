@@ -7,6 +7,9 @@ parameters:
         - database
         - src
     level: 8
+    ignoreErrors:
+        - '#Access to an undefined property JoeDixon\\Translation\\(Language|Translation)::\$#'
+        - "#Property '([^']+)' does not exist in JoeDixon\\\\Translation\\\\(Language|Translation) model.#"
     checkModelProperties: true
     checkOctaneCompatibility: true
     checkMissingIterableValueType: false

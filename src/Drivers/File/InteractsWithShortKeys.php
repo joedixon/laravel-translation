@@ -55,12 +55,12 @@ trait InteractsWithShortKeys
 
         // does the group exist? If not, create it.
         if (! $translations->keys()->contains($group)) {
-            $translations->put($group, collect());
+            $translations->put($group, new Collection());
         }
 
         $values = $translations->get($group);
         $values[$key] = $value;
-        $translations->put($group, collect($values));
+        $translations->put($group, new Collection($values));
 
         $this->saveShortKeyTranslations($language, $group, new Collection($translations->get($group)));
     }
@@ -89,10 +89,10 @@ trait InteractsWithShortKeys
     /**
      * Get all the vendor short key files for a given language.
      */
-    protected function allVendorShortKeyFilesFor(string $language): ?Collection
+    protected function allVendorShortKeyFilesFor(string $language): Collection
     {
         if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor')) {
-            return null;
+            return new Collection();
         }
 
         $vendorGroups = [];

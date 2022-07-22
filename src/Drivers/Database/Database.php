@@ -2,18 +2,20 @@
 
 namespace JoeDixon\Translation\Drivers\Database;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\Language;
+use JoeDixon\Translation\Scanner;
 
 class Database extends Translation
 {
     use InteractsWithStringKeys, InteractsWithShortKeys;
 
-    public function __construct(protected $sourceLanguage, protected $scanner)
-    {
+    public function __construct(
+        protected string $sourceLanguage,
+        protected Scanner $scanner,
+    ) {
     }
 
     /**
@@ -31,7 +33,7 @@ class Database extends Translation
      */
     public function languageExists(string $language): bool
     {
-        return $this->getLanguage($language) ? true : false;
+        return Language::where('language', $language)->count() > 0;
     }
 
     /**
@@ -50,31 +52,19 @@ class Database extends Translation
     }
 
     /**
-     * Get all translations.
-     */
-    public function allTranslations(): Collection
-    {
-        return $this->allLanguages()->mapWithKeys(function ($name, $language) {
-            return [$language => $this->allTranslationsFor($language)];
-        });
-    }
-
-    /**
-     * Get all translations for a given language.
-     */
-    public function allTranslationsFor(string $language): Collection
-    {
-        return Collection::make([
-            'short' => $this->allShortKeyTranslationsFor($language),
-            'string' => $this->allStringKeyTranslationsFor($language),
-        ]);
-    }
-
-    /**
      * Get a language from the database.
      */
-    private function getLanguage(string $language): ?Model
+    private function getLanguage(string $language): Language
     {
-        return Language::where('language', $language)->first();
+        return Language::where('language', $language)->firstOrFail();
+    }
+
+    private function getOrCreateLanguage(string $language): Language
+    {
+        if (! $this->languageExists($language)) {
+            $this->addLanguage($language);
+        }
+
+        return $this->getLanguage($language);
     }
 }

@@ -42,14 +42,13 @@ trait InteractsWithShortKeys
     /**
      * Add a short key translation.
      */
-    public function addShortKeyTranslation($language, $group, $key, $value = ''): void
+    public function addShortKeyTranslation(string $language, string $group, string $key, string $value = ''): void
     {
         if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
 
-        Language::where('language', $language)
-            ->first()
+        $this->getLanguage($language)
             ->translations()
             ->updateOrCreate([
                 'group' => $group,

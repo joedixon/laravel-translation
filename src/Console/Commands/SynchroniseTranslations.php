@@ -5,6 +5,7 @@ namespace JoeDixon\Translation\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use JoeDixon\Translation\Drivers\CombinedTranslations;
 use JoeDixon\Translation\Drivers\Database\Database;
 use JoeDixon\Translation\Drivers\File\File;
 use JoeDixon\Translation\Drivers\Translation;
@@ -125,7 +126,7 @@ class SynchroniseTranslations extends Command
 
     /**
      * @param Translation $driver 
-     * @param Collection<string,Collection> $languages 
+     * @param Collection<string,CombinedTranslations> $languages 
      * @return void 
      */
     private function mergeLanguages(Translation $driver, Collection $languages): void
@@ -135,19 +136,19 @@ class SynchroniseTranslations extends Command
         }
     }
 
+    private function mergeTranslations(Translation $driver, string $language, CombinedTranslations $translations): void
+    {
+        $this->mergeGroupTranslations($driver, $language, $translations->shortKeyTranslations);
+        $this->mergeSingleTranslations($driver, $language, $translations->stringKeyTranslations);
+    }
+
     /**
      * @param Translation $driver 
      * @param string $language 
-     * @param Collection<string,array> $translations 
+     * @param Collection<string,Collection<string,string|array>> $groups 
      * @return void 
      */
-    private function mergeTranslations(Translation $driver, string $language, Collection $translations): void
-    {
-        $this->mergeGroupTranslations($driver, $language, $translations['group']);
-        $this->mergeSingleTranslations($driver, $language, $translations['single']);
-    }
-
-    private function mergeGroupTranslations(Translation $driver, string $language, array $groups): void
+    private function mergeGroupTranslations(Translation $driver, string $language, Collection $groups): void
     {
         foreach ($groups as $group => $translations) {
             foreach ($translations as $key => $value) {
@@ -159,7 +160,13 @@ class SynchroniseTranslations extends Command
         }
     }
 
-    private function mergeSingleTranslations(Translation $driver, string $language, array $vendors): void
+    /**
+     * @param Translation $driver 
+     * @param string $language 
+     * @param Collection<string,Collection<string,string|array>> $vendors 
+     * @return void 
+     */
+    private function mergeSingleTranslations(Translation $driver, string $language, Collection $vendors): void
     {
         foreach ($vendors as $vendor => $translations) {
             foreach ($translations as $key => $value) {
