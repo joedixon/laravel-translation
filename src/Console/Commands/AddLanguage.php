@@ -8,7 +8,7 @@ class AddLanguage extends Command
 
     protected $description = 'Add a new language to the application';
 
-    public function handle()
+    public function handle(): void
     {
         // ask the user for the language they wish to add
         $language = $this->ask(__('translation::translation.prompt_language'));

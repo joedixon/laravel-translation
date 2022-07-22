@@ -25,7 +25,7 @@ class TranslationFactory extends Factory
         ];
     }
 
-    public function shortKey()
+    public function shortKey(): static
     {
         return $this->state(function () {
             return [
@@ -34,7 +34,7 @@ class TranslationFactory extends Factory
         });
     }
 
-    public function stringKey()
+    public function stringKey(): static
     {
         return $this->state(function () {
             return [

@@ -8,7 +8,7 @@ class AddTranslationKey extends Command
 
     protected $description = 'Add a new language key for the application';
 
-    public function handle()
+    public function handle(): void
     {
         $language = $this->ask(__('translation::translation.prompt_language_for_key'));
 
@@ -29,21 +29,26 @@ class AddTranslationKey extends Command
             try {
                 $this->translation->addStringKeyTranslation($language, 'single', $key, $value);
 
-                return $this->info(__('translation::translation.language_key_added'));
+                $this->info(__('translation::translation.language_key_added'));
+                return;
             } catch (\Exception $e) {
-                return $this->error($e->getMessage());
+                $this->error($e->getMessage());
+                return;
             }
         } elseif ($type === 'group') {
             try {
                 $file = str_replace('.php', '', $file);
                 $this->translation->addShortKeyTranslation($language, $file, $key, $value);
 
-                return $this->info(__('translation::translation.language_key_added'));
+                $this->info(__('translation::translation.language_key_added'));
+                return;
             } catch (\Exception $e) {
-                return $this->error($e->getMessage());
+                $this->error($e->getMessage());
+                return;
             }
         } else {
-            return $this->error(__('translation::translation.type_error'));
+            $this->error(__('translation::translation.type_error'));
+            return;
         }
     }
 }

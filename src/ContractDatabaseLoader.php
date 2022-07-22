@@ -3,11 +3,12 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Contracts\Translation\Loader;
+use Illuminate\Support\Collection;
 use JoeDixon\Translation\Drivers\Translation;
 
 class ContractDatabaseLoader implements Loader
 {
-    private $translation;
+    private Translation $translation;
 
     public function __construct(Translation $translation)
     {
@@ -25,7 +26,7 @@ class ContractDatabaseLoader implements Loader
     public function load($locale, $group, $namespace = null)
     {
         if ($group == '*' && $namespace == '*') {
-            return $this->translation->allStringKeyTranslationsFor($locale)->get('single', collect())->toArray();
+            return $this->translation->allStringKeyTranslationsFor($locale)->get('single', new Collection())->toArray();
         }
 
         if (is_null($namespace) || $namespace == '*') {

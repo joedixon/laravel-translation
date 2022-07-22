@@ -74,7 +74,7 @@ abstract class Translation
     /**
      * Save all of the translations in the app without translation for a given language.
      */
-    public function saveMissingTranslations(string $language = '')
+    public function saveMissingTranslations(?string $language = null)
     {
         $languages = $language ? [$language => $language] : $this->allLanguages();
 

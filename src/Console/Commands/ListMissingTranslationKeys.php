@@ -8,14 +8,13 @@ class ListMissingTranslationKeys extends Command
 
     protected $description = 'List all of the translation keys in the app which don\'t have a corresponding translation';
 
-    public function handle()
+    public function handle(): void
     {
-        $missingTranslations = [];
         $rows = [];
 
-        $this->translation->allLanguages()->each(function ($language) {
-            $missingTranslations[$language] = $this->translation->findMissingTranslations($language);
-        });
+        $missingTranslations = $this->translation->allLanguages()->mapWithKeys(fn ($language) => 
+            [$language => $this->translation->findMissingTranslations($language)]
+        )->toArray();
 
         // check whether or not there are any missing translations
         $empty = true;
@@ -27,7 +26,8 @@ class ListMissingTranslationKeys extends Command
 
         // if no missing translations, inform the user and move on with your day
         if ($empty) {
-            return $this->info(__('translation::translation.no_missing_keys'));
+            $this->info(__('translation::translation.no_missing_keys'));
+            return;
         }
 
         // set some headers for the table of results

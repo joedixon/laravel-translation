@@ -8,7 +8,7 @@ class ListLanguages extends Command
 
     protected $description = 'List all of the available languages in the application';
 
-    public function handle()
+    public function handle(): void
     {
         $headers = [__('translation::translation.language_name'), __('translation::translation.language')];
         $languages = $this->translation->allLanguages()->toArray();
