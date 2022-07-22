@@ -3,30 +3,26 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
+use JoeDixon\Translation\Drivers\CombinedTranslations;
 
 class Scanner
 {
-    private $disk;
-
-    private $scanPaths;
-
-    private $translationMethods;
-
-    public function __construct(Filesystem $disk, $scanPaths, $translationMethods)
-    {
-        $this->disk = $disk;
-        $this->scanPaths = $scanPaths;
-        $this->translationMethods = $translationMethods;
+    public function __construct(
+        private Filesystem $disk,
+        private string $scanPaths,
+        private array $translationMethods,
+    ) {
     }
 
     /**
      * Scan all the files in the provided $scanPath for translations.
      *
-     * @return array
+     * @return CombinedTranslations
      */
-    public function findTranslations()
+    public function findTranslations(): CombinedTranslations
     {
-        $results = ['single' => [], 'group' => []];
+        $results = new CombinedTranslations(new Collection(), new Collection());
 
         // This has been derived from a combination of the following:
         // * Laravel Language Manager GUI from Mohamed Said (https://github.com/themsaid/laravel-langman-gui)
@@ -48,10 +44,10 @@ class Scanner
                 foreach ($matches[2] as $key) {
                     if (preg_match("/(^[a-zA-Z0-9:_-]+([.][^\1)\ ]+)+$)/siU", $key, $arrayMatches)) {
                         [$file, $k] = explode('.', $arrayMatches[0], 2);
-                        $results['group'][$file][$k] = '';
+                        data_set($results->shortKeyTranslations, $file . '.' . $k, '');
                         continue;
                     } else {
-                        $results['single']['single'][$key] = '';
+                        data_set($results->stringKeyTranslations, 'string.' . $key, '');
                     }
                 }
             }

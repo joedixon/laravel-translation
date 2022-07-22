@@ -2,16 +2,15 @@
 
 namespace JoeDixon\Translation;
 
-use Illuminate\Contracts\Translation\Loader as LoaderInterface;
+use Illuminate\Contracts\Translation\Loader;
+use Illuminate\Support\Collection;
 use JoeDixon\Translation\Drivers\Translation;
 
-class InterfaceDatabaseLoader implements LoaderInterface
+class InterfaceDatabaseLoader implements Loader
 {
-    private $translation;
-
-    public function __construct(Translation $translation)
-    {
-        $this->translation = $translation;
+    public function __construct(
+        private Translation $translation
+    ) {
     }
 
     /**
@@ -19,13 +18,13 @@ class InterfaceDatabaseLoader implements LoaderInterface
      *
      * @param  string  $locale
      * @param  string  $group
-     * @param  string  $namespace
+     * @param  ?string  $namespace
      * @return array
      */
-    public function load($locale, $group, $namespace = null)
+    public function load($locale, $group, $namespace = null): array
     {
         if ($group == '*' && $namespace == '*') {
-            return $this->translation->allStringKeyTranslationsFor($locale)->get('single', collect())->toArray();
+            return $this->translation->allStringKeyTranslationsFor($locale)->get('single', new Collection())->toArray();
         }
 
         if (is_null($namespace) || $namespace == '*') {

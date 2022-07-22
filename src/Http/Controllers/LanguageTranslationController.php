@@ -2,6 +2,9 @@
 
 namespace JoeDixon\Translation\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
@@ -11,18 +14,20 @@ use JoeDixon\Translation\Http\Requests\TranslationRequest;
 
 class LanguageTranslationController extends Controller
 {
-    private $translation;
-
-    public function __construct(Translation $translation)
-    {
-        $this->translation = $translation;
+    public function __construct(
+        private Translation $translation
+    ) {
     }
 
-    public function index(Request $request, $language)
+    public function index(Request $request, string $language): RedirectResponse|View
     {
         if ($request->has('language') && $request->get('language') !== $language) {
             return redirect()
-                ->route('languages.translations.index', ['language' => $request->get('language'), 'group' => $request->get('group'), 'filter' => $request->get('filter')]);
+                ->route('languages.translations.index', [
+                    'language' => $request->get('language'),
+                    'group' => $request->get('group'),
+                    'filter' => $request->get('filter')
+                ]);
         }
 
         $languages = $this->translation->allLanguages();
@@ -45,12 +50,12 @@ class LanguageTranslationController extends Controller
         return view('translation::languages.translations.index', compact('language', 'languages', 'groups', 'translations'));
     }
 
-    public function create(Request $request, $language)
+    public function create(Request $request, string $language): View
     {
         return view('translation::languages.translations.create', compact('language'));
     }
 
-    public function store(TranslationRequest $request, $language)
+    public function store(TranslationRequest $request, string $language): RedirectResponse
     {
         $isGroupTranslation = $request->filled('group');
 
@@ -61,12 +66,12 @@ class LanguageTranslationController extends Controller
             ->with('success', __('translation::translation.translation_added'));
     }
 
-    public function update(Request $request, $language)
+    public function update(Request $request, string $language): JsonResponse
     {
         $isGroupTranslation = ! Str::contains($request->get('group'), 'single');
 
         $this->translation->add($request, $language, $isGroupTranslation);
 
-        return ['success' => true];
+        return new JsonResponse(['success' => true]);
     }
 }

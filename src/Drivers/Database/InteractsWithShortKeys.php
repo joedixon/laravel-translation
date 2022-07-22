@@ -29,14 +29,15 @@ trait InteractsWithShortKeys
 
     /**
      * Get all the short key groups for a given language.
+     * 
+     * @return Collection<string>
      */
     public function allShortKeyGroupsFor(string $language): Collection
     {
-        $groups = Translation::getGroupsForLanguage($language);
-
-        return $groups->map(function ($translation) {
-            return $translation->group;
-        });
+        return Translation::getGroupsForLanguage($language)
+            ->map(
+                fn (Translation $translation): string => $translation->group
+            );
     }
 
     /**

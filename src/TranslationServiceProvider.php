@@ -3,6 +3,7 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use JoeDixon\Translation\Console\Commands\AddLanguage;
 use JoeDixon\Translation\Console\Commands\AddTranslationKey;
@@ -178,7 +179,7 @@ class TranslationServiceProvider extends ServiceProvider
             return new Scanner(new Filesystem(), $config['scan_paths'], $config['translation_methods']);
         });
 
-        $this->app->singleton(Translation::class, function ($app) {
+        $this->app->singleton(Translation::class, function (Application $app) {
             return (new TranslationManager($app, $app['config']['translation'], $app->make(Scanner::class)))->resolve();
         });
     }
