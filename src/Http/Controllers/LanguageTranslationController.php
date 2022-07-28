@@ -26,7 +26,7 @@ class LanguageTranslationController extends Controller
                 ->route('languages.translations.index', [
                     'language' => $request->get('language'),
                     'group' => $request->get('group'),
-                    'filter' => $request->get('filter')
+                    'filter' => $request->get('filter'),
                 ]);
         }
 

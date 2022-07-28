@@ -4,7 +4,6 @@ namespace JoeDixon\Translation\Drivers\File;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use JoeDixon\Translation\Drivers\CombinedTranslations;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\Scanner;

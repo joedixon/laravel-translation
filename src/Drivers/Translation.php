@@ -34,8 +34,7 @@ abstract class Translation
      */
     public function allTranslations(): Collection
     {
-        return $this->allLanguages()->mapWithKeys(fn ($name, $language) =>
-            [$language => $this->allTranslationsFor($language)]
+        return $this->allLanguages()->mapWithKeys(fn ($name, $language) => [$language => $this->allTranslationsFor($language)]
         );
     }
 
