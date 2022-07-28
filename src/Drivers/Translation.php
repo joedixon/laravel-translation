@@ -12,6 +12,7 @@ use JoeDixon\Translation\Scanner;
 abstract class Translation
 {
     protected Scanner $scanner;
+
     protected string $sourceLanguage;
 
     /**
@@ -34,8 +35,8 @@ abstract class Translation
      */
     public function allTranslations(): Collection
     {
-        return $this->allLanguages()->mapWithKeys(fn ($name, $language) =>
-            [$language => $this->allTranslationsFor($language)]
+        return $this->allLanguages()->mapWithKeys(
+            fn ($name, $language) => [$language => $this->allTranslationsFor($language)]
         );
     }
 
@@ -78,12 +79,18 @@ abstract class Translation
     /**
      * Find all of the translations in the app without translation for a given language.
      */
-    public function findMissingTranslations(string $language): array
+    public function findMissingTranslations(string $language): Collection
     {
-        return array_diff_assoc_recursive(
-            $this->scanner->findTranslations(),
-            $this->allTranslationsFor($language)->toArray()
-        );
+        return $this->scanner->findTranslations()
+            ->map(function ($groups, $type) use ($language) {
+                return $groups->map(function ($translations, $group) use ($language, $type) {
+                    $all = $this->allTranslationsFor($language)->get($type)->get($group);
+
+                    return $translations->diffKeys($all);
+                })->filter(function ($translations) {
+                    return $translations->isNotEmpty();
+                });
+            });
     }
 
     /**

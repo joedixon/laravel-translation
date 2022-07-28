@@ -26,12 +26,12 @@ class LanguageTranslationController extends Controller
                 ->route('languages.translations.index', [
                     'language' => $request->get('language'),
                     'group' => $request->get('group'),
-                    'filter' => $request->get('filter')
+                    'filter' => $request->get('filter'),
                 ]);
         }
 
         $languages = $this->translation->allLanguages();
-        $groups = $this->translation->allShortKeyGroupsFor(config('app.locale'))->merge('single');
+        $groups = $this->translation->allShortKeyGroupsFor(config('app.locale'))->merge(['single']);
         $translations = $this->translation->filterTranslationsFor($language, $request->get('filter'));
 
         if ($request->has('group') && $request->get('group')) {

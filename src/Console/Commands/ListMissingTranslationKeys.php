@@ -12,21 +12,19 @@ class ListMissingTranslationKeys extends Command
     {
         $rows = [];
 
-        $missingTranslations = $this->translation->allLanguages()->mapWithKeys(fn ($language) => 
-            [$language => $this->translation->findMissingTranslations($language)]
-        )->toArray();
+        $missingTranslations = $this->translation->allLanguages()->mapWithKeys(
+            fn ($language) => [$language => $this->translation->findMissingTranslations($language)]
+        );
 
         // check whether or not there are any missing translations
-        $empty = true;
-        foreach ($missingTranslations as $language => $values) {
-            if (! empty($values)) {
-                $empty = false;
-            }
-        }
+        $isNotEmpty = $missingTranslations->first(function ($translations) {
+            return $translations->get('short')->isNotEmpty() || $translations->get('string')->isNotEmpty();
+        });
 
         // if no missing translations, inform the user and move on with your day
-        if ($empty) {
+        if (! $isNotEmpty) {
             $this->info(__('translation::translation.no_missing_keys'));
+
             return;
         }
 

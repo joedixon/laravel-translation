@@ -25,7 +25,7 @@ trait InteractsWithStringKeys
             Translation::whereNull('group')->update(['group' => 'string']);
             // if any legacy groups exist, rerun the method so we get the
             // updated keys.
-            return $this->getStringKeyTranslationsFor($language);
+            return $this->allStringKeyTranslationsFor($language);
         }
 
         return $translations->map(function ($translations) {
