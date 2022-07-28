@@ -28,13 +28,12 @@ class Translation extends Model
     }
 
     /**
-     * @param string $language 
+     * @param  string  $language
      * @return Collection<int,Translation>
      */
     public static function getGroupsForLanguage(string $language): Collection
     {
-        return static
-            ::whereHas('language', fn (Builder $q) => $q->where('language', $language))
+        return static::whereHas('language', fn (Builder $q) => $q->where('language', $language))
             ->whereNotNull('group')
             ->where('group', 'not like', '%single')
             ->select('group')

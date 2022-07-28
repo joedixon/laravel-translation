@@ -29,7 +29,7 @@ trait InteractsWithShortKeys
 
     /**
      * Get all the short key groups for a given language.
-     * 
+     *
      * @return Collection<string>
      */
     public function allShortKeyGroupsFor(string $language): Collection

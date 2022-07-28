@@ -7,10 +7,9 @@ use Illuminate\Support\Collection;
 
 class CombinedTranslations
 {
-
     /**
-     * @param Collection<string,Collection<string,array|string>> $stringKeyTranslations
-     * @param Collection<string,Collection<string,array|string>> $shortKeyTranslations
+     * @param  Collection<string,Collection<string,array|string>>  $stringKeyTranslations
+     * @param  Collection<string,Collection<string,array|string>>  $shortKeyTranslations
      * @return void
      */
     public function __construct(
@@ -30,7 +29,7 @@ class CombinedTranslations
     public function map(Closure $callback): self
     {
         $this->stringKeyTranslations = $this->stringKeyTranslations->map($callback);
-        $this->shortKeyTranslations  = $this->shortKeyTranslations->map($callback);
+        $this->shortKeyTranslations = $this->shortKeyTranslations->map($callback);
 
         return $this;
     }

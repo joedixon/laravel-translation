@@ -39,9 +39,10 @@ class SynchroniseTranslations extends Command
 
         try {
             $this->fromDriver = $this->loadDriverFromArgumentOrInput('from');
-            $this->toDriver   = $this->loadDriverFromArgumentOrInput('to');
+            $this->toDriver = $this->loadDriverFromArgumentOrInput('to');
         } catch (DriverNotFoundException $e) {
             $this->error(__('translation::translation.invalid_driver'));
+
             return;
         }
 
@@ -53,6 +54,7 @@ class SynchroniseTranslations extends Command
             );
         } catch (Throwable) {
             $this->error(__('translation::translation.invalid_language'));
+
             return;
         }
 
@@ -73,13 +75,13 @@ class SynchroniseTranslations extends Command
     {
         try {
             $value = $this->stringArgument($key);
-            if (!in_array($value, $allowed)) {
+            if (! in_array($value, $allowed)) {
                 throw new UnexpectedValueException();
             }
         } catch (Throwable) {
             $value = $this->anticipate($translation, $allowed);
 
-            if (!in_array($value, $allowed)) {
+            if (! in_array($value, $allowed)) {
                 throw new UnexpectedValueException();
             }
         }
@@ -92,7 +94,7 @@ class SynchroniseTranslations extends Command
         try {
             $driver = $this->stringArgumentOrInputFromList(
                 $which,
-                __('translation::translation.prompt_' . $which . '_driver'),
+                __('translation::translation.prompt_'.$which.'_driver'),
                 DriverType::values()
             );
         } catch (Throwable) {
@@ -125,9 +127,9 @@ class SynchroniseTranslations extends Command
     }
 
     /**
-     * @param Translation $driver 
-     * @param Collection<string,CombinedTranslations> $languages 
-     * @return void 
+     * @param  Translation  $driver
+     * @param  Collection<string,CombinedTranslations>  $languages
+     * @return void
      */
     private function mergeLanguages(Translation $driver, Collection $languages): void
     {
@@ -143,10 +145,10 @@ class SynchroniseTranslations extends Command
     }
 
     /**
-     * @param Translation $driver 
-     * @param string $language 
-     * @param Collection<string,Collection<string,string|array>> $groups 
-     * @return void 
+     * @param  Translation  $driver
+     * @param  string  $language
+     * @param  Collection<string,Collection<string,string|array>>  $groups
+     * @return void
      */
     private function mergeGroupTranslations(Translation $driver, string $language, Collection $groups): void
     {
@@ -161,10 +163,10 @@ class SynchroniseTranslations extends Command
     }
 
     /**
-     * @param Translation $driver 
-     * @param string $language 
-     * @param Collection<string,Collection<string,string|array>> $vendors 
-     * @return void 
+     * @param  Translation  $driver
+     * @param  string  $language
+     * @param  Collection<string,Collection<string,string|array>>  $vendors
+     * @return void
      */
     private function mergeSingleTranslations(Translation $driver, string $language, Collection $vendors): void
     {
