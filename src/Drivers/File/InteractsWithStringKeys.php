@@ -55,7 +55,7 @@ trait InteractsWithStringKeys
             if ($json === false) {
                 continue;
             }
-            
+
             $this->disk->put(
                 "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$languageFilePath}",
                 $json

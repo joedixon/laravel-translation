@@ -30,9 +30,11 @@ class AddTranslationKey extends Command
                 $this->translation->addStringKeyTranslation($language, 'single', $key, $value);
 
                 $this->info(__('translation::translation.language_key_added'));
+
                 return;
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
+
                 return;
             }
         } elseif ($type === 'group') {
@@ -41,13 +43,16 @@ class AddTranslationKey extends Command
                 $this->translation->addShortKeyTranslation($language, $file, $key, $value);
 
                 $this->info(__('translation::translation.language_key_added'));
+
                 return;
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
+
                 return;
             }
         } else {
             $this->error(__('translation::translation.type_error'));
+
             return;
         }
     }

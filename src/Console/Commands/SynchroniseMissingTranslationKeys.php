@@ -14,6 +14,7 @@ class SynchroniseMissingTranslationKeys extends Command
 
         if (! (is_string($language) || is_null($language))) {
             $this->error(__('translation::trnaslation.invalid_language'));
+
             return;
         }
 
