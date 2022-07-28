@@ -1,68 +1,10 @@
-/**
- * This injects Tailwind's base styles, which is a combination of
- * Normalize.css and some additional base styles.
- *
- * You can see the styles here:
- * https://github.com/tailwindcss/tailwindcss/blob/master/css/preflight.css
- *
- * If using `postcss-import`, use this import instead:
- *
- * @import "tailwindcss/preflight";
- */
-
-@tailwind preflight;
-/**
- * This injects any component classes registered by plugins.
- *
- * If using `postcss-import`, use this import instead:
- *
- * @import "tailwindcss/components";
- */
-
+@tailwind base;
 @tailwind components;
-/**
- * Here you would add any of your custom component classes; stuff that you'd
- * want loaded *before* the utilities so that the utilities could still
- * override them.
- *
- * Example:
- *
- * .btn { ... }
- * .form-input { ... }
- *
- * Or if using a preprocessor or `postcss-import`:
- *
- * @import "components/buttons";
- * @import "components/forms";
- */
-
-/**
- * This injects all of Tailwind's utility classes, generated based on your
- * config file.
- *
- * If using `postcss-import`, use this import instead:
- *
- * @import "tailwindcss/utilities";
- */
-
 @tailwind utilities;
-/**
- * Here you would add any custom utilities you need that don't come out of the
- * box with Tailwind.
- *
- * Example :
- *
- * .bg-pattern-graph-paper { ... }
- * .skew-45 { ... }
- *
- * Or if using a preprocessor or `postcss-import`:
- *
- * @import "utilities/background-patterns";
- * @import "utilities/skew-transforms";
- */
+
 
 body {
-    @apply bg-grey-lighter text-grey-darkest
+    @apply bg-gray-100 text-gray-900
 }
 
 ul {
@@ -75,7 +17,7 @@ li {
 }
 
 a {
-    @apply text-blue;
+    @apply text-blue-500;
 }
 
 nav.header {
@@ -84,7 +26,7 @@ nav.header {
 }
 
 nav a {
-    @apply .opacity-75 text-white no-underline flex items-center
+    @apply opacity-75 text-white no-underline flex items-center
 }
 
 nav a.active {
@@ -96,7 +38,7 @@ nav a:hover {
 }
 
 .panel {
-    @apply bg-white rounded m-6 shadow text-grey-dark
+    @apply bg-white rounded m-6 shadow text-gray-700
 }
 
 .panel-header {
@@ -104,7 +46,7 @@ nav a:hover {
 }
 
 .panel-footer {
-    @apply border-t bg-grey-lighter p-4
+    @apply border-t bg-gray-100 p-4
 }
 
 .panel-body table {
@@ -117,7 +59,7 @@ nav a:hover {
 }
 
 .panel-body th {
-    @apply text-grey-darker
+    @apply text-gray-800
 }
 
 .panel-body td {
@@ -129,16 +71,16 @@ nav a:hover {
 }
 
 .panel-body thead tr {
-    @apply bg-grey-lighter
+    @apply bg-gray-100
 }
 
 .panel-body tbody tr:nth-child(even) {
-    @apply bg-grey-lighter
+    @apply bg-gray-100
 }
 
 .panel-body tbody tr:hover,
 .panel-body tbody tr:nth-child(even):hover {
-    @apply bg-blue-lightest
+    @apply bg-blue-100
 }
 
 .panel-body tbody tr:last-child {
@@ -147,11 +89,11 @@ nav a:hover {
 
 .panel-body td textarea {
     overflow-wrap: inherit;
-    @apply border-none resize-none bg-transparent text-grey-darker w-full font-thin h-auto p-0
+    @apply border-none resize-none bg-transparent text-gray-800 w-full font-thin h-auto p-0
 }
 
 .panel-body td textarea.active {
-    @apply w-full rounded h-32 p-2 border border-solid border-grey
+    @apply w-full rounded h-32 p-2 border border-solid border-gray-500
 }
 
 .panel-body td textarea:focus {
@@ -159,19 +101,19 @@ nav a:hover {
 }
 
 .button {
-    @apply bg-transparent text-grey-darker py-2 px-4 border border-grey rounded text-sm font-bold no-underline
+    @apply bg-transparent text-gray-700 py-2 px-4 border border-gray-500 rounded text-sm font-bold no-underline
 }
 
 .button:hover {
-    @apply text-blue
+    @apply text-blue-500
 }
 
 .button-blue {
-    @apply bg-blue text-white border-blue
+    @apply bg-blue-500 text-white border-blue-500
 }
 
 .button-blue:hover {
-    @apply text-white bg-blue-dark
+    @apply text-white bg-blue-700
 }
 
 .input-group {
@@ -179,11 +121,11 @@ nav a:hover {
 }
 
 .input-group label {
-    @apply block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2
+    @apply block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2
 }
 
 .input-group input {
-    @apply appearance-none block w-full bg-grey-lighter text-grey-darker border rounded py-3 px-4 mb-3 leading-tight
+    @apply appearance-none block w-full bg-gray-100 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight
 }
 
 .input-group:last-child {
@@ -191,11 +133,11 @@ nav a:hover {
 }
 
 .input-group input.error {
-    @apply border-red
+    @apply border-red-500
 }
 
 .input-group .error-text {
-    @apply text-red text-xs italic
+    @apply text-red-500 text-xs italic
 }
 
 .select-group {
@@ -207,15 +149,15 @@ nav a:hover {
 }
 
 .select-group select {
-    @apply text-base block appearance-none bg-white border text-grey-darker uppercase py-2 px-4 pr-8 rounded leading-tight max-w-xs font-thin
+    @apply text-base block appearance-none bg-white border text-gray-700 uppercase py-2 px-4 pr-8 rounded leading-tight max-w-xs font-thin
 }
 
 .select-group select:focus {
-    @apply outline-none border-grey
+    @apply outline-none border-gray-500
 }
 
 .select-group .caret {
-    @apply pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darker
+    @apply pointer-events-none absolute flex items-center px-2 text-gray-700
 }
 
 .select-group .caret svg {
@@ -228,11 +170,11 @@ nav a:hover {
 
 .search-input {
     background: url('data:image/svg+xml;charset=utf8,<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com"><path d="M 11.732 12.439 C 9.047 14.525 5.109 12.921 4.645 9.553 C 4.181 6.183 7.538 3.575 10.689 4.858 C 13.399 5.962 14.306 9.349 12.512 11.66 L 15.466 14.603 L 14.682 15.388 L 11.738 12.439 Z M 9.027 12.263 C 11.577 12.263 13.172 9.5 11.897 7.291 C 11.304 6.267 10.21 5.634 9.027 5.634 C 6.476 5.634 4.88 8.397 6.157 10.606 C 6.749 11.63 7.842 12.263 9.027 12.263 Z" style="fill: rgb(96, 111, 123);"/></svg>');
-    @apply bg-grey-lighter rounded pl-10 py-2 pr-4 bg-no-repeat bg-contain transition border text-grey-darker font-thin w-full
+    @apply bg-gray-100 rounded pl-10 py-2 pr-4 bg-no-repeat bg-contain transition border text-gray-700 font-thin w-full
 }
 
 .search-input:focus {
-    @apply outline-none bg-white border border-grey-light
+    @apply outline-none bg-white border border-gray-200
 }
 
 .transition {
@@ -246,7 +188,7 @@ nav a:hover {
 
 ul.search-results {
     max-height: 300px;
-    @apply font-thin pl-0 block absolute w-full bg-grey-lighter border border-t-0 rounded rounded-t-none overflow-x-hidden overflow-y-scroll
+    @apply font-thin pl-0 block absolute w-full bg-gray-100 border border-t-0 rounded rounded-t-none overflow-x-hidden overflow-y-scroll
 }
 
 ul.search-results li {
