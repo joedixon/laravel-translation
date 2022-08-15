@@ -7,30 +7,98 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use JoeDixon\Translation\Events\TranslationAdded;
+use JoeDixon\Translation\Scanner;
 
 abstract class Translation
 {
+    protected Scanner $scanner;
+
+    protected string $sourceLanguage;
+
+    abstract public function map(): Collection|string|null;
+
     /**
-     * Find all of the translations in the app without translation for a given language.
-     *
-     * @param  string  $language
-     * @return array
+     * Get all languages.
      */
-    public function findMissingTranslations($language)
+    abstract public function allLanguages(): Collection;
+
+    /**
+     * Determine whether the given language exists.
+     */
+    abstract public function languageExists(string $language): bool;
+
+    /**
+     * Add a new language.
+     */
+    abstract public function addLanguage(string $language, ?string $name = null): void;
+
+    /**
+     * Get all translations.
+     */
+    public function allTranslations(): Collection
     {
-        return array_diff_assoc_recursive(
-            $this->scanner->findTranslations(),
-            $this->allTranslationsFor($language)
+        return $this->allLanguages()->mapWithKeys(
+            fn ($name, $language) => [$language => $this->allTranslationsFor($language)]
         );
     }
 
     /**
-     * Save all of the translations in the app without translation for a given language.
-     *
-     * @param  string  $language
-     * @return void
+     * Get all translations for a given language.
      */
-    public function saveMissingTranslations($language = false)
+    public function allTranslationsFor(string $language): CombinedTranslations
+    {
+        return new CombinedTranslations(
+            $this->allStringKeyTranslationsFor($language),
+            $this->allShortKeyTranslationsFor($language),
+        );
+    }
+
+    /**
+     * Get short key translations for a given language.
+     */
+    abstract public function allShortKeyTranslationsFor(string $language): Collection;
+
+    /**
+     * Get all the short key groups for a given language.
+     */
+    abstract public function allShortKeyGroupsFor(string $language): Collection;
+
+    /**
+     * Add a short key translation.
+     */
+    abstract public function addShortKeyTranslation(string $language, string $group, string $key, string $value = ''): void;
+
+    /**
+     * Get string key translations for a given language.
+     */
+    abstract public function allStringKeyTranslationsFor(string $language): Collection;
+
+    /**
+     * Add a string key translation.
+     */
+    abstract public function addStringKeyTranslation(string $language, string $vendor, string $key, string $value = ''): void;
+
+    /**
+     * Find all of the translations in the app without translation for a given language.
+     */
+    public function findMissingTranslations(string $language): Collection
+    {
+        return $this->scanner->findTranslations()
+            ->map(function ($groups, $type) use ($language) {
+                return $groups->map(function ($translations, $group) use ($language, $type) {
+                    $all = $this->allTranslationsFor($language)->get($type)->get($group);
+
+                    return $translations->diffKeys($all);
+                })->filter(function ($translations) {
+                    return $translations->isNotEmpty();
+                });
+            });
+    }
+
+    /**
+     * Save all of the translations in the app without translation for a given language.
+     */
+    public function saveMissingTranslations(?string $language = null): void
     {
         $languages = $language ? [$language => $language] : $this->allLanguages();
 
@@ -41,9 +109,9 @@ abstract class Translation
                 foreach ($groups as $group => $translations) {
                     foreach ($translations as $key => $value) {
                         if (Str::contains($group, 'single')) {
-                            $this->addSingleTranslation($language, $group, $key);
+                            $this->addStringKeyTranslation($language, $group, $key);
                         } else {
-                            $this->addGroupTranslation($language, $group, $key);
+                            $this->addShortKeyTranslation($language, $group, $key);
                         }
                     }
                 }
@@ -53,11 +121,8 @@ abstract class Translation
 
     /**
      * Get all translations for a given language merged with the source language.
-     *
-     * @param  string  $language
-     * @return Collection
      */
-    public function getSourceLanguageTranslationsWith($language)
+    public function getSourceLanguageTranslationsWith(string $language): CombinedTranslations
     {
         $sourceTranslations = $this->allTranslationsFor($this->sourceLanguage);
         $languageTranslations = $this->allTranslationsFor($language);
@@ -79,12 +144,8 @@ abstract class Translation
 
     /**
      * Filter all keys and translations for a given language and string.
-     *
-     * @param  string  $language
-     * @param  string  $filter
-     * @return Collection
      */
-    public function filterTranslationsFor($language, $filter)
+    public function filterTranslationsFor(string $language, ?string $filter): Collection
     {
         $allTranslations = $this->getSourceLanguageTranslationsWith(($language));
         if (! $filter) {
@@ -102,7 +163,7 @@ abstract class Translation
         });
     }
 
-    public function add(Request $request, $language, $isGroupTranslation)
+    public function add(Request $request, string $language, bool $isGroupTranslation): void
     {
         $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
         $group = $namespace.$request->get('group');
@@ -110,11 +171,23 @@ abstract class Translation
         $value = $request->get('value') ?: '';
 
         if ($isGroupTranslation) {
-            $this->addGroupTranslation($language, $group, $key, $value);
+            $this->addShortKeyTranslation($language, $group, $key, $value);
         } else {
-            $this->addSingleTranslation($language, 'single', $key, $value);
+            $this->addStringKeyTranslation($language, 'string', $key, $value);
         }
 
-        Event::dispatch(new TranslationAdded($language, $group ?: 'single', $key, $value));
+        Event::dispatch(new TranslationAdded($language, $group ?: 'string', $key, $value));
+    }
+
+    abstract public function allTranslationsFromMap(string $key): Collection;
+
+    public function normalizedKeys(): CombinedTranslations
+    {
+        return $this->allTranslations()->reduce(function ($carry, $item) {
+            $carry->shortKeyTranslations = $carry->shortKeyTranslations->mergeRecursive($item->shortKeyTranslations);
+            $carry->stringKeyTranslations = $carry->stringKeyTranslations->mergeRecursive($item->stringKeyTranslations);
+
+            return $carry;
+        }, CombinedTranslations::make())->emptyValues();
     }
 }

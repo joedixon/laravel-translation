@@ -2,39 +2,30 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-class SynchroniseMissingTranslationKeys extends BaseCommand
+class SynchroniseMissingTranslationKeys extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'translation:sync-missing-translation-keys {language?}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Add all of the missing translation keys for all languages or a single language';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): void
     {
-        $language = $this->argument('language') ?: false;
+        $language = $this->argument('language') ?: null;
+
+        if (! (is_string($language) || is_null($language))) {
+            $this->error(__('translation::trnaslation.invalid_language'));
+
+            return;
+        }
 
         try {
             // if we have a language, pass it in, if not the method will
             // automagically sync all languages
             $this->translation->saveMissingTranslations($language);
 
-            return $this->info(__('translation::translation.keys_synced'));
+            $this->info(__('translation::translation.keys_synced'));
         } catch (\Exception $e) {
-            return $this->error($e->getMessage());
+            $this->error($e->getMessage());
         }
     }
 }

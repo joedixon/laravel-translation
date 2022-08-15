@@ -2,28 +2,13 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-class AddLanguageCommand extends BaseCommand
+class AddLanguage extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'translation:add-language';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Add a new language to the application';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): void
     {
         // ask the user for the language they wish to add
         $language = $this->ask(__('translation::translation.prompt_language'));

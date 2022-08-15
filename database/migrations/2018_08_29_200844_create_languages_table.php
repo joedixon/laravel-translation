@@ -9,10 +9,8 @@ class CreateLanguagesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::connection(config('translation.database.connection'))
             ->create(config('translation.database.languages_table'), function (Blueprint $table) {
@@ -36,10 +34,8 @@ class CreateLanguagesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::connection(config('translation.database.connection'))
             ->dropIfExists(config('translation.database.languages_table'));

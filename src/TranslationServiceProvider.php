@@ -3,13 +3,14 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
-use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
-use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
+use JoeDixon\Translation\Console\Commands\AddLanguage;
+use JoeDixon\Translation\Console\Commands\AddTranslationKey;
+use JoeDixon\Translation\Console\Commands\ListLanguages;
 use JoeDixon\Translation\Console\Commands\ListMissingTranslationKeys;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
-use JoeDixon\Translation\Console\Commands\SynchroniseTranslationsCommand;
+use JoeDixon\Translation\Console\Commands\SynchroniseTranslations;
 use JoeDixon\Translation\Drivers\Translation;
 
 class TranslationServiceProvider extends ServiceProvider
@@ -145,12 +146,12 @@ class TranslationServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                AddLanguageCommand::class,
-                AddTranslationKeyCommand::class,
-                ListLanguagesCommand::class,
+                AddLanguage::class,
+                AddTranslationKey::class,
+                ListLanguages::class,
                 ListMissingTranslationKeys::class,
                 SynchroniseMissingTranslationKeys::class,
-                SynchroniseTranslationsCommand::class,
+                SynchroniseTranslations::class,
             ]);
         }
     }
@@ -172,14 +173,14 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function registerContainerBindings()
     {
-        $this->app->singleton(Scanner::class, function () {
-            $config = $this->app['config']['translation'];
+        $config = $this->app->get('config')['translation'];
 
+        $this->app->singleton(Scanner::class, function () use ($config) {
             return new Scanner(new Filesystem(), $config['scan_paths'], $config['translation_methods']);
         });
 
-        $this->app->singleton(Translation::class, function ($app) {
-            return (new TranslationManager($app, $app['config']['translation'], $app->make(Scanner::class)))->resolve();
+        $this->app->singleton(Translation::class, function (Application $app) use ($config) {
+            return (new TranslationManager($config, $app->make(Scanner::class)))->resolve();
         });
     }
 }

@@ -2,16 +2,15 @@
 
 namespace JoeDixon\Translation;
 
-use Illuminate\Translation\LoaderInterface;
+use Illuminate\Contracts\Translation\Loader;
+use Illuminate\Support\Collection;
 use JoeDixon\Translation\Drivers\Translation;
 
-class InterfaceDatabaseLoader implements LoaderInterface
+class InterfaceDatabaseLoader implements Loader
 {
-    private $translation;
-
-    public function __construct(Translation $translation)
-    {
-        $this->translation = $translation;
+    public function __construct(
+        private Translation $translation
+    ) {
     }
 
     /**
@@ -19,22 +18,22 @@ class InterfaceDatabaseLoader implements LoaderInterface
      *
      * @param  string  $locale
      * @param  string  $group
-     * @param  string  $namespace
+     * @param  ?string  $namespace
      * @return array
      */
-    public function load($locale, $group, $namespace = null)
+    public function load($locale, $group, $namespace = null): array
     {
         if ($group == '*' && $namespace == '*') {
-            return $this->translation->getSingleTranslationsFor($locale)->get('single', collect())->toArray();
+            return $this->translation->allStringKeyTranslationsFor($locale)->get('single', new Collection())->toArray();
         }
 
         if (is_null($namespace) || $namespace == '*') {
-            return $this->translation->getGroupTranslationsFor($locale)->filter(function ($value, $key) use ($group) {
+            return $this->translation->allShortKeyTranslationsFor($locale)->filter(function ($value, $key) use ($group) {
                 return $key === $group;
             })->first();
         }
 
-        return $this->translation->getGroupTranslationsFor($locale)->filter(function ($value, $key) use ($group, $namespace) {
+        return $this->translation->allShortKeyTranslationsFor($locale)->filter(function ($value, $key) use ($group, $namespace) {
             return $key === "{$namespace}::{$group}";
         })->first();
     }

@@ -15,14 +15,14 @@ class TranslationBindingsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        if ($this->app['config']['translation.driver'] === 'database') {
+        if ($this->app->get('config')['translation.driver'] === 'database') {
             $this->registerDatabaseTranslator();
         } else {
             parent::register();
         }
     }
 
-    private function registerDatabaseTranslator()
+    private function registerDatabaseTranslator(): void
     {
         $this->registerDatabaseLoader();
 
@@ -39,7 +39,7 @@ class TranslationBindingsServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerDatabaseLoader()
+    protected function registerDatabaseLoader(): void
     {
         $this->app->singleton('translation.loader', function ($app) {
             // Post Laravel 5.4, the interface was moved to the contracts

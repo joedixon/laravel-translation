@@ -2,47 +2,30 @@
 
 namespace JoeDixon\Translation\Console\Commands;
 
-class ListMissingTranslationKeys extends BaseCommand
+class ListMissingTranslationKeys extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'translation:list-missing-translation-keys';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'List all of the translation keys in the app which don\'t have a corresponding translation';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): void
     {
-        $missingTranslations = [];
         $rows = [];
 
-        foreach ($this->translation->allLanguages() as $language => $name) {
-            $missingTranslations[$language] = $this->translation->findMissingTranslations($language);
-        }
+        $missingTranslations = $this->translation->allLanguages()->mapWithKeys(
+            fn ($language) => [$language => $this->translation->findMissingTranslations($language)]
+        );
 
         // check whether or not there are any missing translations
-        $empty = true;
-        foreach ($missingTranslations as $language => $values) {
-            if (! empty($values)) {
-                $empty = false;
-            }
-        }
+        $isNotEmpty = $missingTranslations->first(function ($translations) {
+            return $translations->get('short')->isNotEmpty() || $translations->get('string')->isNotEmpty();
+        });
 
         // if no missing translations, inform the user and move on with your day
-        if ($empty) {
-            return $this->info(__('translation::translation.no_missing_keys'));
+        if (! $isNotEmpty) {
+            $this->info(__('translation::translation.no_missing_keys'));
+
+            return;
         }
 
         // set some headers for the table of results
