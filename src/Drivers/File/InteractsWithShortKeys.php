@@ -2,7 +2,6 @@
 
 namespace JoeDixon\Translation\Drivers\File;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -19,10 +18,12 @@ trait InteractsWithShortKeys
             if (Str::contains($group->getPathname(), 'vendor')) {
                 $vendor = Str::before(Str::after($group->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
-                return ["{$vendor}::{$group->getBasename('.php')}" => new Collection($this->disk->getRequire($group->getPathname()))];
+                return ["{$vendor}::{$group->getBasename('.php')}" => $this->disk->getRequire($group->getPathname())];
             }
 
-            return [$group->getBasename('.php') => new Collection($this->disk->getRequire($group->getPathname()))];
+            $translations = $this->disk->getRequire($group->getPathname());
+
+            return [$group->getBasename('.php') => is_array($translations) ? $translations : []];
         });
     }
 
@@ -78,12 +79,20 @@ trait InteractsWithShortKeys
      */
     protected function allShortKeyFilesFor(string $language): Collection
     {
-        $groups = new Collection($this->disk->allFiles("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}"));
+        $path = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}";
+
+        if (! $this->disk->exists($path)) {
+            return new Collection;
+        }
+
+        $groups = Collection::make($this->disk->allFiles($path));
+
         // namespaced files reside in the vendor directory so we'll grab these
         // the `getVendorGroupFileFor` method
-        $groups = $groups->merge($this->allVendorShortKeyFilesFor($language));
-
-        return $groups;
+        return $groups->merge($this->allVendorShortKeyFilesFor($language))
+            ->filter(function ($file) {
+                return Str::endsWith($file->getBasename(), '.php');
+            });
     }
 
     /**
@@ -95,17 +104,16 @@ trait InteractsWithShortKeys
             return new Collection();
         }
 
-        $vendorGroups = [];
-        foreach ($this->disk->directories("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor') as $vendor) {
-            $vendor = Arr::last(explode(DIRECTORY_SEPARATOR, $vendor));
-            if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}")) {
-                array_push($vendorGroups, []);
-            } else {
-                array_push($vendorGroups, $this->disk->allFiles("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}"));
-            }
-        }
-
-        return new Collection(Arr::flatten($vendorGroups));
+        return Collection::make($this->disk->directories("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'))
+            ->flatMap(function ($directory) use ($language) {
+                $vendor = Str::afterLast($directory, DIRECTORY_SEPARATOR);
+                if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}")) {
+                    return [];
+                } else {
+                    return $this->disk->allFiles("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}");
+                    // array_push($vendorGroups, $this->disk->allFiles("{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$vendor}".DIRECTORY_SEPARATOR."{$language}"));
+                }
+            });
     }
 
     /**

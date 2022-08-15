@@ -33,4 +33,35 @@ class CombinedTranslations
 
         return $this;
     }
+
+    public static function make(?Collection $stringKeyTranslations = null, ?Collection $shortKeyTranslations = null): self
+    {
+        return new static(
+            $stringKeyTranslations ?? new Collection(),
+            $shortKeyTranslations ?? new Collection(),
+        );
+    }
+
+    public function emptyValues()
+    {
+        $this->stringKeyTranslations = $this->emptyCollectionValues($this->stringKeyTranslations);
+        $this->shortKeyTranslations = $this->emptyCollectionValues($this->shortKeyTranslations);
+
+        return $this;
+    }
+
+    public function emptyCollectionValues(Collection $collection): Collection
+    {
+        return $collection->map(function ($item, $index) {
+            if ($item instanceof Collection) {
+                return $this->emptyCollectionValues($item);
+            }
+
+            if (is_array($item)) {
+                return $this->emptyCollectionValues(new Collection($item))->toArray();
+            }
+
+            return '';
+        });
+    }
 }

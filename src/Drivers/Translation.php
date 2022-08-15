@@ -15,6 +15,8 @@ abstract class Translation
 
     protected string $sourceLanguage;
 
+    abstract public function map(): Collection|string|null;
+
     /**
      * Get all languages.
      */
@@ -175,5 +177,17 @@ abstract class Translation
         }
 
         Event::dispatch(new TranslationAdded($language, $group ?: 'string', $key, $value));
+    }
+
+    abstract public function allTranslationsFromMap(string $key): Collection;
+
+    public function normalizedKeys(): CombinedTranslations
+    {
+        return $this->allTranslations()->reduce(function ($carry, $item) {
+            $carry->shortKeyTranslations = $carry->shortKeyTranslations->mergeRecursive($item->shortKeyTranslations);
+            $carry->stringKeyTranslations = $carry->stringKeyTranslations->mergeRecursive($item->stringKeyTranslations);
+
+            return $carry;
+        }, CombinedTranslations::make())->emptyValues();
     }
 }

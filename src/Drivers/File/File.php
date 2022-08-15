@@ -4,6 +4,7 @@ namespace JoeDixon\Translation\Drivers\File;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\Scanner;
@@ -20,6 +21,28 @@ class File extends Translation
     ) {
     }
 
+    public function map($key = null, $default = null): Collection|string|null
+    {
+        $map = Collection::make($this->disk->allFiles($this->languageFilesPath))
+            ->flatMap(function ($file) {
+                $path = Str::of($file->getPathname())
+                    ->replace($this->languageFilesPath, '')
+                    ->replaceFirst(DIRECTORY_SEPARATOR, '');
+
+                $key = Str::of($path)
+                    ->replaceLast(".{$file->getExtension()}", '')
+                    ->replace(DIRECTORY_SEPARATOR, '.', $path);
+
+                return [(string) $key => (string) $path];
+            });
+
+        if ($key) {
+            return $map->get($key, $default);
+        }
+
+        return $map;
+    }
+
     /**
      * Get all languages.
      */
@@ -29,7 +52,7 @@ class File extends Translation
         // languages path so we can return these directory names as a collection
         $directories = Collection::make($this->disk->directories($this->languageFilesPath));
 
-        return $directories->mapWithKeys(function ($directory) {
+        $directoryLanguages = $directories->mapWithKeys(function ($directory) {
             $language = basename($directory);
 
             return [$language => $language];
@@ -37,6 +60,12 @@ class File extends Translation
             // at the moemnt, we're not supporting vendor specific translations
             return $language != 'vendor';
         });
+
+        $fileLangauges = Collection::make($this->disk->allFiles($this->languageFilesPath))
+            ->filter(fn ($file) => $file->getExtension() === 'json')
+            ->mapWithKeys(fn ($file) => [Str::replace(".{$file->getExtension()}", '', $file->getFilename()) => Str::replace(".{$file->getExtension()}", '', $file->getFilename())]);
+
+        return $directoryLanguages->merge($fileLangauges);
     }
 
     /**
@@ -60,5 +89,18 @@ class File extends Translation
         if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}.json")) {
             $this->saveStringKeyTranslations($language, collect(['string' => new Collection()]));
         }
+    }
+
+    public function allTranslationsFromMap(string $key): Collection
+    {
+        if (! $file = $this->map($key)) {
+            return new Collection();
+        }
+
+        if (Str::endsWith($file, '.php')) {
+            return Collection::make($this->disk->getRequire("{$this->languageFilesPath}/{$file}"));
+        }
+
+        return Collection::make(json_decode($this->disk->get("{$this->languageFilesPath}/{$file}"), true));
     }
 }

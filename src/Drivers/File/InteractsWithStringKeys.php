@@ -20,10 +20,12 @@ trait InteractsWithStringKeys
             if (strpos($file->getPathname(), 'vendor')) {
                 $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
-                return ["{$vendor}::string" => new Collection(json_decode($this->disk->get($file), true))];
+                return ["{$vendor}::string" => json_decode($this->disk->get($file), true)];
             }
 
-            return ['string' => new Collection(json_decode($this->disk->get($file), true))];
+            $translations = json_decode($this->disk->get($file), true);
+
+            return ['string' => $translations !== null ? $translations : []];
         });
     }
 
