@@ -236,7 +236,7 @@ class Database extends Translation implements DriverInterface
         // handle the case where the database is empty / our tables don't exist:
         try {
             $result = Language::where('language', $language)->first();
-        } catch(Throwable) {
+        } catch (Throwable) {
             return null;
         }
 
