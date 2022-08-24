@@ -14,6 +14,8 @@ class Database extends Translation implements DriverInterface
 
     protected $scanner;
 
+    protected array $cache = [];
+
     public function __construct($sourceLanguage, $scanner)
     {
         $this->sourceLanguage = $sourceLanguage;
@@ -226,9 +228,8 @@ class Database extends Translation implements DriverInterface
      */
     private function getLanguage($language)
     {
-        static $cache = [];
-        if (isset($cache[$language])) {
-            return $cache[$language];
+        if (isset($this->cache[$language])) {
+            return $this->cache[$language];
         }
 
         // Some constallation of composer packages can lead to our code being executed
@@ -237,10 +238,10 @@ class Database extends Translation implements DriverInterface
         try {
             $result = Language::where('language', $language)->first();
         } catch(Throwable) {
-            return null;
+            $result = null;
         }
 
-        $cache[$language] = $result;
+        $this->cache[$language] = $result;
 
         return $result;
     }
