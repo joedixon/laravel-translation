@@ -6,12 +6,15 @@ use Illuminate\Support\Collection;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\Language;
 use JoeDixon\Translation\Translation as TranslationModel;
+use Throwable;
 
 class Database extends Translation implements DriverInterface
 {
     protected $sourceLanguage;
 
     protected $scanner;
+
+    protected array $languageCache = [];
 
     public function __construct($sourceLanguage, $scanner)
     {
@@ -225,7 +228,22 @@ class Database extends Translation implements DriverInterface
      */
     private function getLanguage($language)
     {
-        return Language::where('language', $language)->first();
+        if (isset($this->languageCache[$language])) {
+            return $this->languageCache[$language];
+        }
+
+        // Some constallation of composer packages can lead to our code being executed
+        // as a dependency of running migrations. That's why we need to be able to
+        // handle the case where the database is empty / our tables don't exist:
+        try {
+            $result = Language::where('language', $language)->first();
+        } catch (Throwable) {
+            $result = null;
+        }
+
+        $this->languageCache[$language] = $result;
+
+        return $result;
     }
 
     /**
