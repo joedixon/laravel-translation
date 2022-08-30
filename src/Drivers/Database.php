@@ -14,6 +14,8 @@ class Database extends Translation implements DriverInterface
 
     protected $scanner;
 
+    protected array $groupTranslationCache = [];
+
     protected array $languageCache = [];
 
     public function __construct($sourceLanguage, $scanner)
@@ -184,18 +186,32 @@ class Database extends Translation implements DriverInterface
      */
     public function getGroupTranslationsFor($language)
     {
-        $translations = $this->getLanguage($language)
+        if (isset($this->groupTranslationCache[$language])) {
+            return $this->groupTranslationCache[$language];
+        }
+
+        $languageModel = $this->getLanguage($language);
+
+        if (is_null($languageModel)) {
+            return collect();
+        }
+
+        $translations = $languageModel
             ->translations()
             ->whereNotNull('group')
             ->where('group', 'not like', '%single')
             ->get()
             ->groupBy('group');
 
-        return $translations->map(function ($translations) {
+        $result = $translations->map(function ($translations) {
             return $translations->mapWithKeys(function ($translation) {
                 return [$translation->key => $translation->value];
             });
         });
+
+        $this->groupTranslationCache[$language] = $result;
+
+        return $result;
     }
 
     /**
