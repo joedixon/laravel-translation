@@ -128,6 +128,28 @@ change any code in your application. It's a like for like swap.
 To utilise the database driver, make sure to update the database table names in
 the configuration file and run the migrations.
 
+#### Changing Drivers from File (default) to Database
+
+1. Update the driver to use database in `./config/translation.php`.
+
+```php
+'driver' => 'database'
+```
+
+2. Run the migration to add translations and languages tables.
+
+```shell
+php artisan migrate
+```
+
+3. Run the following command and folow the prompts to synchronise the translations between drivers.
+
+```shell
+php artisan translation:sync-translations
+```
+
+4. A few questions will be prompted which have to be answered. See the screenshot below:
+
 ### User interface
 Navigate to http://your-project.test/languages (update `languages` to match the
 `translation.ui_url` configuration setting) and use the interface to manage
