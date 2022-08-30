@@ -131,7 +131,7 @@ the configuration file and run the migrations.
 
 1. Update the driver to use database in `./config/translation.php`.
 
-```shell
+```php
 'driver' => 'database'
 ```
 
