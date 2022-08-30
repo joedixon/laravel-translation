@@ -15,7 +15,7 @@ Translation management for your Laravel application.
 
 ## About Laravel Translation
 
-Laravel Translation is a package for Laravel 5 which allows you full control
+Laravel Translation is a package for Laravel which allows you full control
 over your translations when using [Laravel's
 localization](https://laravel.com/docs/5.7/localization) functionality.
 
@@ -42,6 +42,7 @@ Below are a full list of features:
 |      6.x      |          1.x        |
 |      7.x      |          1.x        |
 |      8.x      |          2.x        |
+|      9.x      |          2.x        |
 
 ## Installation
 
