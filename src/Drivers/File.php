@@ -201,10 +201,14 @@ class File extends Translation implements DriverInterface
                     ? $group->getBasename('.php') 
                     : $group->getRelativePath().DIRECTORY_SEPARATOR.$group->getBasename('.php');
 
-                return ["{$vendor}::{$group->getBasename('.php')}" => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
+                return ["{$vendor}::{$group_key}" => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
             }
 
-            return [$group->getBasename('.php') => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
+            $group_key = empty($group->getRelativePath()) 
+                    ? $group->getBasename('.php') 
+                    : $group->getRelativePath().DIRECTORY_SEPARATOR.$group->getBasename('.php');
+
+            return [$group_key => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
         });
     }
 
@@ -282,14 +286,22 @@ class File extends Translation implements DriverInterface
      */
     private function saveNamespacedGroupTranslations($language, $group, $translations)
     {
+
         [$namespace, $group] = explode('::', $group);
         $directory = "{$this->languageFilesPath}".DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR."{$namespace}".DIRECTORY_SEPARATOR."{$language}";
+
+        if (str_contains($group, '/')) {
+          $file = Str::of($group)->afterLast('/');
+          $directory = $directory.DIRECTORY_SEPARATOR.Str::of($group)->beforeLast('/');
+        } else {
+          $file = $group;
+        }
 
         if (! $this->disk->exists($directory)) {
             $this->disk->makeDirectory($directory, 0755, true);
         }
 
-        $this->disk->put("$directory".DIRECTORY_SEPARATOR."{$group}.php", "<?php\n\nreturn ".var_export($translations, true).';'.\PHP_EOL);
+        $this->disk->put("$directory".DIRECTORY_SEPARATOR."{$file}.php", "<?php\n\nreturn ".var_export($translations, true).';'.\PHP_EOL);
     }
 
     /**
@@ -339,10 +351,18 @@ class File extends Translation implements DriverInterface
             if (Str::contains($file->getPathname(), 'vendor')) {
                 $vendor = Str::before(Str::after($file->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
-                return "{$vendor}::{$file->getBasename('.php')}";
+                $file_key = empty($file->getRelativePath()) 
+                    ? $file->getBasename('.php') 
+                    : $file->getRelativePath().DIRECTORY_SEPARATOR.$file->getBasename('.php');
+
+                return "{$vendor}::{$file_key}";
             }
 
-            return $file->getBasename('.php');
+            $file_key = empty($file->getRelativePath()) 
+                    ? $file->getBasename('.php') 
+                    : $file->getRelativePath().DIRECTORY_SEPARATOR.$file->getBasename('.php');
+
+            return $file_key;
         });
     }
 
