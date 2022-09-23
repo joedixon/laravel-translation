@@ -52,7 +52,28 @@ class FileDriverTest extends TestCase
         $translations = $this->translation->allTranslations();
 
         $this->assertEquals($translations->count(), 2);
-        $this->assertEquals(['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]], $translations->toArray()['en']);
+        $this->assertEquals([
+          'single' => [
+            'single' => [
+              'Hello' => 'Hello', 
+              "What's up" => "What's up!"
+            ]
+          ], 
+          'group' => [
+            'test' => [
+              'hello' => 'Hello', 
+              'whats_up' => "What's up!"
+              ]
+            ],
+            'inner/inner' => [
+              'hello' => 'Hello', 
+              'whats_up' => "What's up!"
+            ]
+            'inner/deep/deep' => [
+              'hello' => 'Hello', 
+              'whats_up' => "What's up!"
+            ]
+          ], $translations->toArray()['en']);
         $this->assertArrayHasKey('en', $translations->toArray());
         $this->assertArrayHasKey('es', $translations->toArray());
     }

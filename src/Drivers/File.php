@@ -197,6 +197,10 @@ class File extends Translation implements DriverInterface
             if (Str::contains($group->getPathname(), 'vendor')) {
                 $vendor = Str::before(Str::after($group->getPathname(), 'vendor'.DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
+                $group_key = empty($group->getRelativePath()) 
+                    ? $group->getBasename('.php') 
+                    : $group->getRelativePath().DIRECTORY_SEPARATOR.$group->getBasename('.php');
+
                 return ["{$vendor}::{$group->getBasename('.php')}" => new Collection(Arr::dot($this->disk->getRequire($group->getPathname())))];
             }
 
