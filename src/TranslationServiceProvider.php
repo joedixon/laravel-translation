@@ -3,6 +3,7 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
 use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
@@ -71,7 +72,12 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function registerRoutes()
     {
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        Route::group(config('translation.api_route_group_config') + ['namespace' => 'JoeDixon\\Translation\\Http\\Controllers\\Api'] + ['prefix' => config('translation.api_url')], function () {
+            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+        });
+        Route::group(config('translation.route_group_config') + ['namespace' => 'JoeDixon\\Translation\\Http\\Controllers'] + ['prefix' => config('translation.ui_url')], function () {
+            $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        });
     }
 
     /**

@@ -28,6 +28,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Api route group configuration
+    |--------------------------------------------------------------------------
+    |
+    | The package ships with routes to handle language management. Update the
+    | configuration here to configure the api routes with your preferred group options.
+    |
+    */
+    'api_route_group_config' => [
+      'middleware' => ['auth:api'],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Translation methods
     |--------------------------------------------------------------------------
     |
@@ -57,6 +70,16 @@ return [
     |
     */
     'ui_url' => 'languages',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Api URL
+    |--------------------------------------------------------------------------
+    |
+    | Define the Api URL used to access the language management too.
+    |
+    */
+    'api_url' => 'v1/languages',
 
     /*
     |--------------------------------------------------------------------------
