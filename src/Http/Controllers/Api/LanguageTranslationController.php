@@ -24,7 +24,7 @@ class LanguageTranslationController extends Controller
             return redirect()
               ->route('languages.translations.index', [
                   'language' => $request->get('language'), 'group' => $request->get('group'),
-                  'filter' => $request->get('filter')
+                  'filter' => $request->get('filter'),
               ]);
         }
 
@@ -52,7 +52,7 @@ class LanguageTranslationController extends Controller
                 'languages' => $languages,
                 'groups' => $groups,
                 'translations' => $translations,
-            ]
+            ],
         ]);
     }
 
@@ -64,7 +64,7 @@ class LanguageTranslationController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Translation added successfully'
+            'message' => 'Translation added successfully',
         ]);
     }
 
@@ -76,7 +76,7 @@ class LanguageTranslationController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Translation updated successfully'
+            'message' => 'Translation updated successfully',
         ]);
     }
 }
