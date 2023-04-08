@@ -77,6 +77,14 @@ Apply middleware to the routes which ship with the package. For example, you may
 which to use the `auth` middleware to ensure package user interface is only
 accessible to logged in users.
 
+
+```
+api_route_group_config.middleware [string|array]
+```
+Apply middleware to the api routes which ship with the package. For example, you may
+which to use the `auth:api` middleware to ensure package user interface is only
+accessible to logged in users.
+
 ```
 translation_methods [array]
 ```
@@ -96,7 +104,15 @@ ui_url [string]
 Choose the root URL where the package user interface can be accessed. All routes
 will be prefixed by this value.
 
-e.g. setting this value to `languages` will result in URLs such as `translations/{language}/translations`
+e.g. setting this value to `languages` will result in URLs such as `languages/{language}/translations`
+
+```
+api_url [string]
+```
+Choose the root URL where the users can access from api. All routes
+will be prefixed by this value.
+
+e.g. setting this value to `api/languages` will result in URLs such as `api/languages/{language}/translations`
 
 ```
 database.languages_table
