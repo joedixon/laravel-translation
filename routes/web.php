@@ -15,4 +15,3 @@ Route::prefix('/{language}')->group(function () {
 
     Route::post('/translations', 'LanguageTranslationController@store')->name('languages.translations.store');
 });
-

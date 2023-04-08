@@ -36,7 +36,7 @@ return [
     |
     */
     'api_route_group_config' => [
-      'middleware' => ['auth:api'],
+        'middleware' => ['auth:api'],
     ],
 
     /*

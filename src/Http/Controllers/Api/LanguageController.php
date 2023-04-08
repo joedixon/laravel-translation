@@ -19,9 +19,9 @@ class LanguageController extends Controller
     public function index(Request $request)
     {
         return response()->json([
-          'success' => true,
-          'message' => 'Languages fetched successfully',
-          'data' => $this->translation->allLanguages(),
+            'success' => true,
+            'message' => 'Languages fetched successfully',
+            'data' => $this->translation->allLanguages(),
         ]);
     }
 
@@ -30,9 +30,9 @@ class LanguageController extends Controller
         $this->translation->addLanguage($request->locale, $request->name);
 
         return response()->json([
-          'success' => true,
-          'message' => 'Languages added successfully',
-          'data' => $this->translation->allLanguages(),
+            'success' => true,
+            'message' => 'Languages added successfully',
+            'data' => $this->translation->allLanguages(),
         ]);
     }
 }

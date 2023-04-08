@@ -73,10 +73,10 @@ class TranslationServiceProvider extends ServiceProvider
     private function registerRoutes()
     {
         Route::group(config('translation.api_route_group_config') + ['namespace' => 'JoeDixon\\Translation\\Http\\Controllers\\Api'] + ['prefix' => config('translation.api_url')], function () {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+            $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         });
         Route::group(config('translation.route_group_config') + ['namespace' => 'JoeDixon\\Translation\\Http\\Controllers'] + ['prefix' => config('translation.ui_url')], function () {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         });
     }
 

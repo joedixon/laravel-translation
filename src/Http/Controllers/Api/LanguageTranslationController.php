@@ -23,8 +23,8 @@ class LanguageTranslationController extends Controller
         if ($request->has('language') && $request->get('language') !== $language) {
             return redirect()
               ->route('languages.translations.index', [
-                'language' => $request->get('language'), 'group' => $request->get('group'),
-                'filter' => $request->get('filter')
+                  'language' => $request->get('language'), 'group' => $request->get('group'),
+                  'filter' => $request->get('filter')
               ]);
         }
 
@@ -46,13 +46,13 @@ class LanguageTranslationController extends Controller
         }
 
         return response()->json([
-          'success' => true,
-          'message' => 'Translations fetched successfully',
-          'data' => [
-            'languages' => $languages,
-            'groups' => $groups,
-            'translations' => $translations,
-          ]
+            'success' => true,
+            'message' => 'Translations fetched successfully',
+            'data' => [
+                'languages' => $languages,
+                'groups' => $groups,
+                'translations' => $translations,
+            ]
         ]);
     }
 
@@ -63,8 +63,8 @@ class LanguageTranslationController extends Controller
         $this->translation->add($request, $language, $isGroupTranslation);
 
         return response()->json([
-          'success' => true,
-          'message' => 'Translation added successfully'
+            'success' => true,
+            'message' => 'Translation added successfully'
         ]);
     }
 
@@ -75,8 +75,8 @@ class LanguageTranslationController extends Controller
         $this->translation->add($request, $language, $isGroupTranslation);
 
         return response()->json([
-          'success' => true,
-          'message' => 'Translation updated successfully'
+            'success' => true,
+            'message' => 'Translation updated successfully'
         ]);
     }
 }
