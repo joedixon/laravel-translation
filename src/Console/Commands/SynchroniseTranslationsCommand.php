@@ -113,7 +113,6 @@ class SynchroniseTranslationsCommand extends Command
 
         // If the language argument is set.
         if ($this->argument('language')) {
-
             // If all languages should be synced.
             if ($this->argument('language') == 'all') {
                 $language = false;
