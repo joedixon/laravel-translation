@@ -86,7 +86,7 @@ abstract class Translation
      */
     public function filterTranslationsFor($language, $filter)
     {
-        $allTranslations = $this->getSourceLanguageTranslationsWith(($language));
+        $allTranslations = $this->getSourceLanguageTranslationsWith($language);
         if (! $filter) {
             return $allTranslations;
         }
