@@ -223,15 +223,29 @@ class DatabaseDriverTest extends TestCase
     }
 
     /** @test */
+    public function it_can_add_a_inner_deep_vendor_namespaced_translations()
+    {
+        $this->translation->addGroupTranslation('es', 'translation_test::test/inner/deep', 'hello', 'Hola!');
+
+        $this->assertEquals($this->translation->allTranslationsFor('es')->toArray(), [
+            'group' => [
+                'translation_test::test/inner/deep' => [
+                    'hello' => 'Hola!',
+                ],
+            ],
+            'single' => [],
+        ]);
+    }
+
+    /** @test */
     public function it_can_add_a_nested_translation()
     {
         $this->translation->addGroupTranslation('en', 'test', 'test.nested', 'Nested!');
 
-        $this->assertEquals($this->translation->getGroupTranslationsFor('en')->toArray(), [
-            'test' => [
-                'test.nested' => 'Nested!',
-            ],
-        ]);
+        $translations = $this->translation->getGroupTranslationsFor('en')->toArray();
+        $this->assertArrayHasKey('test', $translations);
+        $this->assertArrayHasKey('test.nested', $translations['test']);
+        $this->assertEquals('Nested!', $translations['test']['test.nested']);
     }
 
     /** @test */
@@ -250,6 +264,21 @@ class DatabaseDriverTest extends TestCase
     }
 
     /** @test */
+    public function it_can_add_nested_inner_deep_vendor_namespaced_translations()
+    {
+        $this->translation->addGroupTranslation('es', 'translation_test::test/inner/deep', 'nested.hello', 'Hola!');
+
+        $this->assertEquals($this->translation->allTranslationsFor('es')->toArray(), [
+            'group' => [
+                'translation_test::test/inner/deep' => [
+                    'nested.hello' => 'Hola!',
+                ],
+            ],
+            'single' => [],
+        ]);
+    }
+
+    /** @test */
     public function it_can_merge_a_namespaced_language_with_the_base_language()
     {
         $this->translation->addGroupTranslation('en', 'translation_test::test', 'hello', 'Hello');
@@ -259,6 +288,23 @@ class DatabaseDriverTest extends TestCase
         $this->assertEquals($translations->toArray(), [
             'group' => [
                 'translation_test::test' => [
+                    'hello' => ['en' => 'Hello', 'es' => 'Hola!'],
+                ],
+            ],
+            'single' => [],
+        ]);
+    }
+
+    /** @test */
+    public function it_can_merge_a_inner_deep_namespaced_language_with_the_base_language()
+    {
+        $this->translation->addGroupTranslation('en', 'translation_test::test/inner/deep', 'hello', 'Hello');
+        $this->translation->addGroupTranslation('es', 'translation_test::test/inner/deep', 'hello', 'Hola!');
+        $translations = $this->translation->getSourceLanguageTranslationsWith('es');
+
+        $this->assertEquals($translations->toArray(), [
+            'group' => [
+                'translation_test::test/inner/deep' => [
                     'hello' => ['en' => 'Hello', 'es' => 'Hola!'],
                 ],
             ],

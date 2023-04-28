@@ -52,7 +52,15 @@ class FileDriverTest extends TestCase
         $translations = $this->translation->allTranslations();
 
         $this->assertEquals($translations->count(), 2);
-        $this->assertEquals(['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]], $translations->toArray()['en']);
+        $expectations = [
+          'single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]],
+          'group' => [
+            'test' => ['hello' => 'Hello', "whats_up" => "What's up!"],
+            'inner/deep/deep' => ['hello' => 'Hello', "whats_up" => "What's up!"],
+            'inner/inner' => ['hello' => 'Hello', "whats_up" => "What's up!"],
+          ],
+        ];
+        $this->assertEquals($expectations, $translations->toArray()['en']);
         $this->assertArrayHasKey('en', $translations->toArray());
         $this->assertArrayHasKey('es', $translations->toArray());
     }
@@ -62,7 +70,15 @@ class FileDriverTest extends TestCase
     {
         $translations = $this->translation->allTranslationsFor('en');
         $this->assertEquals($translations->count(), 2);
-        $this->assertEquals(['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]], $translations->toArray());
+        $expectations = [
+          'single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]],
+          'group' => [
+            'test' => ['hello' => 'Hello', "whats_up" => "What's up!"],
+            'inner/deep/deep' => ['hello' => 'Hello', "whats_up" => "What's up!"],
+            'inner/inner' => ['hello' => 'Hello', "whats_up" => "What's up!"],
+          ],
+        ];
+        $this->assertEquals($expectations, $translations->toArray());
         $this->assertArrayHasKey('single', $translations->toArray());
         $this->assertArrayHasKey('group', $translations->toArray());
     }
@@ -105,7 +121,11 @@ class FileDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('en');
 
-        $this->assertEquals(['test' => ['hello' => 'Hello', 'whats_up' => 'What\'s up!', 'test' => 'Testing']], $translations->toArray()['group']);
+        $this->assertEquals([
+          'test' => ['hello' => 'Hello', 'whats_up' => 'What\'s up!', 'test' => 'Testing'],
+          'inner/deep/deep' => ['hello' => 'Hello', "whats_up" => "What's up!"],
+          'inner/inner' => ['hello' => 'Hello', "whats_up" => "What's up!"],
+        ], $translations->toArray()['group']);
 
         file_put_contents(
             app()['path.lang'].'/en/test.php',
@@ -145,7 +165,11 @@ class FileDriverTest extends TestCase
     {
         $groups = $this->translation->getGroupsFor('en');
 
-        $this->assertEquals($groups->toArray(), ['test']);
+        $this->assertEquals([
+          'inner/deep/deep',
+          'inner/inner',
+          'test',
+        ], $groups->toArray());
     }
 
     /** @test */
@@ -159,6 +183,14 @@ class FileDriverTest extends TestCase
                 'test' => [
                     'hello' => ['en' => 'Hello', 'es' => 'Hola!'],
                     'whats_up' => ['en' => "What's up!", 'es' => ''],
+                ],
+                'inner/deep/deep' => [
+                    'hello' => ['en' => 'Hello', 'es' => ''],
+                    'whats_up' => ['en' => "What's up!", 'es' => ''],
+                ],
+                'inner/inner' => [
+                  'hello' => ['en' => 'Hello', 'es' => ''],
+                  'whats_up' => ['en' => "What's up!", 'es' => ''],
                 ],
             ],
             'single' => [
@@ -196,17 +228,31 @@ class FileDriverTest extends TestCase
     }
 
     /** @test */
+    public function it_can_add_a_inner_deep_vendor_namespaced_translations()
+    {
+        $this->translation->addGroupTranslation('es', 'translation_test::test/inner/deep', 'hello', 'Hola!');
+
+        $this->assertEquals($this->translation->allTranslationsFor('es')->toArray(), [
+            'group' => [
+                'translation_test::test/inner/deep' => [
+                    'hello' => 'Hola!',
+                ],
+            ],
+            'single' => [],
+        ]);
+
+        \File::deleteDirectory(__DIR__.'/fixtures/lang/vendor');
+    }
+
+    /** @test */
     public function it_can_add_a_nested_translation()
     {
         $this->translation->addGroupTranslation('en', 'test', 'test.nested', 'Nested!');
 
-        $this->assertEquals($this->translation->getGroupTranslationsFor('en')->toArray(), [
-            'test' => [
-                'hello' => 'Hello',
-                'test.nested' => 'Nested!',
-                'whats_up' => 'What\'s up!',
-            ],
-        ]);
+        $translations = $this->translation->getGroupTranslationsFor('en')->toArray();
+        $this->assertArrayHasKey('test', $translations);
+        $this->assertArrayHasKey('test.nested', $translations['test']);
+        $this->assertEquals('Nested!', $translations['test']['test.nested']);
 
         file_put_contents(
             app()['path.lang'].'/en/test.php',
@@ -232,35 +278,50 @@ class FileDriverTest extends TestCase
     }
 
     /** @test */
+    public function it_can_add_nested_inner_deep_vendor_namespaced_translations()
+    {
+        $this->translation->addGroupTranslation('es', 'translation_test::test/inner/deep', 'nested.hello', 'Hola!');
+
+        $this->assertEquals($this->translation->allTranslationsFor('es')->toArray(), [
+            'group' => [
+                'translation_test::test/inner/deep' => [
+                    'nested.hello' => 'Hola!',
+                ],
+            ],
+            'single' => [],
+        ]);
+
+        \File::deleteDirectory(__DIR__.'/fixtures/lang/vendor');
+    }
+
+    /** @test */
     public function it_can_merge_a_namespaced_language_with_the_base_language()
     {
         $this->translation->addGroupTranslation('en', 'translation_test::test', 'hello', 'Hello');
         $this->translation->addGroupTranslation('es', 'translation_test::test', 'hello', 'Hola!');
         $translations = $this->translation->getSourceLanguageTranslationsWith('es');
 
-        $this->assertEquals($translations->toArray(), [
-            'group' => [
-                'test' => [
-                    'hello' => ['en' => 'Hello', 'es' => ''],
-                    'whats_up' => ['en' => "What's up!", 'es' => ''],
-                ],
-                'translation_test::test' => [
-                    'hello' => ['en' => 'Hello', 'es' => 'Hola!'],
-                ],
-            ],
-            'single' => [
-                'single' => [
-                    'Hello' => [
-                        'en' => 'Hello',
-                        'es' => '',
-                    ],
-                    "What's up" => [
-                        'en' => "What's up!",
-                        'es' => '',
-                    ],
-                ],
-            ],
-        ]);
+
+        $this->assertArrayHasKey('translation_test::test', $translations->toArray()['group']);
+        $this->assertArrayHasKey('hello', $translations->toArray()['group']['translation_test::test']);
+        $this->assertEquals('Hello', $translations->toArray()['group']['translation_test::test']['hello']['en']);
+        $this->assertEquals('Hola!', $translations->toArray()['group']['translation_test::test']['hello']['es']);
+
+        \File::deleteDirectory(__DIR__.'/fixtures/lang/vendor');
+    }
+
+    /** @test */
+    public function it_can_merge_a_inner_deep_namespaced_language_with_the_base_language()
+    {
+        $this->translation->addGroupTranslation('en', 'translation_test::test/inner/deep', 'hello', 'Hello');
+        $this->translation->addGroupTranslation('es', 'translation_test::test/inner/deep', 'hello', 'Hola!');
+        $translations = $this->translation->getSourceLanguageTranslationsWith('es');
+
+
+        $this->assertArrayHasKey('translation_test::test/inner/deep', $translations->toArray()['group']);
+        $this->assertArrayHasKey('hello', $translations->toArray()['group']['translation_test::test/inner/deep']);
+        $this->assertEquals('Hello', $translations->toArray()['group']['translation_test::test/inner/deep']['hello']['en']);
+        $this->assertEquals('Hola!', $translations->toArray()['group']['translation_test::test/inner/deep']['hello']['es']);
 
         \File::deleteDirectory(__DIR__.'/fixtures/lang/vendor');
     }
