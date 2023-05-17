@@ -74,7 +74,7 @@ language files.
 route_group_config.middleware [string|array]
 ```
 Apply middleware to the routes which ship with the package. For example, you may
-which to use the `auth` middleware to ensure package user interface is only
+want to use the `auth` middleware to ensure the package user interface is only
 accessible to logged in users.
 
 ```
