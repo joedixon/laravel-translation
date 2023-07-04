@@ -3,7 +3,7 @@
 namespace JoeDixon\Translation\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\TranslationCore\Translation;
 
 class LanguageNotExists implements Rule
 {

@@ -92,7 +92,6 @@ if (! function_exists('array_undot')) {
     /**
      * Expands a single level array with dot notation into a multi-dimensional array.
      *
-     * @param  array  $dotNotationArray
      * @return array
      */
     function array_undot(array $dotNotationArray)

@@ -1,3 +1,0 @@
-
-Lang::get('lang_get.first')
-Lang::get('lang_get.second');

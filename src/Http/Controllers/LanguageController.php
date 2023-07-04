@@ -4,21 +4,21 @@ namespace JoeDixon\Translation\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Http\Requests\LanguageRequest;
+use JoeDixon\TranslationCore\TranslationManager;
 
 class LanguageController extends Controller
 {
     private $translation;
 
-    public function __construct(Translation $translation)
+    public function __construct(TranslationManager $translation)
     {
         $this->translation = $translation;
     }
 
     public function index(Request $request)
     {
-        $languages = $this->translation->allLanguages();
+        $languages = $this->translation->languages();
 
         return view('translation::languages.index', compact('languages'));
     }

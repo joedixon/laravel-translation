@@ -5,22 +5,20 @@ namespace JoeDixon\Translation\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Http\Requests\TranslationRequest;
+use JoeDixon\TranslationCore\TranslationManager;
 
 class LanguageTranslationController extends Controller
 {
     private $translation;
 
-    public function __construct(Translation $translation)
+    public function __construct(TranslationManager $translation)
     {
         $this->translation = $translation;
     }
 
     public function index(Request $request, $language)
     {
-        // dd($this->translation->getSingleTranslationsFor('en'));
         if ($request->has('language') && $request->get('language') !== $language) {
             return redirect()
                 ->route('languages.translations.index', ['language' => $request->get('language'), 'group' => $request->get('group'), 'filter' => $request->get('filter')]);
@@ -53,9 +51,13 @@ class LanguageTranslationController extends Controller
 
     public function store(TranslationRequest $request, $language)
     {
-        $isGroupTranslation = $request->filled('group');
-
-        $this->translation->add($request, $language, $isGroupTranslation);
+        $this->translation->add(
+            $language,
+            $request->get('key'),
+            $request->get('value'),
+            $request->get('group'),
+            $request->get('vendor')
+        );
 
         return redirect()
             ->route('languages.translations.index', $language)
@@ -64,9 +66,13 @@ class LanguageTranslationController extends Controller
 
     public function update(Request $request, $language)
     {
-        $isGroupTranslation = ! Str::contains($request->get('group'), 'single');
-
-        $this->translation->add($request, $language, $isGroupTranslation);
+        $this->translation->add(
+            $language,
+            $request->get('key'),
+            $request->get('value'),
+            $request->get('group'),
+            $request->get('vendor')
+        );
 
         return ['success' => true];
     }
