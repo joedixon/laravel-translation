@@ -3,7 +3,6 @@
 namespace Tests\Cases;
 
 use JoeDixon\Translation\TranslationServiceProvider;
-use JoeDixon\TranslationCore\TranslationServiceProvider as TranslationCoreServiceProvider;
 use Orchestra\Testbench\TestCase;
 
 class FileProviderTestCase extends TestCase

@@ -3,7 +3,6 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Support\ServiceProvider;
-use JoeDixon\TranslationCore\Providers\Eloquent\Translation;
 use JoeDixon\TranslationCore\Configuration;
 use JoeDixon\TranslationCore\TranslationProvider;
 
@@ -128,7 +127,7 @@ class TranslationServiceProvider extends ServiceProvider
         );
 
         TranslationProvider::init(
-            $this->app, 
+            $this->app,
             $configuration
         );
     }
