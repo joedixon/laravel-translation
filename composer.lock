@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ee2b449604ebe9768f91ccb1a2738e92",
+    "content-hash": "4441323b9e4997827cb8054e07c77ba3",
     "packages": [
         {
             "name": "brick/math",
@@ -655,7 +655,7 @@
             "dist": {
                 "type": "path",
                 "url": "../laravel-translation-core",
-                "reference": "2fa450852c8e9ac6ae2942c97e06ee669ef7f7c6"
+                "reference": "b6f858f43c8f79426f183ed7cf9134e9263d18d6"
             },
             "require": {
                 "illuminate/filesystem": "^9.0|^10.0",
@@ -672,13 +672,6 @@
                 "pestphp/pest": "^2.0"
             },
             "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "JoeDixon\\TranslationCore\\TranslationServiceProvider"
-                    ]
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "JoeDixon\\TranslationCore\\": "src/"
@@ -6569,16 +6562,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.22",
+            "version": "1.10.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "97d694dfd4ceb57bcce4e3b38548f13ea62e4287"
+                "reference": "578f4e70d117f9a90699324c555922800ac38d8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/97d694dfd4ceb57bcce4e3b38548f13ea62e4287",
-                "reference": "97d694dfd4ceb57bcce4e3b38548f13ea62e4287",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/578f4e70d117f9a90699324c555922800ac38d8c",
+                "reference": "578f4e70d117f9a90699324c555922800ac38d8c",
                 "shasum": ""
             },
             "require": {
@@ -6627,7 +6620,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-30T20:04:11+00:00"
+            "time": "2023-07-06T12:11:37+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

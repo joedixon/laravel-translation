@@ -2,7 +2,6 @@
 
 namespace JoeDixon\Translation\Tests;
 
-use JoeDixon\Translation\TranslationBindingsServiceProvider;
 use JoeDixon\Translation\TranslationServiceProvider;
 use Orchestra\Testbench\TestCase;
 
@@ -12,7 +11,6 @@ class PackageIsLoadedTest extends TestCase
     {
         return [
             TranslationServiceProvider::class,
-            TranslationBindingsServiceProvider::class,
         ];
     }
 
@@ -20,6 +18,5 @@ class PackageIsLoadedTest extends TestCase
     public function the_translation_pacakage_is_loaded()
     {
         $this->assertArrayHasKey(TranslationServiceProvider::class, app()->getLoadedProviders());
-        $this->assertArrayHasKey(TranslationBindingsServiceProvider::class, app()->getLoadedProviders());
     }
 }

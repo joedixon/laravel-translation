@@ -1,3 +1,7 @@
-/vendor/
-/node_modules
+/vendor
+/build
+composer.lock
+coverage
+.php-cs-fixer.cache
 .phpunit.result.cache
+node_modules

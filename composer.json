@@ -38,8 +38,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "JoeDixon\\Translation\\TranslationServiceProvider",
-                "JoeDixon\\Translation\\TranslationBindingsServiceProvider"
+                "JoeDixon\\Translation\\TranslationServiceProvider"
             ]
         }
     },

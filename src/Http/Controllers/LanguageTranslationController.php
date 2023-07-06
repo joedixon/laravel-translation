@@ -24,22 +24,23 @@ class LanguageTranslationController extends Controller
                 ->route('languages.translations.index', ['language' => $request->get('language'), 'group' => $request->get('group'), 'filter' => $request->get('filter')]);
         }
 
-        $languages = $this->translation->allLanguages();
-        $groups = $this->translation->getGroupsFor(config('app.locale'))->merge('single');
-        $translations = $this->translation->filterTranslationsFor($language, $request->get('filter'));
+        $languages = $this->translation->languages();
+        $groups = $this->translation->shortKeyGroups(config('app.locale'));
+        $translations = $this->translation->allTranslationsFor($language);
+        // $translations = $this->translation->filterTranslationsFor($language, $request->get('filter'));
 
-        if ($request->has('group') && $request->get('group')) {
-            if ($request->get('group') === 'single') {
-                $translations = $translations->get('single');
-                $translations = new Collection(['single' => $translations]);
-            } else {
-                $translations = $translations->get('group')->filter(function ($values, $group) use ($request) {
-                    return $group === $request->get('group');
-                });
+        // if ($request->has('group') && $request->get('group')) {
+        //     if ($request->get('group') === 'single') {
+        //         $translations = $translations->get('single');
+        //         $translations = new Collection(['single' => $translations]);
+        //     } else {
+        //         $translations = $translations->get('group')->filter(function ($values, $group) use ($request) {
+        //             return $group === $request->get('group');
+        //         });
 
-                $translations = new Collection(['group' => $translations]);
-            }
-        }
+        //         $translations = new Collection(['group' => $translations]);
+        //     }
+        // }
 
         return view('translation::languages.translations.index', compact('language', 'languages', 'groups', 'translations'));
     }

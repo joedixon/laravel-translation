@@ -3,9 +3,22 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Support\ServiceProvider;
+use JoeDixon\TranslationCore\Providers\Eloquent\Translation;
+use JoeDixon\TranslationCore\Configuration;
+use JoeDixon\TranslationCore\TranslationProvider;
 
 class TranslationServiceProvider extends ServiceProvider
 {
+    /**
+     * Register package bindings in the container.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->mergeConfiguration();
+    }
+
     /**
      * Bootstrap the package services.
      *
@@ -14,9 +27,34 @@ class TranslationServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadViews();
+        $this->loadTranslations();
         $this->registerRoutes();
         $this->publishAssets();
         $this->registerHelpers();
+        $this->publishConfiguration();
+        $this->registerTranslationProvider();
+    }
+
+    /**
+     * Publish package configuration.
+     *
+     * @return void
+     */
+    private function publishConfiguration()
+    {
+        $this->publishes([
+            __DIR__.'/../config/translation.php' => config_path('translation.php'),
+        ], 'config');
+    }
+
+    /**
+     * Merge package configuration.
+     *
+     * @return void
+     */
+    private function mergeConfiguration()
+    {
+        $this->mergeConfigFrom(__DIR__.'/../config/translation.php', 'translation');
     }
 
     /**
@@ -30,6 +68,20 @@ class TranslationServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/translation'),
+        ]);
+    }
+
+    /**
+     * Load package translations.
+     *
+     * @return void
+     */
+    private function loadTranslations()
+    {
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'translation');
+
+        $this->publishes([
+            __DIR__.'/../resources/lang' => lang_path('vendor/translation'),
         ]);
     }
 
@@ -63,5 +115,21 @@ class TranslationServiceProvider extends ServiceProvider
     private function registerHelpers()
     {
         require __DIR__.'/../resources/helpers.php';
+    }
+
+    protected function registerTranslationProvider()
+    {
+        $config = $this->app['config']['translation'];
+        $configuration = new Configuration(
+            $config['driver'],
+            $config['translation_methods'],
+            $config['scan_paths'],
+            $config['database']
+        );
+
+        TranslationProvider::init(
+            $this->app, 
+            $configuration
+        );
     }
 }

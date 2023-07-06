@@ -11,7 +11,6 @@ class FileProviderTestCase extends TestCase
     protected function getPackageProviders($app)
     {
         return [
-            TranslationCoreServiceProvider::class,
             TranslationServiceProvider::class,
         ];
     }
