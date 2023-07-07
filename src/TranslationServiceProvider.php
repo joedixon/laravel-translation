@@ -127,7 +127,7 @@ class TranslationServiceProvider extends ServiceProvider
         );
 
         TranslationProvider::init(
-            $this->app, 
+            $this->app,
             $configuration
         );
     }
