@@ -44,8 +44,8 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "../laravel-translation-core"
+            "type": "vcs",
+            "url": "https://github.com/joedixon/laravel-translation-core"
         }
     ],
     "config": {
