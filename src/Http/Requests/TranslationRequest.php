@@ -14,7 +14,7 @@ class TranslationRequest extends FormRequest
     public function rules()
     {
         return [
-            'key' => 'required',
+            'key'   => 'required',
             'value' => 'required',
         ];
     }
