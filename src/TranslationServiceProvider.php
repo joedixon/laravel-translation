@@ -36,10 +36,8 @@ class TranslationServiceProvider extends ServiceProvider
 
     /**
      * Publish package configuration.
-     *
-     * @return void
      */
-    private function publishConfiguration()
+    protected function publishConfiguration(): void
     {
         $this->publishes([
             __DIR__.'/../config/translation.php' => config_path('translation.php'),
@@ -48,20 +46,16 @@ class TranslationServiceProvider extends ServiceProvider
 
     /**
      * Merge package configuration.
-     *
-     * @return void
      */
-    private function mergeConfiguration()
+    protected function mergeConfiguration(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/translation.php', 'translation');
     }
 
     /**
      * Load and publish package views.
-     *
-     * @return void
      */
-    private function loadViews()
+    protected function loadViews(): void
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'translation');
 
@@ -72,10 +66,8 @@ class TranslationServiceProvider extends ServiceProvider
 
     /**
      * Load package translations.
-     *
-     * @return void
      */
-    private function loadTranslations()
+    protected function loadTranslations(): void
     {
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'translation');
 
@@ -86,20 +78,16 @@ class TranslationServiceProvider extends ServiceProvider
 
     /**
      * Register package routes.
-     *
-     * @return void
      */
-    private function registerRoutes()
+    protected function registerRoutes(): void
     {
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
     }
 
     /**
      * Publish package assets.
-     *
-     * @return void
      */
-    private function publishAssets()
+    protected function publishAssets(): void
     {
         $this->publishes([
             __DIR__.'/../public/assets' => public_path('vendor/translation'),
@@ -108,15 +96,16 @@ class TranslationServiceProvider extends ServiceProvider
 
     /**
      * Register package helper functions.
-     *
-     * @return void
      */
-    private function registerHelpers()
+    protected function registerHelpers(): void
     {
         require __DIR__.'/../resources/helpers.php';
     }
 
-    protected function registerTranslationProvider()
+    /**
+     * Register the translation core provider.
+     */
+    protected function registerTranslationProvider(): void
     {
         $config = $this->app['config']['translation'];
         $configuration = new Configuration(
