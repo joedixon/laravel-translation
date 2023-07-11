@@ -17,5 +17,6 @@ class EloquentProviderTestCase extends TestCase
     protected function defineEnvironment($app)
     {
         $app->useLangPath(__DIR__.'/../lang');
+        $app['config']->set('translation.driver', 'eloquent');
     }
 }

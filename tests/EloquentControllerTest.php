@@ -29,7 +29,7 @@ afterEach(function () {
 
 it('can list all languages', function () {
     $languages = $this->translation->languages();
-    $response = $this->get(config('translation.ui_url'));
+    $response = $this->get('/languages');
 
     $response->assertSee(config('app.locale'));
     foreach ($languages as $language) {
@@ -40,12 +40,12 @@ it('can list all languages', function () {
 it('can render the language creation page', function () {
     $this->translation->addShortKeyTranslation(config('app.locale'), 'translation', 'add_language', 'Add a new language', 'translation');
 
-    $this->get(config('translation.ui_url').'/create')
+    $this->get('languages/create')
         ->assertSee('Add a new language');
 });
 
 it('can add a new language', function () {
-    $this->post(config('translation.ui_url'), ['locale' => 'de'])
+    $this->post('/languages', ['locale' => 'de'])
         ->assertRedirect();
 
     $this->assertDatabaseHas('languages', ['language' => 'de']);
@@ -58,7 +58,7 @@ it('can list all translations', function () {
     Translation::factory()->stringKey()->create(['language_id' => $default->id, 'key' => 'Hello', 'value' => 'Hello!']);
     Translation::factory()->stringKey()->create(['language_id' => $default->id, 'key' => "What's up", 'value' => 'Sup!']);
 
-    $this->get(config('translation.ui_url').'/en/translations')
+    $this->get('languages/en/translations')
         ->assertSee('hello')
         ->assertSee('whats_up')
         ->assertSee('Hello')
@@ -67,12 +67,12 @@ it('can list all translations', function () {
 
 it('can render the translation creation page', function () {
     $this->translation->addShortKeyTranslation('en', 'translation', 'add_translation', 'Add a translation', 'translation');
-    $this->get(config('translation.ui_url').'/'.config('app.locale').'/translations/create')
+    $this->get('languages/'.config('app.locale').'/translations/create')
         ->assertSee('Add a translation');
 });
 
 it('can add a new translation', function () {
-    $this->post(config('translation.ui_url').'/'.config('app.locale').'/translations', ['group' => null, 'key' => 'joe', 'value' => 'is cool'])
+    $this->post('languages/'.config('app.locale').'/translations', ['group' => null, 'key' => 'joe', 'value' => 'is cool'])
         ->assertRedirect();
 
     $this->assertDatabaseHas('translations', [
@@ -87,7 +87,7 @@ it('can update a translation', function () {
     Translation::factory()->shortKey()->create(['language_id' => $default->id, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
     $this->assertDatabaseHas('translations', ['language_id' => $default->id, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
 
-    $this->post(config('translation.ui_url').'/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
+    $this->post('languages/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
         ->assertStatus(200);
 
     $this->assertDatabaseHas('translations', ['language_id' => $default->id, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello there!']);
@@ -97,7 +97,7 @@ it('fires an event when a translation is added', function () {
     Event::fake();
 
     $data = ['key' => 'joe', 'value' => 'is cool'];
-    $this->post(config('translation.ui_url').'/en/translations', $data);
+    $this->post('languages/en/translations', $data);
 
     Event::assertDispatched(TranslationAdded::class, function ($event) use ($data) {
         return $event->language === 'en' &&
@@ -111,7 +111,7 @@ it('fires an event when a translation is updated', function () {
     Event::fake();
 
     $data = ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'];
-    $this->post(config('translation.ui_url').'/en/translations', $data);
+    $this->post('languages/en/translations', $data);
 
     Event::assertDispatched(TranslationAdded::class, function ($event) use ($data) {
         return $event->language === 'en' &&
