@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'hello' => 'Hola!',
+    'hello'    => 'Hola!',
     'whats_up' => '¡Qué pasa!',
 ];

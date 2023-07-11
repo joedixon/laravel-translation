@@ -77,8 +77,8 @@ it('can add a new translation', function () {
 
     $this->assertDatabaseHas('translations', [
         'language_id' => Language::where('language', config('app.locale'))->first()->id,
-        'key' => 'joe',
-        'value' => 'is cool',
+        'key'         => 'joe',
+        'value'       => 'is cool',
     ]);
 });
 
