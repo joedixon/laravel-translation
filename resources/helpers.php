@@ -3,12 +3,13 @@
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-if (! function_exists('set_active')) {
+if (!function_exists('set_active')) {
     /**
      * Determine if a route is the currently active route.
      *
-     * @param  string  $path
-     * @param  string  $class
+     * @param string $path
+     * @param string $class
+     *
      * @return string
      */
     function set_active($path, $class = 'active')
@@ -17,12 +18,13 @@ if (! function_exists('set_active')) {
     }
 }
 
-if (! function_exists('strs_contain')) {
+if (!function_exists('strs_contain')) {
     /**
      * Determine whether any of the provided strings in the haystack contain the needle.
      *
-     * @param  array  $haystacks
-     * @param  string  $needle
+     * @param array  $haystacks
+     * @param string $needle
+     *
      * @return bool
      */
     function strs_contain($haystacks, $needle)
@@ -41,12 +43,13 @@ if (! function_exists('strs_contain')) {
     }
 }
 
-if (! function_exists('array_diff_assoc_recursive')) {
+if (!function_exists('array_diff_assoc_recursive')) {
     /**
      * Recursively diff two arrays.
      *
-     * @param  array  $arrayOne
-     * @param  array  $arrayTwo
+     * @param array $arrayOne
+     * @param array $arrayTwo
+     *
      * @return array
      */
     function array_diff_assoc_recursive($arrayOne, $arrayTwo)
@@ -54,9 +57,9 @@ if (! function_exists('array_diff_assoc_recursive')) {
         $difference = [];
         foreach ($arrayOne as $key => $value) {
             if (is_array($value) || $value instanceof Illuminate\Support\Collection) {
-                if (! isset($arrayTwo[$key])) {
+                if (!isset($arrayTwo[$key])) {
                     $difference[$key] = $value;
-                } elseif (! (is_array($arrayTwo[$key]) || $arrayTwo[$key] instanceof Illuminate\Support\Collection)) {
+                } elseif (!(is_array($arrayTwo[$key]) || $arrayTwo[$key] instanceof Illuminate\Support\Collection)) {
                     $difference[$key] = $value;
                 } else {
                     $new_diff = array_diff_assoc_recursive($value, $arrayTwo[$key]);
@@ -64,7 +67,7 @@ if (! function_exists('array_diff_assoc_recursive')) {
                         $difference[$key] = $new_diff;
                     }
                 }
-            } elseif (! isset($arrayTwo[$key])) {
+            } elseif (!isset($arrayTwo[$key])) {
                 $difference[$key] = $value;
             }
         }
@@ -73,12 +76,13 @@ if (! function_exists('array_diff_assoc_recursive')) {
     }
 }
 
-if (! function_exists('str_before')) {
+if (!function_exists('str_before')) {
     /**
      * Get the portion of a string before a given value.
      *
-     * @param  string  $subject
-     * @param  string  $search
+     * @param string $subject
+     * @param string $search
+     *
      * @return string
      */
     function str_before($subject, $search)
@@ -88,7 +92,7 @@ if (! function_exists('str_before')) {
 }
 
 // Array undot
-if (! function_exists('array_undot')) {
+if (!function_exists('array_undot')) {
     /**
      * Expands a single level array with dot notation into a multi-dimensional array.
      *
