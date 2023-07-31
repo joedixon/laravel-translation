@@ -29,7 +29,6 @@ class TranslationServiceProvider extends ServiceProvider
         $this->loadTranslations();
         $this->registerRoutes();
         $this->publishAssets();
-        $this->registerHelpers();
         $this->publishConfiguration();
         $this->registerTranslationProvider();
     }
@@ -92,14 +91,6 @@ class TranslationServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../public/assets' => public_path('vendor/translation'),
         ], 'assets');
-    }
-
-    /**
-     * Register package helper functions.
-     */
-    protected function registerHelpers(): void
-    {
-        require __DIR__.'/../resources/helpers.php';
     }
 
     /**
