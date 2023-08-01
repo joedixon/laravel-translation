@@ -10,14 +10,10 @@
     @vite('resources/css/translation.css')
 </head>
 <body>
-    
-    <div id="app">
-        
-        @include('translation::nav')
+    <div>
         @include('translation::notifications')
         
-        @yield('body')
-        
+        {{ $slot }}
     </div>
 </body>
 </html>

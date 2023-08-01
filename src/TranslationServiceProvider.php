@@ -3,8 +3,10 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Support\ServiceProvider;
+use JoeDixon\Translation\Livewire\Translations;
 use JoeDixon\TranslationCore\Configuration;
 use JoeDixon\TranslationCore\TranslationProvider;
+use Livewire\Livewire;
 
 class TranslationServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,8 @@ class TranslationServiceProvider extends ServiceProvider
         $this->publishAssets();
         $this->publishConfiguration();
         $this->registerTranslationProvider();
+
+        Livewire::component('translation::translations', Translations::class);
     }
 
     /**
