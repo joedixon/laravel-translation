@@ -15,7 +15,7 @@ class Translations extends Component
     public string $type = 'short';
 
     #[Url]
-    public string $language;
+    public $language;
 
     public Collection $languages;
 
