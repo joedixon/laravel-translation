@@ -32,7 +32,7 @@
                             @if (! is_array($value))
                                 <tr>
                                     <td>
-                                        {{ Str::contains($group, '::') ? Str::before($group, '::') . ' / ' : '' }}{{ Str::before(Str::after($group, '::'), '.') }}
+                                        {{ Str::contains($group, '::') ? Str::before($group, '::') . ' / ' : '' }}{{ Str::after($group, '::') }}
                                     </td>
 
                                     <td>{{ $key }}</td>
