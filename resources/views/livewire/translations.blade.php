@@ -1,12 +1,12 @@
 <div class="w-full p-4">
     <div class="flex gap-x-5">
-        <select wire:model="language" wire:change="changeLanguage">
+        <select wire:model="language" wire:model.live="language">
             @foreach ($languages as $selectLanguage)
                 <option value="{{ $selectLanguage }}">{{ $selectLanguage }}</option>
             @endforeach
         </select>
 
-        <input type="search" placeholder="Search">
+        <input type="search" placeholder="Search" wire:model.live.debounce.150ms="query">
 
         <select wire:model.live="type">
             <option value="short">Short Key Translations</option>
@@ -27,10 +27,10 @@
 
             @if ($type === 'short')
                 <tbody>
-                    @foreach ($shortKeys as $group => $translations)
-                        @foreach ($translations as $key => $value)
-                            @if (! (isset($shortKeyTranslations[$group][$key]) && is_array($shortKeyTranslations[$group][$key])))
-                                <tr wire:key="short-{{ Str::slug($key) }}">
+                    @foreach ($this->translations as $group => $this->translations)
+                        @foreach ($this->translations as $key => $value)
+                            @if (! is_array($value))
+                                <tr>
                                     <td>
                                         {{ Str::contains($group, '::') ? Str::before($group, '::') . ' / ' : '' }}{{ Str::before(Str::after($group, '::'), '.') }}
                                     </td>
@@ -40,8 +40,9 @@
                                     <td>
                                         <input 
                                             type="text" 
-                                            value="{{ $shortKeyTranslations[$group][$key] ?? null }}" 
+                                            value="{{ $value }}" 
                                             wire:change="translateShortKey('{{ Str::before(Str::after($group, '::'), '.') }}', '{{ $key }}', $event.target.value, '{{ Str::contains($group, '::') ? Str::before($group, '::') : null }}')"
+                                            wire:key="short-{{ Str::slug($key) }}"
                                         >
                                     </td>
                                 </tr>
@@ -51,10 +52,10 @@
                 </tbody>
             @else
                 <tbody>
-                    @foreach ($stringKeys as $key => $value)
+                    @foreach ($this->translations as $key => $value)
                         @if (is_array($value))
                             @foreach ($value as $k => $v)
-                                <tr wire:key="string-{{ Str::slug($k) }}">
+                                <tr>
                                     <td>{{ $key }}</td>
 
                                     <td>{{ $k }}</td>
@@ -62,14 +63,15 @@
                                     <td>
                                         <input 
                                             type="text" 
-                                            value="{{ $stringKeyTranslations[$key][$k] ?? null }}" 
+                                            value="{{ $v }}" 
                                             wire:change="translateStringKey('{{ $k }}', $event.target.value, '{{ $key }}')"
+                                            wire:key="string-{{ Str::slug($k) }}"
                                         >
                                     </td>
                                 </tr>
                             @endforeach
                         @else
-                            <tr wire:key="string-{{ Str::slug($key) }}">
+                            <tr>
                                 <td>root</td>
 
                                 <td>{{ $key }}</td>
@@ -77,8 +79,9 @@
                                 <td>
                                     <input 
                                         type="text" 
-                                        value="{{ $stringKeyTranslations[$key] ?? null }}" 
+                                        value="{{ $value }}" 
                                         wire:change="translateStringKey('{{ $key }}', $event.target.value)"
+                                        wire:key="string-{{ Str::slug($key) }}"
                                     >
                                 </td>
                             </tr>

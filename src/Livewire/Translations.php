@@ -5,6 +5,7 @@ namespace JoeDixon\Translation\Livewire;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use JoeDixon\TranslationCore\TranslationManager;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -17,15 +18,10 @@ class Translations extends Component
     #[Url]
     public $language;
 
+    #[Url]
+    public $query;
+
     public Collection $languages;
-
-    public Collection $shortKeys;
-
-    public Collection $stringKeys;
-
-    public Collection $shortKeyTranslations;
-
-    public Collection $stringKeyTranslations;
 
     /**
      * Mount the component.
@@ -34,12 +30,6 @@ class Translations extends Component
     {
         $this->languages = $translation->languages();
         $this->language = $this->language ?: $this->languages->first();
-
-        $keys = $translation->keys();
-        $this->shortKeys = $keys->shortByGroup();
-        $this->stringKeys = $keys->string();
-
-        $this->setTranslations();
     }
 
     /**
@@ -51,14 +41,16 @@ class Translations extends Component
         return view('translation::livewire.translations');
     }
 
-    /**
-     * Update the translations for the selected langugage.
-     */
-    public function changeLanguage(TranslationManager $translation): void
-    {
-        $translations = $translation->allTranslationsFor($this->language);
-        $this->shortKeyTranslations = $translations->shortByGroup();
-        $this->stringKeyTranslations = $translations->string();
+    #[Computed]
+    public function translations() {
+        $translation = app(TranslationManager::class);
+
+        $translations = $translation
+            ->keys()
+            ->merge($translation->allTranslationsFor($this->language))
+            ->search($this->query);
+
+        return $this->type === 'short' ? $translations->shortByGroup() : $translations->string();
     }
 
     /**
@@ -75,15 +67,5 @@ class Translations extends Component
     public function translateStringKey(TranslationManager $translation, string $key, string $value, string $vendor = null): void
     {
         $translation->addStringKeyTranslation($this->language, $key, $value, $vendor);
-    }
-
-    /**
-     * Set the translations for the selected language.
-     */
-    protected function setTranslations(): void
-    {
-        $translations = app(TranslationManager::class)->allTranslationsFor($this->language);
-        $this->shortKeyTranslations = $translations->shortByGroup();
-        $this->stringKeyTranslations = $translations->string();
     }
 }
