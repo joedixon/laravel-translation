@@ -53,7 +53,8 @@ abstract class Translation
     }
 
     /**
-     * Translate all the token into it's respective language.
+     * Save all of the translations in the app without translation for a given language then
+     * Translate all the tokens into it's respective language using google translate
      *
      * @param  string  $language
      * @return void
