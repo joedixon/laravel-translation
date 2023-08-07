@@ -1,4 +1,8 @@
-<div class="w-full flex flex-col">
+<div class="w-full flex flex-col" x-data="{ modal: false }">
+    <x-translation::add-language />
+
+    <x-translation::add-translation />
+
     <div class="flex items-center justify-between gap-x-5 p-4 bg-indigo-600">
         <div class="flex items-center gap-x-5">
             <select wire:model="language" wire:model.live="language" class="placeholder:text-white/100 text-white/100 bg-white/20 py-2 px-3 rounded text-sm focus:bg-white/100 focus:text-gray-700">
@@ -34,11 +38,11 @@
         </div>
 
         <div class="flex items-center gap-x-5">
-            <button class="text-sm text-white bg-indigo-700 py-2 px-4 rounded hover:bg-indigo-900/60 transition">
+            <button class="text-sm text-white bg-indigo-700 py-2 px-4 rounded hover:bg-indigo-900/60 transition" @click.prevent="modal = 'add-language'">
                 Add Language
             </button>
 
-            <button class="text-sm text-white bg-indigo-700 py-2 px-4 rounded hover:bg-indigo-900/60 transition">
+            <button class="text-sm text-white bg-indigo-700 py-2 px-4 rounded hover:bg-indigo-900/60 transition" @click.prevent="modal = 'add-translation'">
                 Add Translation
             </button>
         </div>
@@ -46,7 +50,7 @@
 
     <div class="w-full">
         <table class="w-full">
-            <thead class="bg-indigo-50 text-gray-500 text-sm uppercase border-b border-indigo-200">
+            <thead class="bg-gray-100 text-gray-500 text-sm uppercase border-b border-gray-200">
                 <tr>
                     <th class="text-left min-w-[20%] px-4 py-3">Vendor / Group</th>
                     <th class="text-left min-w-[20%] px-4 py-3">Key</th>
@@ -59,7 +63,7 @@
                     @foreach ($this->translations as $group => $this->translations)
                         @foreach ($this->translations as $key => $value)
                             @if (! is_array($value))
-                                <tr class="border-b border-gray-100 text-gray-500 font-light hover:bg-gray-50">
+                                <tr class="border-b border-gray-100 text-gray-500 font-light hover:bg-gray-50 group">
                                     <td class="px-4 py-3">
                                         {{ Str::contains($group, '::') ? Str::before($group, '::') . ' / ' : '' }}{{ Str::replace('/', ' / ', Str::after($group, '::')) }}
                                     </td>
@@ -70,7 +74,7 @@
                                         <textarea 
                                             wire:change="translateShortKey('{{ Str::before(Str::after($group, '::'), '.') }}', '{{ $key }}', $event.target.value, '{{ Str::contains($group, '::') ? Str::before($group, '::') : null }}')"
                                             wire:key="short-{{ Str::slug($key) }}"
-                                            class="w-full px-2 py-1 bg-gray-50 rounded text-gray-700"
+                                            class="w-full px-2 py-1 bg-gray-50 rounded text-gray-700 group-hover:bg-white focus:bg-white"
                                             placeholder="-"
                                             rows="1"
                                         >{{ $value }}</textarea>
@@ -85,7 +89,7 @@
                     @foreach ($this->translations as $key => $value)
                         @if (is_array($value))
                             @foreach ($value as $k => $v)
-                                <tr class="border-b border-gray-100 text-gray-500 font-light">
+                                <tr class="border-b border-gray-100 text-gray-500 font-light group">
                                     <td class="px-4 py-3">{{ $key }}</td>
 
                                     <td class="px-4 py-3">{{ $k }}</td>
@@ -94,7 +98,7 @@
                                         <textarea 
                                             wire:change="translateStringKey('{{ $k }}', $event.target.value, '{{ $key }}')"
                                             wire:key="string-{{ Str::slug($k) }}"
-                                            class="w-full px-2 py-1 bg-gray-50 rounded text-gray-700"
+                                            class="w-full px-2 py-1 bg-gray-50 rounded text-gray-700 group-hover:bg-white focus:bg-white"
                                             placeholder="-"
                                             rows="1"
                                         >{{ $value }}</textarea>
@@ -102,7 +106,7 @@
                                 </tr>
                             @endforeach
                         @else
-                            <tr>
+                            <tr class="border-b border-gray-100 text-gray-500 font-light group">
                                 <td class="px-4 py-3">root</td>
 
                                 <td class="px-4 py-3">{{ $key }}</td>
@@ -111,7 +115,7 @@
                                     <textarea 
                                         wire:change="translateStringKey('{{ $key }}', $event.target.value)"
                                         wire:key="string-{{ Str::slug($key) }}"
-                                        class="w-full px-2 py-1 bg-gray-50 rounded text-gray-700"
+                                        class="w-full px-2 py-1 bg-gray-50 rounded text-gray-700 group-hover:bg-white focus:bg-white"
                                         placeholder="-"
                                         rows="1"
                                     >{{ $value }}</textarea>
