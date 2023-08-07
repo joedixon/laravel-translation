@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use JoeDixon\Translation\Events\TranslationAdded;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 abstract class Translation
 {
@@ -50,6 +51,47 @@ abstract class Translation
             }
         }
     }
+
+    /**
+     * Save all of the translations in the app without translation for a given language.
+     *
+     * @param  string  $language
+     * @return void
+     */
+    public function autoTranslate($language = false)
+    {
+        $languages = $language ? [$language => $language] : $this->allLanguages();
+
+        foreach ($languages as $language => $name) {
+            $this->saveMissingTranslations($language);
+            $this->translateLanguage($language);
+        }
+    }
+
+    public function getGoogleTranslate($language,$token){
+        $tr = new GoogleTranslate($language);
+        return $tr->translate($token);
+    }
+    
+    public function translateLanguage($language){
+        $translations = $this->allTranslationsFor($language);
+        foreach ($translations as $type => $groups) {
+            foreach ($groups as $group => $translations) {
+                foreach ($translations as $key => $value) {
+                    if (in_array($value,["",null])){
+                        $new_value=$this->getGoogleTranslate($language,$key);
+                        if (Str::contains($group, 'single')) {
+                            $this->addSingleTranslation($language, $group, $key,$new_value);
+                        } else {
+                            $this->addGroupTranslation($language, $group, $key,$new_value);
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+    
 
     /**
      * Get all translations for a given language merged with the source language.

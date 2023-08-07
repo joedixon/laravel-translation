@@ -17,6 +17,7 @@ return [
     'language_key_added' => 'New language key added successfully 👏',
     'no_missing_keys' => 'There are no missing translation keys in the app 🎉',
     'keys_synced' => 'Missing keys synchronised successfully 🎊',
+    'auto_translated' => 'Automated Translation completed successfully 🎊',
     'search' => 'Search all translations',
     'translations' => 'Translation',
     'language_name' => 'Name',
