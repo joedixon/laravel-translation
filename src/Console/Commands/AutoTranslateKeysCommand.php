@@ -23,7 +23,7 @@ class AutoTranslateKeysCommand extends BaseCommand
      *
      * @var string
      */
-    protected $description = 'Auto translate key using google translate';
+    protected $description = 'Auto translate keys using google translate';
 
     /**
      * Execute the console command.

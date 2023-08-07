@@ -199,3 +199,13 @@ This command will scan your project (using the paths supplied in the
 configuration file) and create all of the missing translation keys. This can be
 run for all languages or a single language.
 
+
+### Automated Translation Using [Stichoza Google Translate Package](https://github.com/Stichoza/google-translate-php)   
+
+```
+translation:translation:auto-translate
+```
+This command will scan your project (using the paths supplied in the
+configuration file) and create all of the missing translation keys. This can be
+run for all languages or a single language.
+

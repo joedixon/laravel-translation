@@ -53,7 +53,7 @@ abstract class Translation
     }
 
     /**
-     * Save all of the translations in the app without translation for a given language.
+     * Translate all the token into it's respective language.
      *
      * @param  string  $language
      * @return void
@@ -68,11 +68,26 @@ abstract class Translation
         }
     }
 
+    /**
+     * 
+     * Translate text using Google Translate
+     * 
+     * @param $language
+     * @param $token
+     * @return string|null
+     * @throws \ErrorException
+     */
     public function getGoogleTranslate($language,$token){
         $tr = new GoogleTranslate($language);
         return $tr->translate($token);
     }
-    
+
+    /**
+     * 
+     * Loop through all the keys and get translated text from google 
+     * 
+     * @param $language
+     */
     public function translateLanguage($language){
         $translations = $this->allTranslationsFor($language);
         foreach ($translations as $type => $groups) {
