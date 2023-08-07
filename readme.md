@@ -211,4 +211,4 @@ run for all languages or a single language.
 
 It will then translate all the tokens using Google Translate for FREE!
 
-You can edit these the auto translated texts using the [User interface](#Userinterface) 
+You can edit these the auto translated texts using the [User interface](#user-interface) 
