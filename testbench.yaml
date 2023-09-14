@@ -1,7 +1,10 @@
 workbench:
+  env:
+    - SEND_QUERIES_TO_RAY=false
+
   start: '/translations'
   build:
-    - lang:publish
+    - lang:publish --force
     - assset-publish
   sync:
     - from: ./dist/
