@@ -1,0 +1,8 @@
+workbench:
+  start: '/translations'
+  build:
+    - lang:publish
+    - assset-publish
+  sync:
+    - from: ./dist/
+      to: public/vendor/translation
