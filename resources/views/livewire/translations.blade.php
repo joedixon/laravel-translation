@@ -101,7 +101,7 @@
                                             class="w-full px-2 py-1 bg-gray-50 rounded text-gray-700 group-hover:bg-white focus:bg-white"
                                             placeholder="-"
                                             rows="1"
-                                        >{{ $value }}</textarea>
+                                        >{{ $v }}</textarea>
                                     </td>
                                 </tr>
                             @endforeach
