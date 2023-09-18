@@ -1,5 +1,5 @@
 <div class="w-full flex flex-col" x-data="{ modal: false }">
-    <x-translation::add-language />
+    <livewire:translation::add-language />
 
     <x-translation::add-translation />
 

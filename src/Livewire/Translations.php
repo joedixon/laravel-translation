@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use JoeDixon\TranslationCore\TranslationManager;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
@@ -67,5 +68,11 @@ class Translations extends Component
     public function translateStringKey(TranslationManager $translation, string $key, string $value, string $vendor = null): void
     {
         $translation->addStringKeyTranslation($this->language, $key, $value, $vendor);
+    }
+
+    #[On('language-added')]
+    public function updateLanguages(): void
+    {
+        $this->languages = app(TranslationManager::class)->languages();
     }
 }
