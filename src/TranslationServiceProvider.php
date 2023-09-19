@@ -4,6 +4,7 @@ namespace JoeDixon\Translation;
 
 use Illuminate\Support\ServiceProvider;
 use JoeDixon\Translation\Livewire\AddLanguage;
+use JoeDixon\Translation\Livewire\AddTranslation;
 use JoeDixon\Translation\Livewire\Translations;
 use JoeDixon\TranslationCore\Configuration;
 use JoeDixon\TranslationCore\TranslationProvider;
@@ -37,6 +38,7 @@ class TranslationServiceProvider extends ServiceProvider
 
         Livewire::component('translation::translations', Translations::class);
         Livewire::component('translation::add-language', AddLanguage::class);
+        Livewire::component('translation::add-translation', AddTranslation::class);
     }
 
     /**

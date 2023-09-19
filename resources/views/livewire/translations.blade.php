@@ -1,7 +1,7 @@
 <div class="w-full flex flex-col" x-data="{ modal: false }">
     <livewire:translation::add-language />
 
-    <x-translation::add-translation />
+    <livewire:translation::add-translation :language="$language" />
 
     <div class="flex items-center justify-between gap-x-5 p-4 bg-indigo-600">
         <div class="flex items-center gap-x-5">
