@@ -3,8 +3,12 @@
 namespace JoeDixon\Translation;
 
 use Illuminate\Support\ServiceProvider;
+use JoeDixon\Translation\Livewire\AddLanguage;
+use JoeDixon\Translation\Livewire\AddTranslation;
+use JoeDixon\Translation\Livewire\Translations;
 use JoeDixon\TranslationCore\Configuration;
 use JoeDixon\TranslationCore\TranslationProvider;
+use Livewire\Livewire;
 
 class TranslationServiceProvider extends ServiceProvider
 {
@@ -29,9 +33,12 @@ class TranslationServiceProvider extends ServiceProvider
         $this->loadTranslations();
         $this->registerRoutes();
         $this->publishAssets();
-        $this->registerHelpers();
         $this->publishConfiguration();
         $this->registerTranslationProvider();
+
+        Livewire::component('translation::translations', Translations::class);
+        Livewire::component('translation::add-language', AddLanguage::class);
+        Livewire::component('translation::add-translation', AddTranslation::class);
     }
 
     /**
@@ -90,16 +97,8 @@ class TranslationServiceProvider extends ServiceProvider
     protected function publishAssets(): void
     {
         $this->publishes([
-            __DIR__.'/../public/assets' => public_path('vendor/translation'),
+            __DIR__.'/../dist' => public_path('vendor/translation'),
         ], 'assets');
-    }
-
-    /**
-     * Register package helper functions.
-     */
-    protected function registerHelpers(): void
-    {
-        require __DIR__.'/../resources/helpers.php';
     }
 
     /**

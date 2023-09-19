@@ -12,7 +12,8 @@
     "require": {
         "php": "^8.1",
         "illuminate/support": "^9.0||^10.0",
-        "joedixon/laravel-translation-core": "dev-main"
+        "joedixon/laravel-translation-core": "dev-main",
+        "livewire/livewire": "^3.0@beta"
     },
     "require-dev": {
         "mockery/mockery": "^1.0.0",
@@ -33,7 +34,19 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": [
+            "@prepare",
+            "@clear",
+            "@php vendor/bin/testbench workbench:build"
+        ],
+        "start": [
+            "@build",
+            "Composer\\Config::disableProcessTimeout",
+            "@php vendor/bin/testbench serve"
+        ]
     },
     "extra": {
         "laravel": {
@@ -44,8 +57,8 @@
     },
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/joedixon/laravel-translation-core"
+            "type": "path",
+            "url": "/Users/joe/Code/laravel-translation-core"
         }
     ],
     "config": {
