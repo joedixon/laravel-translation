@@ -70,9 +70,9 @@ abstract class Translation
     }
 
     /**
-     * 
+     *
      * Translate text using Google Translate
-     * 
+     *
      * @param $language
      * @param $token
      * @return string|null
@@ -84,22 +84,25 @@ abstract class Translation
     }
 
     /**
-     * 
-     * Loop through all the keys and get translated text from google 
-     * 
+     * Loop through all the keys and get translated text from Google Translate
+     *
      * @param $language
      */
     public function translateLanguage($language){
-        $translations = $this->allTranslationsFor($language);
+        $translations = $this->getSourceLanguageTranslationsWith($language);
+
         foreach ($translations as $type => $groups) {
             foreach ($groups as $group => $translations) {
                 foreach ($translations as $key => $value) {
-                    if (in_array($value,["",null])){
-                        $new_value=$this->getGoogleTranslate($language,$key);
+                    $sourceLanguageValue = $value[$this->sourceLanguage];
+                    $targetLanguageValue = $value[$language];
+
+                    if (in_array($targetLanguageValue, ["", null])) {
+                        $new_value = $this->getGoogleTranslate($language, $sourceLanguageValue);
                         if (Str::contains($group, 'single')) {
-                            $this->addSingleTranslation($language, $group, $key,$new_value);
+                            $this->addSingleTranslation($language, $group, $key, $new_value);
                         } else {
-                            $this->addGroupTranslation($language, $group, $key,$new_value);
+                            $this->addGroupTranslation($language, $group, $key, $new_value);
                         }
                     }
 
@@ -107,7 +110,6 @@ abstract class Translation
             }
         }
     }
-    
 
     /**
      * Get all translations for a given language merged with the source language.
