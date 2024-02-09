@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use JoeDixon\Translation\Events\TranslationAdded;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 abstract class Translation
 {
@@ -46,6 +47,65 @@ abstract class Translation
                             $this->addGroupTranslation($language, $group, $key);
                         }
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Save all of the translations in the app without translation for a given language then
+     * Translate all the tokens into it's respective language using google translate
+     *
+     * @param  string  $language
+     * @return void
+     */
+    public function autoTranslate($language = false)
+    {
+        $languages = $language ? [$language => $language] : $this->allLanguages();
+
+        foreach ($languages as $language => $name) {
+            $this->saveMissingTranslations($language);
+            $this->translateLanguage($language);
+        }
+    }
+
+    /**
+     *
+     * Translate text using Google Translate
+     *
+     * @param $language
+     * @param $token
+     * @return string|null
+     * @throws \ErrorException
+     */
+    public function getGoogleTranslate($language,$token){
+        $tr = new GoogleTranslate($language);
+        return $tr->translate($token);
+    }
+
+    /**
+     * Loop through all the keys and get translated text from Google Translate
+     *
+     * @param $language
+     */
+    public function translateLanguage($language){
+        $translations = $this->getSourceLanguageTranslationsWith($language);
+
+        foreach ($translations as $type => $groups) {
+            foreach ($groups as $group => $translations) {
+                foreach ($translations as $key => $value) {
+                    $sourceLanguageValue = $value[$this->sourceLanguage];
+                    $targetLanguageValue = $value[$language];
+
+                    if (in_array($targetLanguageValue, ["", null])) {
+                        $new_value = $this->getGoogleTranslate($language, $sourceLanguageValue);
+                        if (Str::contains($group, 'single')) {
+                            $this->addSingleTranslation($language, $group, $key, $new_value);
+                        } else {
+                            $this->addGroupTranslation($language, $group, $key, $new_value);
+                        }
+                    }
+
                 }
             }
         }
