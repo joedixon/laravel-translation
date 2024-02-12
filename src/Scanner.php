@@ -48,6 +48,8 @@ class Scanner
         foreach ($this->disk->allFiles($this->scanPaths) as $file) {
             if (preg_match_all("/$matchingPattern/siU", $file->getContents(), $matches)) {
                 foreach ($matches[2] as $key) {
+                    // Decode php strings, so in the final JSON e.g. __('Don\'t') becomes "Don't" instead of "Don\\'t"
+                    $key = stripcslashes($key);
                     if (preg_match("/(^[a-zA-Z0-9:_-]+([.][^\1)\ ]+)+$)/siU", $key, $arrayMatches)) {
                         [$file, $k] = explode('.', $arrayMatches[0], 2);
                         $results['group'][$file][$k] = '';
