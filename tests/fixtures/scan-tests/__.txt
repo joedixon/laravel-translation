@@ -4,3 +4,5 @@ __('This will go in the JSON array')
 __(
     'This will also go in the JSON array'
 )
+
+__('This will go in the JSON array, and it\'ll properly unescape the apostrophe.')
