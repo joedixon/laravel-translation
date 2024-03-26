@@ -41,7 +41,7 @@ class Scanner
             '('. // Start a new group to match:
             '.+'. // Must start with group
             ')'. // Close group
-            "[\'\"]". // Closing quote
+            "(?<!\\\\)[\'\"]". // Closing quote (don't match if escaped with backslash)
             "\s*". // Whitespace after param
             "[\),]";  // Close parentheses or new parameter
 
