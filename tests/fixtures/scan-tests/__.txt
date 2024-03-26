@@ -4,3 +4,7 @@ __('This will go in the JSON array')
 __(
     'This will also go in the JSON array'
 )
+
+__('This will go in the JSON array, and it\'ll properly unescape the apostrophe.')
+
+__('The first half of this sentence should go into the \'JSON array\', but the second part should as well!')
