@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Http\Requests\LanguageRequest;
+use JoeDixon\Translation\Http\Requests\LanguageDestroyRequest;
 
 class LanguageController extends Controller
 {
@@ -20,20 +21,28 @@ class LanguageController extends Controller
     {
         $languages = $this->translation->allLanguages();
 
-        return view('translation::languages.index', compact('languages'));
+        return inertia('Control/Languages/Index', compact('languages'));
     }
 
     public function create()
     {
-        return view('translation::languages.create');
+        return inertia('Control/Languages/Create');
     }
 
     public function store(LanguageRequest $request)
     {
-        $this->translation->addLanguage($request->locale, $request->name);
+        $this->translation->addLanguage($request->validated()['locale'], $request->validated()['name']);
 
         return redirect()
             ->route('languages.index')
             ->with('success', __('translation::translation.language_added'));
+    }
+
+    public function destroy(LanguageDestroyRequest $request)
+    {
+
+        $this->translation->deleteDirectory($request->validated()['language']);
+
+        return redirect()->back();
     }
 }

@@ -10,6 +10,9 @@ Route::group(config('translation.route_group_config') + ['namespace' => 'JoeDixo
     $router->post(config('translation.ui_url'), 'LanguageController@store')
         ->name('languages.store');
 
+    $router->delete(config('translation.ui_url').'/destroy', 'LanguageController@destroy')
+        ->name('languages.destroy');
+
     $router->get(config('translation.ui_url').'/{language}/translations', 'LanguageTranslationController@index')
         ->name('languages.translations.index');
 

@@ -105,10 +105,10 @@ class File extends Translation implements DriverInterface
             throw new LanguageExistsException(__('translation::errors.language_exists', ['language' => $language]));
         }
 
-        $this->disk->makeDirectory("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."$language");
-        if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}.json")) {
+        return $this->disk->makeDirectory("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."$language");
+        /*if (! $this->disk->exists("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}.json")) {
             $this->saveSingleTranslations($language, collect(['single' => collect()]));
-        }
+        }*/
     }
 
     /**
@@ -265,6 +265,7 @@ class File extends Translation implements DriverInterface
         if (Str::contains($group, '::')) {
             return $this->saveNamespacedGroupTranslations($language, $group, $translations);
         }
+
         $this->disk->put("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."{$language}".DIRECTORY_SEPARATOR."{$group}.php", "<?php\n\nreturn ".var_export($translations, true).';'.\PHP_EOL);
     }
 
@@ -365,5 +366,11 @@ class File extends Translation implements DriverInterface
         }
 
         return new Collection(Arr::flatten($vendorGroups));
+    }
+
+    public function deleteDirectory($language)
+    {
+
+        return $this->disk->deleteDirectory("{$this->languageFilesPath}".DIRECTORY_SEPARATOR."$language");
     }
 }
