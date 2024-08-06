@@ -65,6 +65,7 @@ abstract class Translation
         return $sourceTranslations->map(function ($groups, $type) use ($language, $languageTranslations) {
             return $groups->map(function ($translations, $group) use ($type, $language, $languageTranslations) {
                 $translations = $translations->toArray();
+                //Notice that only $value should be passed by reference, not $key.
                 array_walk($translations, function (&$value, $key) use ($type, $group, $language, $languageTranslations) {
                     $value = [
                         $this->sourceLanguage => $value,
