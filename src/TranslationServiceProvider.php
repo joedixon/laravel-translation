@@ -2,22 +2,18 @@
 
 namespace JoeDixon\Translation;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
-use JoeDixon\TranslationCore\Configuration;
-use JoeDixon\TranslationCore\TranslationProvider;
+use JoeDixon\Translation\Console\Commands\AddLanguageCommand;
+use JoeDixon\Translation\Console\Commands\AddTranslationKeyCommand;
+use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
+use JoeDixon\Translation\Console\Commands\ListMissingTranslationKeys;
+use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
+use JoeDixon\Translation\Console\Commands\SynchroniseTranslationsCommand;
+use JoeDixon\Translation\Drivers\Translation;
 
 class TranslationServiceProvider extends ServiceProvider
 {
-    /**
-     * Register package bindings in the container.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->mergeConfiguration();
-    }
-
     /**
      * Bootstrap the package services.
      *
@@ -26,98 +22,164 @@ class TranslationServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadViews();
-        $this->loadTranslations();
+
         $this->registerRoutes();
-        $this->publishAssets();
-        $this->registerHelpers();
+
         $this->publishConfiguration();
-        $this->registerTranslationProvider();
+
+        $this->publishAssets();
+
+        $this->loadMigrations();
+
+        $this->loadTranslations();
+
+        $this->registerHelpers();
     }
 
     /**
-     * Publish package configuration.
+     * Register package bindings in the container.
+     *
+     * @return void
      */
-    protected function publishConfiguration(): void
+    public function register()
     {
-        $this->publishes([
-            __DIR__.'/../config/translation.php' => config_path('translation.php'),
-        ], 'config');
-    }
+        $this->mergeConfiguration();
 
-    /**
-     * Merge package configuration.
-     */
-    protected function mergeConfiguration(): void
-    {
-        $this->mergeConfigFrom(__DIR__.'/../config/translation.php', 'translation');
+        $this->registerCommands();
+
+        $this->registerContainerBindings();
     }
 
     /**
      * Load and publish package views.
+     *
+     * @return void
      */
-    protected function loadViews(): void
+    private function loadViews()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'translation');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'translation');
 
         $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/translation'),
-        ]);
-    }
-
-    /**
-     * Load package translations.
-     */
-    protected function loadTranslations(): void
-    {
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'translation');
-
-        $this->publishes([
-            __DIR__.'/../resources/lang' => lang_path('vendor/translation'),
+            __DIR__ . '/../resources/views' => resource_path('views/vendor/translation'),
         ]);
     }
 
     /**
      * Register package routes.
+     *
+     * @return void
      */
-    protected function registerRoutes(): void
+    private function registerRoutes()
     {
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+    }
+
+    /**
+     * Publish package configuration.
+     *
+     * @return void
+     */
+    private function publishConfiguration()
+    {
+        $this->publishes([
+            __DIR__ . '/../config/translation.php' => config_path('translation.php'),
+        ], 'config');
+    }
+
+    /**
+     * Merge package configuration.
+     *
+     * @return void
+     */
+    private function mergeConfiguration()
+    {
+        $this->mergeConfigFrom(__DIR__ . '/../config/translation.php', 'translation');
     }
 
     /**
      * Publish package assets.
+     *
+     * @return void
      */
-    protected function publishAssets(): void
+    private function publishAssets()
     {
         $this->publishes([
-            __DIR__.'/../public/assets' => public_path('vendor/translation'),
+            __DIR__ . '/../public/assets' => public_path('vendor/translation'),
         ], 'assets');
     }
 
     /**
-     * Register package helper functions.
+     * Load package migrations.
+     *
+     * @return void
      */
-    protected function registerHelpers(): void
+    private function loadMigrations()
     {
-        require __DIR__.'/../resources/helpers.php';
+        if (config('translation.driver') !== 'database') {
+            return;
+        }
+
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 
     /**
-     * Register the translation core provider.
+     * Load package translations.
+     *
+     * @return void
      */
-    protected function registerTranslationProvider(): void
+    private function loadTranslations()
     {
-        $config = $this->app['config']['translation'];
-        $configuration = new Configuration(
-            $config['driver'],
-            $config['translation_methods'],
-            $config['scan_paths'],
-            $config['database']
-        );
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'translation');
 
-        TranslationProvider::init(
-            $this->app,
-            $configuration
-        );
+        $this->publishes([
+            __DIR__ . '/../lang' => resource_path('lang/vendor/translation'),
+        ]);
+    }
+
+    /**
+     * Register package commands.
+     *
+     * @return void
+     */
+    private function registerCommands()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                AddLanguageCommand::class,
+                AddTranslationKeyCommand::class,
+                ListLanguagesCommand::class,
+                ListMissingTranslationKeys::class,
+                SynchroniseMissingTranslationKeys::class,
+                SynchroniseTranslationsCommand::class,
+            ]);
+        }
+    }
+
+    /**
+     * Register package helper functions.
+     *
+     * @return void
+     */
+    private function registerHelpers()
+    {
+        require __DIR__ . '/../resources/helpers.php';
+    }
+
+    /**
+     * Register package bindings in the container.
+     *
+     * @return void
+     */
+    private function registerContainerBindings()
+    {
+        $this->app->singleton(Scanner::class, function () {
+            $config = $this->app['config']['translation'];
+
+            return new Scanner(new Filesystem(), $config['scan_paths'], $config['translation_methods']);
+        });
+
+        $this->app->singleton(Translation::class, function ($app) {
+            return (new TranslationManager($app, $app['config']['translation'], $app->make(Scanner::class)))->resolve();
+        });
     }
 }
