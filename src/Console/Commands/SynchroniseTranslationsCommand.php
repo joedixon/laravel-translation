@@ -148,7 +148,7 @@ class SynchroniseTranslationsCommand extends Command
     private function createDriver($driver)
     {
         if ($driver === 'file') {
-            return new File(new Filesystem, app('path.lang'), config('app.locale'), $this->scanner);
+            return new File(new Filesystem, config('translation.path'), config('app.locale'), $this->scanner);
         }
 
         return new Database(config('app.locale'), $this->scanner);

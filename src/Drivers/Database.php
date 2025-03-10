@@ -5,20 +5,21 @@ namespace JoeDixon\Translation\Drivers;
 use Illuminate\Support\Collection;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\Language;
+use JoeDixon\Translation\Scanner;
 use JoeDixon\Translation\Translation as TranslationModel;
 use Throwable;
 
 class Database extends Translation implements DriverInterface
 {
-    protected $sourceLanguage;
+    protected string $sourceLanguage;
 
-    protected $scanner;
+    protected Scanner $scanner;
 
     protected array $groupTranslationCache = [];
 
     protected array $languageCache = [];
 
-    public function __construct($sourceLanguage, $scanner)
+    public function __construct(string $sourceLanguage, Scanner $scanner)
     {
         $this->sourceLanguage = $sourceLanguage;
         $this->scanner = $scanner;

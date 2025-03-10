@@ -10,6 +10,8 @@ use JoeDixon\Translation\Console\Commands\ListLanguagesCommand;
 use JoeDixon\Translation\Console\Commands\ListMissingTranslationKeys;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
 use JoeDixon\Translation\Console\Commands\SynchroniseTranslationsCommand;
+use JoeDixon\Translation\Drivers\Database;
+use JoeDixon\Translation\Drivers\File;
 use JoeDixon\Translation\Drivers\Translation;
 
 class TranslationServiceProvider extends ServiceProvider
@@ -129,10 +131,10 @@ class TranslationServiceProvider extends ServiceProvider
      */
     private function loadTranslations()
     {
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'translation');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'translation');
 
         $this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/translation'),
+            __DIR__.'/../lang' => app_path('lang/vendor/translation'),
         ]);
     }
 
@@ -180,6 +182,17 @@ class TranslationServiceProvider extends ServiceProvider
 
         $this->app->singleton(Translation::class, function ($app) {
             return (new TranslationManager($app, $app['config']['translation'], $app->make(Scanner::class)))->resolve();
+        });
+
+        $this->app->singleton(File::class, function ($app) {
+            $scanner = $app->make(Scanner::class);
+            $languageFilesPath = $app->config['app']['locale'];
+
+            return new File(new Filesystem(), $app->config['translation.path'], $languageFilesPath, $scanner);
+        });
+
+        $this->app->singleton(Database::class, function ($app) {
+            return new Database($app->config['app']['locale'], $app->make(Scanner::class));
         });
     }
 }

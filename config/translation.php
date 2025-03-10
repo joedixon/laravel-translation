@@ -46,7 +46,7 @@ return [
     | looking for missing translations.
     |
     */
-    'scan_paths' => [app_path(), resource_path()],
+    'scan_paths' => [app_path()],
 
     /*
     |--------------------------------------------------------------------------
@@ -57,6 +57,11 @@ return [
     |
     */
     'ui_url' => 'languages',
+
+    'controllers' => [
+        'language' => \JoeDixon\Translation\Http\Controllers\LanguageController::class,
+        'languageTranslation' => \JoeDixon\Translation\Http\Controllers\LanguageTranslationController::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -74,4 +79,14 @@ return [
 
         'translations_table' => 'translations',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Path
+    |--------------------------------------------------------------------------
+    |
+    | Define the path for the lang folder.
+    |
+    */
+    'path' => base_path('lang'),
 ];

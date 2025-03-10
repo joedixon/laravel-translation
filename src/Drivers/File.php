@@ -7,18 +7,19 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
+use JoeDixon\Translation\Scanner;
 
 class File extends Translation implements DriverInterface
 {
-    private $disk;
+    private Filesystem $disk;
 
-    private $languageFilesPath;
+    private string $languageFilesPath;
 
-    protected $sourceLanguage;
+    protected string $sourceLanguage;
 
-    protected $scanner;
+    protected Scanner $scanner;
 
-    public function __construct(Filesystem $disk, $languageFilesPath, $sourceLanguage, $scanner)
+    public function __construct(Filesystem $disk, string $languageFilesPath, string $sourceLanguage, Scanner $scanner)
     {
         $this->disk = $disk;
         $this->languageFilesPath = $languageFilesPath;

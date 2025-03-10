@@ -37,7 +37,7 @@ class TranslationManager
 
     protected function resolveFileDriver()
     {
-        return new File(new Filesystem, $this->app['path.lang'], $this->app->config['app']['locale'], $this->scanner);
+        return new File(new Filesystem, $this->app->config['translation.path'], $this->app->config['app']['locale'], $this->scanner);
     }
 
     protected function resolveDatabaseDriver()

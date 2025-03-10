@@ -11,7 +11,7 @@ use JoeDixon\Translation\Http\Requests\TranslationRequest;
 
 class LanguageTranslationController extends Controller
 {
-    private $translation;
+    protected Translation $translation;
 
     public function __construct(Translation $translation)
     {
