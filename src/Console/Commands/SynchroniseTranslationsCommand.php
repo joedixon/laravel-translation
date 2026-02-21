@@ -84,10 +84,10 @@ class SynchroniseTranslationsCommand extends Command
 
         // When the from driver will be entered manually or if the argument is invalid.
         else {
-            $this->fromDriver = $this->anticipate(__('translation::translation.prompt_from_driver'), $this->drivers);
+            $this->fromDriver = $this->anticipate('Which driver would you like to take translations from?', $this->drivers);
 
             if (! in_array($this->fromDriver, $this->drivers)) {
-                return $this->error(__('translation::translation.invalid_driver'));
+                return $this->error('Invalid driver');
             }
         }
 
@@ -101,10 +101,10 @@ class SynchroniseTranslationsCommand extends Command
 
         // When the to driver will be entered manually.
         else {
-            $this->toDriver = $this->anticipate(__('translation::translation.prompt_to_driver'), $this->drivers);
+            $this->toDriver = $this->anticipate('Which driver would you like to add the translations to?', $this->drivers);
 
             if (! in_array($this->toDriver, $this->drivers)) {
-                return $this->error(__('translation::translation.invalid_driver'));
+                return $this->error('Invalid driver');
             }
         }
 
@@ -113,7 +113,6 @@ class SynchroniseTranslationsCommand extends Command
 
         // If the language argument is set.
         if ($this->argument('language')) {
-
             // If all languages should be synced.
             if ($this->argument('language') == 'all') {
                 $language = false;
@@ -122,18 +121,18 @@ class SynchroniseTranslationsCommand extends Command
             elseif (in_array($this->argument('language'), $languages)) {
                 $language = $this->argument('language');
             } else {
-                return $this->error(__('translation::translation.invalid_language'));
+                return $this->error('Invalid language');
             }
         } // When the language will be entered manually or if the argument is invalid.
         else {
-            $language = $this->anticipate(__('translation::translation.prompt_language_if_any'), $languages);
+            $language = $this->anticipate('Which language? (leave blank for all)', $languages);
 
             if ($language && ! in_array($language, $languages)) {
-                return $this->error(__('translation::translation.invalid_language'));
+                return $this->error('Invalid language');
             }
         }
 
-        $this->line(__('translation::translation.syncing'));
+        $this->line('Syncing translations');
 
         // If a specific language is set.
         if ($language) {
@@ -143,7 +142,7 @@ class SynchroniseTranslationsCommand extends Command
             $translations = $this->mergeLanguages($this->toDriver, $this->fromDriver->allTranslations());
         }
 
-        $this->info(__('translation::translation.synced'));
+        $this->info('Translations have been synced');
     }
 
     private function createDriver($driver)

@@ -1,2 +1,6 @@
 
 __('This will go in the JSON array')
+
+__(
+    'This will also go in the JSON array'
+)

@@ -2,15 +2,18 @@
 
 namespace JoeDixon\Translation\Drivers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use JoeDixon\Translation\Events\TranslationAdded;
 
 abstract class Translation
 {
     /**
      * Find all of the translations in the app without translation for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return array
      */
     public function findMissingTranslations($language)
@@ -24,7 +27,7 @@ abstract class Translation
     /**
      * Save all of the translations in the app without translation for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return void
      */
     public function saveMissingTranslations($language = false)
@@ -51,7 +54,7 @@ abstract class Translation
     /**
      * Get all translations for a given language merged with the source language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getSourceLanguageTranslationsWith($language)
@@ -77,25 +80,41 @@ abstract class Translation
     /**
      * Filter all keys and translations for a given language and string.
      *
-     * @param string $language
-     * @param string $filter
+     * @param  string  $language
+     * @param  string  $filter
      * @return Collection
      */
     public function filterTranslationsFor($language, $filter)
     {
-        $allTranslations = $this->getSourceLanguageTranslationsWith(($language));
+        $allTranslations = $this->getSourceLanguageTranslationsWith($language);
         if (! $filter) {
             return $allTranslations;
         }
 
         return $allTranslations->map(function ($groups, $type) use ($language, $filter) {
-            return $groups->map(function ($keys, $group) use ($language, $filter, $type) {
-                return collect($keys)->filter(function ($translations, $key) use ($group, $language, $filter, $type) {
+            return $groups->map(function ($keys, $group) use ($language, $filter) {
+                return collect($keys)->filter(function ($translations, $key) use ($group, $language, $filter) {
                     return strs_contain([$group, $key, $translations[$language], $translations[$this->sourceLanguage]], $filter);
                 });
             })->filter(function ($keys) {
                 return $keys->isNotEmpty();
             });
         });
+    }
+
+    public function add(Request $request, $language, $isGroupTranslation)
+    {
+        $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
+        $group = $namespace.$request->get('group');
+        $key = $request->get('key');
+        $value = $request->get('value') ?: '';
+
+        if ($isGroupTranslation) {
+            $this->addGroupTranslation($language, $group, $key, $value);
+        } else {
+            $this->addSingleTranslation($language, 'single', $key, $value);
+        }
+
+        Event::dispatch(new TranslationAdded($language, $group ?: 'single', $key, $value));
     }
 }

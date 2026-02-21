@@ -36,11 +36,13 @@ class Scanner
             '(?<!->)'. // Must not start with ->
             '('.implode('|', $this->translationMethods).')'. // Must start with one of the functions
             "\(". // Match opening parentheses
+            "\s*". // Whitespace before param
             "[\'\"]". // Match " or '
             '('. // Start a new group to match:
             '.+'. // Must start with group
             ')'. // Close group
             "[\'\"]". // Closing quote
+            "\s*". // Whitespace after param
             "[\),]";  // Close parentheses or new parameter
 
         foreach ($this->disk->allFiles($this->scanPaths) as $file) {

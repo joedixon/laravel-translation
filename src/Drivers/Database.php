@@ -6,12 +6,17 @@ use Illuminate\Support\Collection;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\Language;
 use JoeDixon\Translation\Translation as TranslationModel;
+use Throwable;
 
 class Database extends Translation implements DriverInterface
 {
     protected $sourceLanguage;
 
     protected $scanner;
+
+    protected array $groupTranslationCache = [];
+
+    protected array $languageCache = [];
 
     public function __construct($sourceLanguage, $scanner)
     {
@@ -60,7 +65,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Get all translations for a particular language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function allTranslationsFor($language)
@@ -74,7 +79,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Add a new language to the application.
      *
-     * @param string $language
+     * @param  string  $language
      * @return void
      */
     public function addLanguage($language, $name = null)
@@ -92,9 +97,9 @@ class Database extends Translation implements DriverInterface
     /**
      * Add a new group type translation.
      *
-     * @param string $language
-     * @param string $key
-     * @param string $value
+     * @param  string  $language
+     * @param  string  $key
+     * @param  string  $value
      * @return void
      */
     public function addGroupTranslation($language, $group, $key, $value = '')
@@ -119,9 +124,9 @@ class Database extends Translation implements DriverInterface
     /**
      * Add a new single type translation.
      *
-     * @param string $language
-     * @param string $key
-     * @param string $value
+     * @param  string  $language
+     * @param  string  $key
+     * @param  string  $value
      * @return void
      */
     public function addSingleTranslation($language, $vendor, $key, $value = '')
@@ -145,7 +150,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Get all of the single translations for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getSingleTranslationsFor($language)
@@ -166,7 +171,7 @@ class Database extends Translation implements DriverInterface
             return $this->getSingleTranslationsFor($language);
         }
 
-        return $translations->map(function ($translations, $group) use ($language) {
+        return $translations->map(function ($translations, $group) {
             return $translations->mapWithKeys(function ($translation) {
                 return [$translation->key => $translation->value];
             });
@@ -176,29 +181,43 @@ class Database extends Translation implements DriverInterface
     /**
      * Get all of the group translations for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getGroupTranslationsFor($language)
     {
-        $translations = $this->getLanguage($language)
+        if (isset($this->groupTranslationCache[$language])) {
+            return $this->groupTranslationCache[$language];
+        }
+
+        $languageModel = $this->getLanguage($language);
+
+        if (is_null($languageModel)) {
+            return collect();
+        }
+
+        $translations = $languageModel
             ->translations()
             ->whereNotNull('group')
             ->where('group', 'not like', '%single')
             ->get()
             ->groupBy('group');
 
-        return $translations->map(function ($translations) {
+        $result = $translations->map(function ($translations) {
             return $translations->mapWithKeys(function ($translation) {
                 return [$translation->key => $translation->value];
             });
         });
+
+        $this->groupTranslationCache[$language] = $result;
+
+        return $result;
     }
 
     /**
      * Determine whether or not a language exists.
      *
-     * @param string $language
+     * @param  string  $language
      * @return bool
      */
     public function languageExists($language)
@@ -209,7 +228,7 @@ class Database extends Translation implements DriverInterface
     /**
      * Get a collection of group names for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getGroupsFor($language)
@@ -220,12 +239,27 @@ class Database extends Translation implements DriverInterface
     /**
      * Get a language from the database.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Language
      */
     private function getLanguage($language)
     {
-        return Language::where('language', $language)->first();
+        if (isset($this->languageCache[$language])) {
+            return $this->languageCache[$language];
+        }
+
+        // Some constallation of composer packages can lead to our code being executed
+        // as a dependency of running migrations. That's why we need to be able to
+        // handle the case where the database is empty / our tables don't exist:
+        try {
+            $result = Language::where('language', $language)->first();
+        } catch (Throwable) {
+            $result = null;
+        }
+
+        $this->languageCache[$language] = $result;
+
+        return $result;
     }
 
     /**
@@ -233,7 +267,7 @@ class Database extends Translation implements DriverInterface
      * Previously, this was handled by setting the group value to NULL, now
      * we use 'single' to cater for vendor JSON language files.
      *
-     * @param Collection $groups
+     * @param  Collection  $groups
      * @return bool
      */
     private function hasLegacyGroups($groups)

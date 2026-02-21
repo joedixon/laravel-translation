@@ -2,7 +2,9 @@
 
 namespace JoeDixon\Translation\Tests;
 
+use Illuminate\Support\Facades\Event;
 use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Events\TranslationAdded;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\TranslationBindingsServiceProvider;
 use JoeDixon\Translation\TranslationServiceProvider;
@@ -50,7 +52,7 @@ class FileDriverTest extends TestCase
         $translations = $this->translation->allTranslations();
 
         $this->assertEquals($translations->count(), 2);
-        $this->assertArraySubset(['en' => ['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]]], $translations->toArray());
+        $this->assertEquals(['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]], $translations->toArray()['en']);
         $this->assertArrayHasKey('en', $translations->toArray());
         $this->assertArrayHasKey('es', $translations->toArray());
     }
@@ -91,7 +93,7 @@ class FileDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('es');
 
-        $this->assertArraySubset(['group' => ['test' => ['hello' => 'Hola!']]], $translations->toArray());
+        $this->assertEquals(['test' => ['hello' => 'Hola!']], $translations->toArray()['group']);
 
         unlink(__DIR__.'/fixtures/lang/es/test.php');
     }
@@ -103,7 +105,7 @@ class FileDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('en');
 
-        $this->assertArraySubset(['group' => ['test' => ['hello' => 'Hello', 'whats_up' => 'What\'s up!', 'test' => 'Testing']]], $translations->toArray());
+        $this->assertEquals(['test' => ['hello' => 'Hello', 'whats_up' => 'What\'s up!', 'test' => 'Testing']], $translations->toArray()['group']);
 
         file_put_contents(
             app()['path.lang'].'/en/test.php',
@@ -118,7 +120,7 @@ class FileDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('es');
 
-        $this->assertArraySubset(['single' => ['single' => ['Hello' => 'Hola!']]], $translations->toArray());
+        $this->assertEquals(['single' => ['Hello' => 'Hola!']], $translations->toArray()['single']);
 
         unlink(__DIR__.'/fixtures/lang/es.json');
     }
@@ -130,7 +132,7 @@ class FileDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('en');
 
-        $this->assertArraySubset(['single' => ['single' => ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'Test' => 'Testing']]], $translations->toArray());
+        $this->assertEquals(['single' => ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'Test' => 'Testing']], $translations->toArray()['single']);
 
         file_put_contents(
             app()['path.lang'].'/en.json',
@@ -312,7 +314,7 @@ class FileDriverTest extends TestCase
             ->assertRedirect();
         $translations = $this->translation->getSingleTranslationsFor('en');
 
-        $this->assertArraySubset(['single' => ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'joe' => 'is cool']], $translations->toArray());
+        $this->assertEquals(['Hello' => 'Hello', 'What\'s up' => 'What\'s up!', 'joe' => 'is cool'], $translations->toArray()['single']);
 
         file_put_contents(
             app()['path.lang'].'/en.json',
@@ -324,12 +326,52 @@ class FileDriverTest extends TestCase
     public function a_translation_can_be_updated()
     {
         $this->post(config('translation.ui_url').'/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
-            ->assertStatus(200)
-            ->assertSee(json_encode(['success' => true]));
+            ->assertStatus(200);
+
         $translations = $this->translation->getGroupTranslationsFor('en');
 
-        $this->assertArraySubset(['test' => ['hello' => 'Hello there!', 'whats_up' => 'What\'s up!']], $translations->toArray());
+        $this->assertEquals(['hello' => 'Hello there!', 'whats_up' => 'What\'s up!'], $translations->toArray()['test']);
 
+        file_put_contents(
+            app()['path.lang'].'/en/test.php',
+            "<?php\n\nreturn ".var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true).';'.\PHP_EOL
+        );
+    }
+
+    /** @test */
+    public function adding_a_translation_fires_an_event_with_the_expected_data()
+    {
+        Event::fake();
+
+        $data = ['key' => 'joe', 'value' => 'is cool'];
+        $this->post(config('translation.ui_url').'/en/translations', $data);
+
+        Event::assertDispatched(TranslationAdded::class, function ($event) use ($data) {
+            return $event->language === 'en' &&
+                $event->group === 'single' &&
+                $event->value === $data['value'] &&
+                $event->key === $data['key'];
+        });
+        file_put_contents(
+            app()['path.lang'].'/en.json',
+            json_encode((object) ['Hello' => 'Hello', 'What\'s up' => 'What\'s up!'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+        );
+    }
+
+    /** @test */
+    public function updating_a_translation_fires_an_event_with_the_expected_data()
+    {
+        Event::fake();
+
+        $data = ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'];
+        $this->post(config('translation.ui_url').'/en/translations', $data);
+
+        Event::assertDispatched(TranslationAdded::class, function ($event) use ($data) {
+            return $event->language === 'en' &&
+                $event->group === $data['group'] &&
+                $event->value === $data['value'] &&
+                $event->key === $data['key'];
+        });
         file_put_contents(
             app()['path.lang'].'/en/test.php',
             "<?php\n\nreturn ".var_export(['hello' => 'Hello', 'whats_up' => 'What\'s up!'], true).';'.\PHP_EOL

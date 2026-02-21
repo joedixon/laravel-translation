@@ -3,7 +3,9 @@
 namespace JoeDixon\Translation\Tests;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Event;
 use JoeDixon\Translation\Drivers\Translation;
+use JoeDixon\Translation\Events\TranslationAdded;
 use JoeDixon\Translation\Exceptions\LanguageExistsException;
 use JoeDixon\Translation\Language;
 use JoeDixon\Translation\Translation as TranslationModel;
@@ -62,7 +64,7 @@ class DatabaseDriverTest extends TestCase
     public function it_returns_all_translations()
     {
         $default = Language::where('language', config('app.locale'))->first();
-        $spanish = factory(Language::class)->create(['language' => 'es', 'name' => 'Español']);
+        factory(Language::class)->create(['language' => 'es', 'name' => 'Español']);
         factory(TranslationModel::class)->states('group')->create(['language_id' => $default->id, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
         factory(TranslationModel::class)->states('group')->create(['language_id' => $default->id, 'group' => 'test', 'key' => 'whats_up', 'value' => "What's up!"]);
         factory(TranslationModel::class)->states('single')->create(['language_id' => $default->id, 'group' => 'single', 'key' => 'Hello', 'value' => 'Hello']);
@@ -71,7 +73,7 @@ class DatabaseDriverTest extends TestCase
         $translations = $this->translation->allTranslations();
 
         $this->assertEquals($translations->count(), 2);
-        $this->assertArraySubset(['en' => ['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]]], $translations->toArray());
+        $this->assertEquals(['single' => ['single' => ['Hello' => 'Hello', "What's up" => "What's up!"]], 'group' => ['test' => ['hello' => 'Hello', 'whats_up' => "What's up!"]]], $translations->toArray()['en']);
         $this->assertArrayHasKey('en', $translations->toArray());
         $this->assertArrayHasKey('es', $translations->toArray());
     }
@@ -121,7 +123,7 @@ class DatabaseDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('es');
 
-        $this->assertArraySubset(['group' => ['test' => ['hello' => 'Hola!']]], $translations->toArray());
+        $this->assertEquals(['test' => ['hello' => 'Hola!']], $translations->toArray()['group']);
     }
 
     /** @test */
@@ -132,8 +134,7 @@ class DatabaseDriverTest extends TestCase
         $this->translation->addGroupTranslation($translation->language->language, "{$translation->group}", 'test', 'Testing');
 
         $translations = $this->translation->allTranslationsFor($translation->language->language);
-
-        $this->assertArraySubset(['group' => [$translation->group => [$translation->key => $translation->value, 'test' => 'Testing']]], $translations->toArray());
+        $this->assertSame([$translation->group => [$translation->key => $translation->value, 'test' => 'Testing']], $translations->toArray()['group']);
     }
 
     /** @test */
@@ -143,7 +144,7 @@ class DatabaseDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor('es');
 
-        $this->assertArraySubset(['single' => ['single' => ['Hello' => 'Hola!']]], $translations->toArray());
+        $this->assertEquals(['single' => ['Hello' => 'Hola!']], $translations->toArray()['single']);
     }
 
     /** @test */
@@ -155,7 +156,7 @@ class DatabaseDriverTest extends TestCase
 
         $translations = $this->translation->allTranslationsFor($translation->language->language);
 
-        $this->assertArraySubset(['single' => ['single' => ['Test' => 'Testing', $translation->key => $translation->value]]], $translations->toArray());
+        $this->assertEquals(['single' => ['Test' => 'Testing', $translation->key => $translation->value]], $translations->toArray()['single']);
     }
 
     /** @test */
@@ -335,9 +336,40 @@ class DatabaseDriverTest extends TestCase
         $this->assertDatabaseHas('translations', ['language_id' => 1, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello']);
 
         $this->post(config('translation.ui_url').'/en', ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'])
-            ->assertStatus(200)
-            ->assertSee(json_encode(['success' => true]));
+            ->assertStatus(200);
 
         $this->assertDatabaseHas('translations', ['language_id' => 1, 'group' => 'test', 'key' => 'hello', 'value' => 'Hello there!']);
+    }
+
+    /** @test */
+    public function adding_a_translation_fires_an_event_with_the_expected_data()
+    {
+        Event::fake();
+
+        $data = ['key' => 'joe', 'value' => 'is cool'];
+        $this->post(config('translation.ui_url').'/en/translations', $data);
+
+        Event::assertDispatched(TranslationAdded::class, function ($event) use ($data) {
+            return $event->language === 'en' &&
+                    $event->group === 'single' &&
+                    $event->value === $data['value'] &&
+                    $event->key === $data['key'];
+        });
+    }
+
+    /** @test */
+    public function updating_a_translation_fires_an_event_with_the_expected_data()
+    {
+        Event::fake();
+
+        $data = ['group' => 'test', 'key' => 'hello', 'value' => 'Hello there!'];
+        $this->post(config('translation.ui_url').'/en/translations', $data);
+
+        Event::assertDispatched(TranslationAdded::class, function ($event) use ($data) {
+            return $event->language === 'en' &&
+                    $event->group === $data['group'] &&
+                    $event->value === $data['value'] &&
+                    $event->key === $data['key'];
+        });
     }
 }

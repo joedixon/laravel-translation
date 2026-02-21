@@ -28,7 +28,7 @@ interface DriverInterface
     /**
      * Get all translations for a particular language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function allTranslationsFor($language);
@@ -36,7 +36,7 @@ interface DriverInterface
     /**
      * Add a new language to the application.
      *
-     * @param string $language
+     * @param  string  $language
      * @return void
      */
     public function addLanguage($language, $name = null);
@@ -44,9 +44,9 @@ interface DriverInterface
     /**
      * Add a new group type translation.
      *
-     * @param string $language
-     * @param string $key
-     * @param string $value
+     * @param  string  $language
+     * @param  string  $key
+     * @param  string  $value
      * @return void
      */
     public function addGroupTranslation($language, $group, $key, $value = '');
@@ -54,9 +54,9 @@ interface DriverInterface
     /**
      * Add a new single type translation.
      *
-     * @param string $language
-     * @param string $key
-     * @param string $value
+     * @param  string  $language
+     * @param  string  $key
+     * @param  string  $value
      * @return void
      */
     public function addSingleTranslation($language, $vendor, $key, $value = '');
@@ -64,7 +64,7 @@ interface DriverInterface
     /**
      * Get all of the single translations for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getSingleTranslationsFor($language);
@@ -72,7 +72,7 @@ interface DriverInterface
     /**
      * Get all of the group translations for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getGroupTranslationsFor($language);
@@ -80,7 +80,7 @@ interface DriverInterface
     /**
      * Determine whether or not a language exists.
      *
-     * @param string $language
+     * @param  string  $language
      * @return bool
      */
     public function languageExists($language);
@@ -88,7 +88,7 @@ interface DriverInterface
     /**
      * Find all of the translations in the app without translation for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return array
      */
     public function findMissingTranslations($language);
@@ -96,7 +96,7 @@ interface DriverInterface
     /**
      * Save all of the translations in the app without translation for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return void
      */
     public function saveMissingTranslations($language = false);
@@ -104,7 +104,7 @@ interface DriverInterface
     /**
      * Get a collection of group names for a given language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getGroupsFor($language);
@@ -112,7 +112,7 @@ interface DriverInterface
     /**
      * Get all translations for a given language merged with the source language.
      *
-     * @param string $language
+     * @param  string  $language
      * @return Collection
      */
     public function getSourceLanguageTranslationsWith($language);
@@ -120,8 +120,8 @@ interface DriverInterface
     /**
      * Filter all keys and translations for a given language and string.
      *
-     * @param string $language
-     * @param string $filter
+     * @param  string  $language
+     * @param  string  $filter
      * @return Collection
      */
     public function filterTranslationsFor($language, $filter);
